@@ -10,10 +10,14 @@ assert.equal(packageJson.name, "dsh-mahjong");
 assert.equal(packageJson.exports["./client"], "./client.js");
 assert.equal(packageJson.dsh.client.platform, "web");
 assert.equal(packageJson.dsh.bundle.patch, "./cordis.patch.yml");
-assert.match(client, /ctx\.slots\.inject\("conversation"/);
+assert.match(client, /ctx\.slots\.inject\("shell\.overlay"/);
+assert.match(client, /ctx\.slots\.inject\("conversation\.session\.header\.utilities"/);
 assert.match(client, /http:\/\/localhost:1234\/hand\//);
-assert.match(client, /grid-template-columns: minmax\(0, 7fr\) minmax\(320px, 3fr\)/);
-assert.doesNotMatch(client, /ctx\.slots\.register\(\s*\{\s*name: "root"/);
+assert.match(client, /TABLE_RATIO = 1280 \/ 720/);
+assert.match(client, /data-dsh-mahjong-overlay/);
+assert.match(client, /data-dsh-mahjong-frame/);
+assert.doesNotMatch(client, /name: "(?:root|conversation|conversation\.session|conversation\.session\.header|conversation\.composer|details)"/);
+assert.doesNotMatch(client, /ctx\.sessions\.scope|conversation\.send|toggleSidebar/);
 assert.match(patch, /name: dsh-mahjong/);
 
 console.log("dsh-mahjong package contract OK");

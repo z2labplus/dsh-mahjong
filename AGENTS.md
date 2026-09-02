@@ -12,8 +12,10 @@ The game experience must remain identical to MJLab `/hand/`.
 ## Harness boundary
 
 - Ship as an official DeepSeek Harness plugin. Do not fork or patch Harness core.
-- The default desktop layout is game-first two-column mode: the table is the main surface and the AI conversation is the secondary surface.
-- One-column focus mode and three-column workspace mode are supported layout states, not separate game implementations.
+- Mount the real `/hand/` through the additive `shell.overlay` slot above the complete native Harness conversation. Do not replace `conversation`, its composer, approvals, questions, cancel controls, or details.
+- The floating table is positional only: it has no radius, border, shadow, blur, mask, or crop. Outer Harness controls may keep the host's 4-6 px radii.
+- The default desktop state is the normal Harness two-column workspace. One-column focus and three-column details are outer-shell states, not separate game implementations.
+- Asking about a move may resize the same table between large and compact 16:9 states, but must not remount its iframe or reset game state.
 - If the official plugin API cannot provide the approved layout, stop and discuss the constraint before changing architecture.
 
 ## Game authority and AI seats

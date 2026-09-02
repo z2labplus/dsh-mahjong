@@ -12,15 +12,17 @@ The game surface must reuse MJLab `/hand/` exactly, including tiles, table, layo
 
 ## 产品形态 / Product shape
 
-- 默认是两栏：牌桌为主区，AI 对话为侧栏。
-- 一栏用于牌桌聚焦，仍可从当前步骤发起提问。
-- 三栏在需要会话列表、牌谱或更多上下文时展开。
+- 默认是 Harness 两栏：左侧会话列表，中间为完整原生对话；真实 `/hand/` 以 16:9 无装饰画布悬浮在对话上方。
+- “提问这一步”会把同一牌桌缩为紧凑状态并聚焦原生输入框，不重建 iframe，也不丢失牌局。
+- 一栏收起会话列表以聚焦当前任务；三栏打开右侧详情；三种状态都复用同一个牌桌实例。
+- 悬浮只描述位置关系。牌桌本体没有圆角、边框、阴影、模糊、遮罩或裁切；Harness 控件仍遵循宿主设计系统。
 - 开桌、看牌、对 AI 实时提问都发生在 DeepSeek Harness 内。
 - 四个座位公开显示真人或模型身份。
 
-- Two columns by default: the table is primary and AI conversation is secondary.
-- One column is a focused table mode with an entry point to ask about the current step.
-- Three columns expand sessions, replay, or additional context when needed.
+- The default Harness layout has two columns: the session list and the complete native conversation, with the real 16:9 `/hand/` surface floating above the conversation.
+- "Ask about this move" compacts the same table and focuses the native composer without remounting the iframe or losing game state.
+- One column collapses sessions to focus the current task; three columns open details; all states retain the same table instance.
+- Floating describes placement only. The table itself has no radius, border, shadow, blur, mask, or crop; Harness controls continue to use the host design system.
 - Table setup, play, spectating, and live questions all happen inside DeepSeek Harness.
 - Every seat publicly shows whether it is human or which model is playing.
 
@@ -40,23 +42,23 @@ The game surface must reuse MJLab `/hand/` exactly, including tiles, table, layo
 
 项目正在进行 M0 技术验证：
 
-1. 验证官方插件能否承载默认两栏布局。
+1. 验证官方叠加插槽能否在不替换原生对话的情况下承载悬浮牌桌。
 2. 建立 `/hand/` 原样复用与可验证的版本基线。
 3. 打通一个 AI 座位完成一次合法动作的最小闭环。
 4. 验证 38 秒超时与安全回退。
 
 The project is in M0 technical validation:
 
-1. Verify that the official plugin API can support the default two-column layout.
+1. Verify that the official additive overlay slot can host the floating table without replacing native conversation UI.
 2. Establish a versioned and verifiable exact-reuse baseline for `/hand/`.
 3. Complete the minimum loop for one AI seat to submit one legal action.
 4. Verify the 38-second timeout and safe fallback.
 
 ## 仓库状态 / Repository status
 
-当前仓库已包含 M0 官方插件骨架与可运行的客户端工作区。已在 DeepSeek Harness `0.1.0-rc.8` 中验证：专用 profile 能加载插件，默认两栏为 70/30，一栏聚焦和三栏会话列表均可切换，牌桌直接载入真实 MJLab `/hand/`。受信父页面消息通道已实现并通过单元测试；真实牌局端到端验证、游戏服务桥接、AI 座位动作和 38 秒权威超时仍在后续 M0 范围内。
+当前仓库已包含 M0 官方插件骨架与客户端实现。插件通过 `shell.overlay` 添加真实 MJLab `/hand/`，通过会话头部的 additive utility 提供“提问这一步/聚焦牌桌”切换；不接管 Harness 的对话、输入框、审批、提问、停止生成或详情栏。一栏、默认两栏、大小模式、会话切换与原生 composer 已在 Harness `0.1.0-rc.8` 的 1920 x 1080 真实页面通过验收；三栏详情、审批/停止控件、真实牌局端到端、游戏服务桥接、AI 座位动作和 38 秒权威超时仍在 M0 验收范围内。
 
-The repository now contains a runnable M0 plugin skeleton and client workspace. It has been verified with DeepSeek Harness `0.1.0-rc.8`: the dedicated profile loads the plugin, the default split is 70/30, one-column focus and three-column session-list states work, and the table embeds the real MJLab `/hand/`. Trusted-parent messaging is implemented and unit-tested; real-game end-to-end validation, the game-service bridge, AI-seat action loop, and authoritative 38-second timeout remain in the M0 backlog.
+The repository now contains the M0 official-plugin skeleton and client implementation. It adds the real MJLab `/hand/` through `shell.overlay` and exposes the "ask/focus" switch through an additive session-header utility; it does not replace Harness conversation, composer, approvals, questions, stop controls, or details. One-column, default two-column, size-mode, session-switch, and native-composer behavior have passed live 1920 x 1080 acceptance in Harness `0.1.0-rc.8`; three-column details, approval/stop controls, real-game end-to-end validation, the game-service bridge, AI-seat action loop, and the authoritative 38-second timeout remain in the M0 acceptance scope.
 
 ## 许可 / License
 

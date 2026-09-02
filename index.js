@@ -25,7 +25,7 @@ const m0StatusTool = {
       product: "dsh-mahjong",
       stage: "M0",
       harness: "0.1.0-rc.8",
-      layout: "game-main-with-assistant-sidecar",
+      layout: "floating-hand-over-native-conversation",
       handReuse: "iframe-original",
       handDesignSize: {
         width: 1280,
