@@ -1,0 +1,45 @@
+{
+  "name": "dsh-mahjong",
+  "version": "0.0.1",
+  "description": "基于 DeepSeek Harness 的 AI 麻将桌 / AI Mahjong table for DeepSeek Harness",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "docs"
+  ],
+  "scripts": {
+    "check": "node --check index.js && node --check client.js && node scripts/check-package.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dsh": {
+    "id": "dsh-mahjong",
+    "name": "AI 麻将桌",
+    "version": "0.0.1",
+    "repo": "z2labplus/dsh-mahjong",
+    "permissions": "牌局展示, Harness 会话问答",
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-layout"
+      ]
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
