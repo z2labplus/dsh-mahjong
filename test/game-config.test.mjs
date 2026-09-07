@@ -3,7 +3,9 @@ import test from "node:test";
 
 import {
   DEFAULT_ACTION_TIMEOUT_SECONDS,
+  DEFAULT_INITIAL_POINTS,
   normalizeStartRequest,
+  publicSeatConfig,
 } from "../lib/game-config.js";
 
 const catalog = {
@@ -40,6 +42,7 @@ test("normalizes four seats, defaults to 38 seconds, and permits duplicate model
   ]), catalog);
 
   assert.equal(value.timeoutSeconds, DEFAULT_ACTION_TIMEOUT_SECONDS);
+  assert.deepEqual(value.seats.map(s => s.initialPoints), Array(4).fill(DEFAULT_INITIAL_POINTS));
   assert.equal(value.ownerMode, "player");
   assert.deepEqual(value.seats.map(({ seat }) => seat), [0, 1, 2, 3]);
   assert.equal(value.seats[1].modelLabel, "DeepSeek V4");
@@ -58,6 +61,21 @@ test("supports four independent AI seats and spectator ownership", () => {
   }, catalog);
   assert.equal(value.ownerMode, "spectator");
   assert.equal(value.seats.filter(({ kind }) => kind === "ai").length, 4);
+});
+
+test("individual initial points are validated for both human and AI seats and remain public metadata", () => {
+  const seats = [0, 1, 2, 3].map(seat => ({ seat, kind: "human", owner: seat === 0, initialPoints: [0, 10000, 50000, 1000000][seat] }));
+  seats[1] = { seat: 1, kind: "ai", provider: "deepseek-official", model: "deepseek-v4", initialPoints: 10000 };
+  const value = normalizeStartRequest(request(seats), catalog);
+  assert.deepEqual(value.seats.map(publicSeatConfig).map(s => s.initialPoints), [0, 10000, 50000, 1000000]);
+  assert.throws(() => { value.seats[0].initialPoints = 1; }, TypeError);
+  assert.equal(Object.hasOwn(publicSeatConfig({ seat: 0, kind: "human" }), "initialPoints"), false);
+  for (const initialPoints of [-1, 1.5, 1000001, Infinity, NaN, null, "10000", true]) {
+    for (const index of [0, 1]) {
+      const invalid = structuredClone(seats); invalid[index].initialPoints = initialPoints;
+      assert.throws(() => normalizeStartRequest(request(invalid), catalog), { code: "INVALID_INITIAL_POINTS" });
+    }
+  }
 });
 
 test("blocks missing model credentials, invalid timeout, and ambiguous human ownership", () => {

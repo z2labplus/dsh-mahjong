@@ -10,7 +10,9 @@ import { BloodTop1ActionPicker } from './engine/blood-top1-action-picker';
 import type { Entry } from './engine/protocol';
 import type { ReplayEvent } from './engine/replay-store';
 
-export type Seat = { seat: number; kind: 'ai' | 'human'; owner?: boolean; modelId?: string; modelLabel?: string };
+export const DEFAULT_INITIAL_POINTS = 10_000;
+export const MAX_INITIAL_POINTS = 1_000_000;
+export type Seat = { seat: number; kind: 'ai' | 'human'; owner?: boolean; modelId?: string; modelLabel?: string; initialPoints?: number };
 export type TableMetadata = {
   gameId: string; tenant: string; owner: string; tableName: string; ruleset: 'blood' | 'guobiao'; ruleVersion?: string; ruleOptions?: { autoBuhua?: boolean };
   timeoutMs: number; createdAtMs: number; seats: Seat[]; joined: number[]; mode?: 'practice' | 'live' | 'coach'; coach?:CoachState; source?: {gameId:string;eventIndex:number}; seatEpochs?: Record<number,number>;
@@ -41,13 +43,15 @@ export function normalizeTable(input: any, owner: Access, gameId: string, now: n
     if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate) ||
       !Number.isInteger(candidate.seat) || candidate.seat < 0 || candidate.seat > 3 ||
       !['human', 'ai'].includes(candidate.kind)) throw new ServiceError('INVALID_SEATS');
-    const allowed = candidate.kind === 'human' ? ['seat', 'kind', 'owner'] : ['seat', 'kind', 'modelId', 'modelLabel'];
+    const allowed = candidate.kind === 'human' ? ['seat', 'kind', 'owner', 'initialPoints'] : ['seat', 'kind', 'modelId', 'modelLabel', 'initialPoints'];
     if (Object.keys(candidate).some(key => !allowed.includes(key))) throw new ServiceError('INVALID_SEATS');
+    const initialPoints = candidate.initialPoints === undefined ? DEFAULT_INITIAL_POINTS : candidate.initialPoints;
+    if (!Number.isSafeInteger(initialPoints) || initialPoints < 0 || initialPoints > MAX_INITIAL_POINTS) throw new ServiceError('INVALID_INITIAL_POINTS');
     if (candidate.kind === 'human') {
       if (candidate.owner !== undefined && typeof candidate.owner !== 'boolean') throw new ServiceError('INVALID_SEATS');
-      return { seat: candidate.seat, kind: 'human', owner: candidate.owner === true };
+      return { seat: candidate.seat, kind: 'human', owner: candidate.owner === true, initialPoints };
     }
-    return { seat: candidate.seat, kind: 'ai', modelId: shortText(candidate.modelId, 120), modelLabel: shortText(candidate.modelLabel, 80, candidate.modelId) };
+    return { seat: candidate.seat, kind: 'ai', modelId: shortText(candidate.modelId, 120), modelLabel: shortText(candidate.modelLabel, 80, candidate.modelId), initialPoints };
   }).sort((a: Seat, b: Seat) => a.seat - b.seat);
   if (new Set(seats.map(s => s.seat)).size !== 4 || seats.filter(s => s.owner).length !== (seats.some(s => s.kind === 'human') ? 1 : 0)) throw new ServiceError('INVALID_SEATS');
   return { gameId, tenant: owner.tenant, owner: owner.owner, tableName: shortText(input.tableName, 80, '麻将牌局'), ruleset, ruleVersion: ruleset === 'guobiao' ? 'mcr-81-v1' : 'blood-v1', ruleOptions: ruleset === 'guobiao' ? { autoBuhua: ruleOptions.autoBuhua ?? true } : {}, timeoutMs: timeoutSeconds * 1000, createdAtMs: now, seats, joined: [] };
@@ -94,7 +98,8 @@ export class TableCore {
     this.metadata.joined.push(seat);
     const match = this.game.get('match', 0);
     this.game.systemUpdate([
-      ['seats', `seat-${seat}`, { seat, startBeans: 0 }],
+      // Persisted tables without initialPoints retain their original zero baseline.
+      ['seats', `seat-${seat}`, { seat, startBeans: config.initialPoints ?? 0 }],
       ['nicks', `seat-${seat}`, config.modelLabel ?? `玩家 ${seat + 1}`],
       ['match', 0, { ...match, seatActors: { ...match.seatActors, [seat]: config } }],
     ]);

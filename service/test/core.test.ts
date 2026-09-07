@@ -8,7 +8,7 @@ const gameId = '55d1f198-2d88-4c61-ae49-51cfc73501c9';
 const owner: Access = { v: 1, kind: 'owner', tenant: 'test', owner: 'alice', exp: now + 100000 };
 const seats = (humans = 0): Seat[] => [0, 1, 2, 3].map(seat => seat < humans ? { seat, kind: 'human', owner: seat === 0 } : { seat, kind: 'ai', modelId: 'test-model', modelLabel: 'test-model' });
 function table(humans = 0) {
-  const core = new TableCore(normalizeTable({ seats: seats(humans) }, owner, gameId, now));
+  const core = new TableCore(normalizeTable({ seats: seats(humans).map(s => ({ ...s, ...(humans === 4 ? { initialPoints: [0, 25000, 50000, 1000000][s.seat] } : {}) })) }, owner, gameId, now));
   for (let seat = 0; seat < 4; seat++) core.join(seat, now);
   return core;
 }
@@ -122,7 +122,14 @@ for (let humans = 0; humans <= 4; humans++) {
     assert.equal(core.state?.phase, 'done');
     assert.ok(moves > 50);
     assert.equal(new Set(eventSequences).size, eventSequences.length);
-    assert.equal(Object.values(core.state!.players as Record<number, { beans: number }>).reduce((sum, p) => sum + p.beans, 0), 0);
+    const expected = core.metadata.seats.map(s => s.initialPoints!);
+    const initialTotal = expected.reduce((sum, points) => sum + points, 0);
+    for (const entry of core.state.ledger) for (const transfer of entry.transfers) {
+      expected[transfer.fromSeat] -= transfer.beans; expected[transfer.toSeat] += transfer.beans;
+    }
+    assert.deepEqual([0, 1, 2, 3].map(s => core.state.players[s].beans), expected);
+    assert.deepEqual(core.state.endSummary.initialBeansBySeat, Object.fromEntries(core.metadata.seats.map(s => [s.seat, s.initialPoints])));
+    assert.equal(Object.values(core.state!.players as Record<number, { beans: number }>).reduce((sum, p) => sum + p.beans, 0), initialTotal);
   });
 }
 

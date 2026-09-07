@@ -1074,10 +1074,10 @@ window.__ModuleLoader__.load({
         autoBuhua: true,
         timeoutSeconds: "38",
         seats: [
-          { seat: 0, kind: "human", provider: "", model: "", modelLabel: "" },
-          { seat: 1, kind: "ai", provider: "", model: "", modelLabel: "" },
-          { seat: 2, kind: "ai", provider: "", model: "", modelLabel: "" },
-          { seat: 3, kind: "ai", provider: "", model: "", modelLabel: "" },
+          { seat: 0, kind: "human", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
+          { seat: 1, kind: "ai", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
+          { seat: 2, kind: "ai", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
+          { seat: 3, kind: "ai", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
         ],
       };
     }
@@ -1114,15 +1114,20 @@ window.__ModuleLoader__.load({
       }
       var ownerAssigned = false;
       var seats = draft.seats.map((seat) => {
+        var initialPoints = Number(seat.initialPoints);
+        if (String(seat.initialPoints).trim() === "" || !Number.isSafeInteger(initialPoints) || initialPoints < 0 || initialPoints > 1000000) {
+          throw new Error(["东", "南", "西", "北"][seat.seat] + "家初始积分需为 0 到 1,000,000 的整数");
+        }
         if (seat.kind === "human") {
           var owner = !ownerAssigned;
           ownerAssigned = true;
-          return { seat: seat.seat, kind: "human", owner };
+          return { seat: seat.seat, kind: "human", owner, initialPoints };
         }
         if (!seat.provider || !seat.model) throw new Error("每个 AI 座位都需要选择模型");
         return {
           seat: seat.seat,
           kind: "ai",
+          initialPoints,
           provider: seat.provider,
           model: seat.model,
           modelLabel: seat.modelLabel || seat.model,
@@ -1187,6 +1192,11 @@ window.__ModuleLoader__.load({
             react.createElement("span", { className: "dsh-mj-model-badge", title: modelLabel }, modelLabel),
           )
           : react.createElement("div", { className: "dsh-mj-human-note" }, humanLabel),
+        react.createElement("label", { className: "dsh-mj-field" },
+          react.createElement("span", { className: "dsh-mj-label" }, "初始积分"),
+          react.createElement("input", { className: "dsh-mj-input", type: "number", min: 0, max: 1000000, step: 1, required: true,
+            value: seat.initialPoints, disabled: props.disabled, "aria-label": ["东", "南", "西", "北"][seat.seat] + "家初始积分",
+            onChange: (event) => props.onInitialPoints(event.target.value) })),
       );
     }
 
@@ -1294,7 +1304,7 @@ window.__ModuleLoader__.load({
                 react.createElement("span", { className: "dsh-mj-label" }, "出牌超时（秒）"),
                 react.createElement("input", { className: "dsh-mj-input dsh-mj-timeout", type: "number", min: 10, max: 120, step: 1, value: draft.timeoutSeconds, disabled: starting, onChange: (event) => setDraft(Object.assign({}, draft, { timeoutSeconds: event.target.value })) })),
             ),
-            react.createElement("div", { className: "dsh-mj-section-heading" }, react.createElement("h3", null, "四个座位"), react.createElement("span", null, "开局后锁定座位与模型")),
+            react.createElement("div", { className: "dsh-mj-section-heading" }, react.createElement("h3", null, "四个座位"), react.createElement("span", null, "开局后锁定座位、模型与初始积分")),
             client.catalogStatus === "loading"
               ? react.createElement("div", { className: "dsh-mj-catalog-state", role: "status" }, react.createElement("span", { className: "dsh-mj-spinner", "aria-hidden": "true" }), "正在读取 Harness 已配置模型") : null,
             client.catalogStatus === "error"
@@ -1316,6 +1326,7 @@ window.__ModuleLoader__.load({
                   return kind === "ai" ? assignDefaultModels({ seats: [next] }, client.catalog).seats[0] : next;
                 }),
                 onModel: (value) => updateSeat(index, (current) => updateSeatModel(current, value, client.catalog)),
+                onInitialPoints: (value) => updateSeat(index, (current) => Object.assign({}, current, { initialPoints: value })),
               })),
             ),
             allAi ? react.createElement("div", { className: "dsh-mj-notice", role: "status" }, icon("IconQuestionOutline14", 15), react.createElement("span", null, "四个座位均为 AI，你将作为旁观者观看整局。")) : null,

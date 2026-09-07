@@ -536,7 +536,15 @@ test("the setup panel covers seat, model, timeout, empty, and spectator states",
   assert.match(source, /四个座位均为 AI，你将作为旁观者观看整局/);
   assert.match(source, /暂无可用 AI 模型/);
   assert.match(source, /正在读取 Harness 已配置模型/);
-  assert.match(source, /开局后锁定座位与模型/);
+  assert.match(source, /开局后锁定座位、模型与初始积分/);
+  const pointInputs = findAllElements(tree, node => node.type === "input" && node.props["aria-label"]?.endsWith("家初始积分"));
+  assert.equal(pointInputs.length, 4);
+  for (const input of pointInputs) {
+    assert.equal(input.props.value, "10000");
+    assert.equal(input.props.min, 0);
+    assert.equal(input.props.max, 1000000);
+    assert.equal(input.props.required, true);
+  }
 });
 
 test("providers without credentials stay visible but cannot be selected", async () => {
@@ -1059,4 +1067,24 @@ test("service bootstrap escapes inline script content without exposing the servi
   vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], browser);
   assert.equal(browser.window.__DSH_MAHJONG_BOOT__.requestToken, requestToken);
   assert.equal(browser.window.pwned, undefined);
+});
+
+
+test("setup serializes individual initial points and rejects empty, fractional or out-of-range scores", async () => {
+  const source = await readFile(clientUrl, "utf8");
+  const start = source.indexOf("    function initialDraft(");
+  const end = source.indexOf("    function resolveWorkspaceId(", start);
+  assert.ok(start > 0 && end > start);
+  const { initialDraft, serializeDraft } = vm.runInNewContext(`(() => { ${source.slice(start, end)}; return { initialDraft, serializeDraft }; })()`);
+  const draft = initialDraft();
+  draft.seats.forEach(seat => { seat.provider = "test"; seat.model = "test"; });
+  assert.deepEqual(Array.from(serializeDraft(draft).seats, s => s.initialPoints), [10000, 10000, 10000, 10000]);
+  [0, 25000, 50000, 1000000].forEach((points, seat) => { draft.seats[seat].initialPoints = String(points); });
+  assert.deepEqual(Array.from(serializeDraft(draft).seats, s => s.initialPoints), [0, 25000, 50000, 1000000]);
+  for (const value of ["", " ", "-1", "1.5", "1000001", "Infinity", "abc"]) {
+    for (const seat of [0, 1]) {
+      const invalid = structuredClone(draft); invalid.seats[seat].initialPoints = value;
+      assert.throws(() => serializeDraft(invalid), /家初始积分需为/);
+    }
+  }
 });

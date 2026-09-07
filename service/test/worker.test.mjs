@@ -104,7 +104,14 @@ test('Cloudflare service + local Harness transports, isolation and persisted rec
     const owner = { v: 1, kind: 'owner', tenant: 'one', owner: 'alice', exp: Date.now() + 60000 };
     const token = await issueAccess(secret, owner);
     const control = createServiceControl({ url: origin });
-    const created = await control.createTable({ ownerApiToken: token, tableName: 'Integration', timeoutSeconds: 10, seats: [0, 1, 2, 3].map(seat => ({ seat, kind: 'ai', model: 'test', modelLabel: 'test' })) });
+    const initialPoints = [0, 25000, 50000, 1000000];
+    const tableSpec = { ownerApiToken: token, tableName: 'Integration', timeoutSeconds: 10, seats: [0, 1, 2, 3].map(seat => ({ seat, kind: 'ai', model: 'test', modelLabel: 'test', initialPoints: initialPoints[seat] })) };
+    const created = await control.createTable(tableSpec);
+    assert.deepEqual(created.seats.map(s => s.initialPoints), initialPoints);
+    const sameTable = createServiceControl({ url: origin, requestIdFactory: () => created.gameId });
+    assert.deepEqual((await sameTable.createTable(tableSpec)).seats.map(s => s.initialPoints), initialPoints);
+    const changed = structuredClone(tableSpec); changed.seats[0].initialPoints = 10000;
+    await assert.rejects(sameTable.createTable(changed), { code: 'TABLE_ALREADY_EXISTS' });
     assert.equal(created.ownerMode, 'spectator');
     const secondToken = await issueAccess(secret, { ...owner, tenant: 'two' });
     await assert.rejects(control.resumeTable({ gameId: created.gameId, ownerApiToken: secondToken }), { code: 'FORBIDDEN' });
@@ -130,6 +137,7 @@ test('Cloudflare service + local Harness transports, isolation and persisted rec
     await managerOptions.submitAction({ seatId: first.seatId, decisionId: first.decisionId, actionId: first.actionIds[0] });
     const initialSnapshot = await until(() => snapshots.find(s => s.entries.some(([kind]) => kind === 'blood')));
     assert.equal(initialSnapshot.entries.filter(([kind]) => kind === 'tileFaceSelf').length, 53);
+    assert.deepEqual(Object.values(initialSnapshot.entries.find(([kind]) => kind === 'blood')[2].players).map(p => p.beans), initialPoints);
 
     // A table viewer credential cannot join an AI seat or submit an action.
     const bad = await connect(control.wsUrlForGame(created.gameId)); clients.push(bad.socket);
@@ -148,6 +156,7 @@ test('Cloudflare service + local Harness transports, isolation and persisted rec
     const restarted = createServiceControl({ url: origin });
     const restored = await restarted.resumeTable({ gameId: created.gameId, ownerApiToken: token });
     assert.equal(restored.gameId, created.gameId);
+    assert.deepEqual(restored.seats.map(s => s.initialPoints), initialPoints);
     const seat = await connect(restarted.wsUrlForGame(created.gameId)); clients.push(seat.socket);
     seat.send({ type: 'DSH_SEAT_JOIN', gameId: created.gameId, seat: 1, seatCredential: restored.seats[1].seatCredential });
     await until(() => seat.messages.find(m => m.type === 'DSH_SEAT_JOINED'));

@@ -27,21 +27,26 @@ export function practiceCheckpoint(saved: Checkpoint, metadata: TableMetadata, e
   const branch = structuredClone(saved);
   branch.metadata = {...metadata,mode:'practice',source:{gameId:source.metadata.gameId,eventIndex},joined:[]};
   branch.windows = {}; branch.receipts = [];
+  const initialPointsBySeat = Object.fromEntries(metadata.seats.map(seat => [seat.seat, seat.initialPoints ?? 0]));
   for (const [kind,,value] of branch.entries) {
     if (!value) continue;
-    if (kind === 'seats') value.startBeans = 0;
+    if (kind === 'seats') value.startBeans = initialPointsBySeat[value.seat];
     if (kind === 'match') {
       value.seatActors = Object.fromEntries(metadata.seats.map(s=>[s.seat,{...s,kind:`${s.kind}-pending`}]));
       value.friendConfig = {waitMode:'noTimeout',timeoutMs:null};
     }
     if (kind !== 'blood' && kind !== 'gb') continue;
     value.ledger = []; delete value.endSummary; value.settlingSince = null;
+    if (kind === 'blood') {
+      value.initialBeans = initialPointsBySeat[0];
+      value.initialBeansBySeat = { ...initialPointsBySeat };
+    } else value.initialPointsBySeat = { ...initialPointsBySeat };
     if (value.turnSince !== undefined) value.turnSince = now;
     if (value.dingqueSince !== undefined) value.dingqueSince = now;
     if (value.swap3?.animatingSince) value.swap3.animatingSince = now;
-    for (const player of Object.values(value.players) as any[]) {
-      if (kind === 'blood') {player.beans = 0; player.kongGain = 0;}
-      else {player.points = 0; player.ruleScore = 0;}
+    for (const [seat, player] of Object.entries(value.players) as [string, any][]) {
+      if (kind === 'blood') {player.beans = initialPointsBySeat[Number(seat)]; player.kongGain = 0;}
+      else {player.points = initialPointsBySeat[Number(seat)]; player.ruleScore = 0;}
     }
   }
   // Secret tile order and outstanding simultaneous responses stay server-side.

@@ -18,13 +18,14 @@ test('control uses a configurable origin and only sends game metadata and seat c
     return Response.json({ ok: true, gameId, seats: [] });
   } });
   await control.createTable({ ownerApiToken: 'owner-token', tableName: 'test', timeoutSeconds: 38, seats: [
-    { seat: 0, kind: 'ai', provider: 'local-provider', model: 'test', modelLabel: 'Test', apiKey: 'must-stay-local' },
-    { seat: 1, kind: 'human', owner: true },
+    { seat: 0, kind: 'ai', provider: 'local-provider', model: 'test', modelLabel: 'Test', initialPoints: 50000, apiKey: 'must-stay-local' },
+    { seat: 1, kind: 'human', owner: true, initialPoints: 0 },
   ] });
   assert.equal(calls[0].url, `https://self-host.example/v1/tables/${gameId}`);
   assert.equal(calls[0].redirect, 'error');
   assert.equal(calls[0].headers.Authorization, 'Bearer owner-token');
   assert.doesNotMatch(calls[0].body, /apiKey|provider|must-stay-local|owner-token/);
+  assert.deepEqual(JSON.parse(calls[0].body).seats.map(s => s.initialPoints), [50000, 0]);
   assert.equal(control.wsUrlForGame(gameId), `wss://self-host.example/v1/tables/${gameId}/ws`);
   await control.resumeTable({ gameId, ownerApiToken: 'owner-token' });
   assert.equal(calls[1].method, 'GET');

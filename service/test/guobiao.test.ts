@@ -8,7 +8,7 @@ import { GUOBIAO_OFFICIAL_FAN_DEFINITIONS } from '../src/engine/core/guobiao-fan
 const now=1800000000000;
 const owner={v:1 as const,kind:'owner' as const,tenant:'test',owner:'alice',exp:now+3600000};
 function table(humans=0) {
- const core=new TableCore(normalizeTable({ruleset:'guobiao',seats:[0,1,2,3].map(seat=>seat<humans?{seat,kind:'human',owner:seat===0}:{seat,kind:'ai',modelId:'test'})},owner,crypto.randomUUID(),now));
+ const core=new TableCore(normalizeTable({ruleset:'guobiao',seats:[0,1,2,3].map(seat=>seat<humans?{seat,kind:'human',owner:seat===0}:{seat,kind:'ai',modelId:'test'}).map(s=>({...s,...(humans===4?{initialPoints:[0,25000,50000,1000000][s.seat]}:{})}))},owner,crypto.randomUUID(),now));
  for(let seat=0;seat<4;seat++)core.join(seat,now);return core;
 }
 test('standard MCR uses 81 official patterns and excludes prototype supplemental scores',()=>{
@@ -43,5 +43,11 @@ for(let humans=0;humans<=4;humans++)test(`complete independent guobiao with ${hu
   else core.submit(seat,{actionId:crypto.randomUUID(),action:{kind:'aiDecision',decisionId:decision.decisionId,legalActionId:id}},++time);
   moves++;
  }
- assert.equal(core.state.phase,'done');assert.ok(moves>10);assert.equal(Object.values(core.state.players as Record<number,{points:number}>).reduce((s,p)=>s+p.points,0),0);
+ assert.equal(core.state.phase,'done');assert.ok(moves>10);
+ const expected=core.metadata.seats.map(s=>s.initialPoints!);
+ const initialTotal=expected.reduce((sum,points)=>sum+points,0);
+ for(const entry of core.state.ledger)for(const transfer of entry.transfers){expected[transfer.fromSeat]-=transfer.points;expected[transfer.toSeat]+=transfer.points;}
+ assert.deepEqual([0,1,2,3].map(s=>core.state.players[s].points),expected);
+ assert.deepEqual(core.state.endSummary.pointsDeltaBySeat,Object.fromEntries(core.metadata.seats.map(s=>[s.seat,expected[s.seat]-s.initialPoints!])));
+ assert.equal(Object.values(core.state.players as Record<number,{points:number}>).reduce((s,p)=>s+p.points,0),initialTotal);
 });
