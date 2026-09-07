@@ -540,7 +540,7 @@ test("the setup panel covers seat, model, timeout, empty, and spectator states",
   const pointInputs = findAllElements(tree, node => node.type === "input" && node.props["aria-label"]?.endsWith("家初始积分"));
   assert.equal(pointInputs.length, 4);
   for (const input of pointInputs) {
-    assert.equal(input.props.value, "10000");
+    assert.equal(input.props.value, "4800");
     assert.equal(input.props.min, 0);
     assert.equal(input.props.max, 1000000);
     assert.equal(input.props.required, true);
@@ -1078,7 +1078,7 @@ test("setup serializes individual initial points and rejects empty, fractional o
   const { initialDraft, serializeDraft } = vm.runInNewContext(`(() => { ${source.slice(start, end)}; return { initialDraft, serializeDraft }; })()`);
   const draft = initialDraft();
   draft.seats.forEach(seat => { seat.provider = "test"; seat.model = "test"; });
-  assert.deepEqual(Array.from(serializeDraft(draft).seats, s => s.initialPoints), [10000, 10000, 10000, 10000]);
+  assert.deepEqual(Array.from(serializeDraft(draft).seats, s => s.initialPoints), [4800, 4800, 4800, 4800]);
   [0, 25000, 50000, 1000000].forEach((points, seat) => { draft.seats[seat].initialPoints = String(points); });
   assert.deepEqual(Array.from(serializeDraft(draft).seats, s => s.initialPoints), [0, 25000, 50000, 1000000]);
   for (const value of ["", " ", "-1", "1.5", "1000001", "Infinity", "abc"]) {

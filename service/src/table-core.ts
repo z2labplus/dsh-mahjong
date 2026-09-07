@@ -10,7 +10,7 @@ import { BloodTop1ActionPicker } from './engine/blood-top1-action-picker';
 import type { Entry } from './engine/protocol';
 import type { ReplayEvent } from './engine/replay-store';
 
-export const DEFAULT_INITIAL_POINTS = 10_000;
+export const DEFAULT_INITIAL_POINTS = 4_800;
 export const MAX_INITIAL_POINTS = 1_000_000;
 export type Seat = { seat: number; kind: 'ai' | 'human'; owner?: boolean; modelId?: string; modelLabel?: string; initialPoints?: number };
 export type TableMetadata = {

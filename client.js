@@ -1074,10 +1074,10 @@ window.__ModuleLoader__.load({
         autoBuhua: true,
         timeoutSeconds: "38",
         seats: [
-          { seat: 0, kind: "human", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
-          { seat: 1, kind: "ai", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
-          { seat: 2, kind: "ai", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
-          { seat: 3, kind: "ai", initialPoints: "10000", provider: "", model: "", modelLabel: "" },
+          { seat: 0, kind: "human", initialPoints: "4800", provider: "", model: "", modelLabel: "" },
+          { seat: 1, kind: "ai", initialPoints: "4800", provider: "", model: "", modelLabel: "" },
+          { seat: 2, kind: "ai", initialPoints: "4800", provider: "", model: "", modelLabel: "" },
+          { seat: 3, kind: "ai", initialPoints: "4800", provider: "", model: "", modelLabel: "" },
         ],
       };
     }

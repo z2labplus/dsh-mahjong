@@ -118,7 +118,7 @@ function tableResponse(ownerMode = "player") {
     aiDecisionTimeoutMs: 38_000,
     ...(allAi ? { spectatorEmbedTicket: "embed-ticket" } : {}),
     seats: allAi
-      ? [0, 1, 2, 3].map((seat) => ({ seat, kind: "ai", initialPoints: 10000, seatCredential: `ai-${seat}` }))
+      ? [0, 1, 2, 3].map((seat) => ({ seat, kind: "ai", initialPoints: 4800, seatCredential: `ai-${seat}` }))
       : [
           { seat: 0, kind: "human", owner: true, humanInviteTicket: "human-owner-ticket" },
           { seat: 1, kind: "ai", seatCredential: "ai-1" },
@@ -129,7 +129,7 @@ function tableResponse(ownerMode = "player") {
             humanInviteTicket: "human-invite",
             credentialExpiresAtMs: 123_000,
           },
-        ].map(seat => ({ ...seat, initialPoints: 10000 })),
+        ].map(seat => ({ ...seat, initialPoints: 4800 })),
   };
 }
 
@@ -256,7 +256,7 @@ test("starts a mixed table, locks its lineup, persists only public data, and ins
   ]);
 
   const persisted = store.get("visible-1");
-  assert.deepEqual(persisted.game.seats.map(s => s.initialPoints), [10000, 10000, 10000, 10000]);
+  assert.deepEqual(persisted.game.seats.map(s => s.initialPoints), [4800, 4800, 4800, 4800]);
   const serialized = JSON.stringify(persisted);
   assert.equal(serialized.includes("ai-1"), false);
   assert.equal(serialized.includes("human-invite"), false);
