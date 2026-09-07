@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "sourceRepository": "mjai",
+  "sourceRevision": "c994064ecd44b1b005c6f65e47309ec75bbc4d6f",
+  "workingTree": true,
+  "license": "MIT (code only; see licenses/mjai-COPYING)",
+  "files": [
+    {
+      "source": "server/blood-engine.ts",
+      "target": "src/engine/blood-engine.ts",
+      "sourceSha256": "f5de69eba9b175d5cbaa598dc17e1c1924d6eba47607bf0875f5853fc88aa8ac",
+      "extractedSha256": "56a1a539eb15e91ae21c4653dd3b73e8c5a4c5b7f7059115ddafceaadbfcaf88",
+      "adaptation": "Authoritative mode is unconditional in the dedicated service. Runtime checkpoint methods added separately.",
+      "vendoredSha256": "825c5d5310bdced9e3426fb8150acf84da37a5a43fb94dbf4e66ff21edf2f9a1"
+    },
+    {
+      "source": "server/blood-calc-engine.ts",
+      "target": "src/engine/blood-calc-engine.ts",
+      "sourceSha256": "88bdf418fbbd1d9a68d0d757b1ff9f00e284379c0ec067ab77c3f28cc7bbe766",
+      "extractedSha256": "88bdf418fbbd1d9a68d0d757b1ff9f00e284379c0ec067ab77c3f28cc7bbe766",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "88bdf418fbbd1d9a68d0d757b1ff9f00e284379c0ec067ab77c3f28cc7bbe766"
+    },
+    {
+      "source": "server/blood-ai-decision-envelope.ts",
+      "target": "src/engine/blood-ai-decision-envelope.ts",
+      "sourceSha256": "4639a0e2d29f3a1443e52e34f637d0b705577499519d20fc6fa204ee86141134",
+      "extractedSha256": "4639a0e2d29f3a1443e52e34f637d0b705577499519d20fc6fa204ee86141134",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "4639a0e2d29f3a1443e52e34f637d0b705577499519d20fc6fa204ee86141134"
+    },
+    {
+      "source": "server/protocol.ts",
+      "target": "src/engine/protocol.ts",
+      "sourceSha256": "812042efdf4678e5024640fd83fc96720c30af172b9f6f6d274b8186805bdefd",
+      "extractedSha256": "812042efdf4678e5024640fd83fc96720c30af172b9f6f6d274b8186805bdefd",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "812042efdf4678e5024640fd83fc96720c30af172b9f6f6d274b8186805bdefd"
+    },
+    {
+      "source": "server/blood-ai.ts",
+      "target": "src/engine/blood-ai.ts",
+      "sourceSha256": "cbee09a2d1bda59a3c446462d4d93f08e0583134dfa5bc3141b9ad8cd383f710",
+      "extractedSha256": "6f75eed6064fdf59a1030f740e2d09fa5d17bdf1b08cf2842a7527d5c89fcce8",
+      "adaptation": "Extract only the transitive declarations for legal actions and decision identity; remove prompt/filesystem/account integrations.",
+      "vendoredSha256": "6f75eed6064fdf59a1030f740e2d09fa5d17bdf1b08cf2842a7527d5c89fcce8"
+    },
+    {
+      "source": "server/blood-top1-action-picker.ts",
+      "target": "src/engine/blood-top1-action-picker.ts",
+      "sourceSha256": "88fa7990810ec429a155ee6bb1e131d6d6d2b6aff069c35eec9e5880411e76a1",
+      "extractedSha256": "88fa7990810ec429a155ee6bb1e131d6d6d2b6aff069c35eec9e5880411e76a1",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "88fa7990810ec429a155ee6bb1e131d6d6d2b6aff069c35eec9e5880411e76a1"
+    },
+    {
+      "source": "server/core/blood-types.ts",
+      "target": "src/engine/core/blood-types.ts",
+      "sourceSha256": "5bbc78d51c63159ea6972dac37744851e7ff275dfc3ca613941e197f693b27df",
+      "extractedSha256": "5bbc78d51c63159ea6972dac37744851e7ff275dfc3ca613941e197f693b27df",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "5bbc78d51c63159ea6972dac37744851e7ff275dfc3ca613941e197f693b27df"
+    },
+    {
+      "source": "server/core/blood-calc-notation.ts",
+      "target": "src/engine/core/blood-calc-notation.ts",
+      "sourceSha256": "f13efdd5ea4cc30f616d9cb78cb95e94d46e885d471c9328a711a9c1c4a7278f",
+      "extractedSha256": "f13efdd5ea4cc30f616d9cb78cb95e94d46e885d471c9328a711a9c1c4a7278f",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "f13efdd5ea4cc30f616d9cb78cb95e94d46e885d471c9328a711a9c1c4a7278f"
+    },
+    {
+      "source": "server/core/blood-tiles.ts",
+      "target": "src/engine/core/blood-tiles.ts",
+      "sourceSha256": "a8706f6d1d952d27e6393f4f600ec2cbadda1f2517eb86d2a035ed795d597049",
+      "extractedSha256": "a8706f6d1d952d27e6393f4f600ec2cbadda1f2517eb86d2a035ed795d597049",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "a8706f6d1d952d27e6393f4f600ec2cbadda1f2517eb86d2a035ed795d597049"
+    },
+    {
+      "source": "server/core/blood-split-engine.ts",
+      "target": "src/engine/core/blood-split-engine.ts",
+      "sourceSha256": "b21a55ab93aeb742b97d8c473ef5e851a7bd6310987d1bb2ec4b0c31bbc7608f",
+      "extractedSha256": "b21a55ab93aeb742b97d8c473ef5e851a7bd6310987d1bb2ec4b0c31bbc7608f",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "b21a55ab93aeb742b97d8c473ef5e851a7bd6310987d1bb2ec4b0c31bbc7608f"
+    },
+    {
+      "source": "server/core/ev-engine.ts",
+      "target": "src/engine/core/ev-engine.ts",
+      "sourceSha256": "04c41a89599226023fbf87caf97fbafe487a05edbacff03e1b0841491143a575",
+      "extractedSha256": "04c41a89599226023fbf87caf97fbafe487a05edbacff03e1b0841491143a575",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "04c41a89599226023fbf87caf97fbafe487a05edbacff03e1b0841491143a575"
+    },
+    {
+      "source": "server/core/blood-split-top1.ts",
+      "target": "src/engine/core/blood-split-top1.ts",
+      "sourceSha256": "0e4c58fc074d39ee7b27ecae871d7e422cbda2b3963a0fa4a7052e35cf516e3c",
+      "extractedSha256": "0e4c58fc074d39ee7b27ecae871d7e422cbda2b3963a0fa4a7052e35cf516e3c",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "0e4c58fc074d39ee7b27ecae871d7e422cbda2b3963a0fa4a7052e35cf516e3c"
+    },
+    {
+      "source": "server/core/evplus-swap3-dingque.ts",
+      "target": "src/engine/core/evplus-swap3-dingque.ts",
+      "sourceSha256": "55ca5727aed0afefa5040733db4eb9d67a4b511ba589495f5550074fef4b0532",
+      "extractedSha256": "55ca5727aed0afefa5040733db4eb9d67a4b511ba589495f5550074fef4b0532",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "55ca5727aed0afefa5040733db4eb9d67a4b511ba589495f5550074fef4b0532"
+    },
+    {
+      "source": "server/core/evplus-engine.ts",
+      "target": "src/engine/core/evplus-engine.ts",
+      "sourceSha256": "f34e4ad086d41fffd9862ddcde85eca6c0738f6c0d7978546cd41adbdd1ab3e9",
+      "extractedSha256": "f34e4ad086d41fffd9862ddcde85eca6c0738f6c0d7978546cd41adbdd1ab3e9",
+      "adaptation": "Unchanged source",
+      "vendoredSha256": "f34e4ad086d41fffd9862ddcde85eca6c0738f6c0d7978546cd41adbdd1ab3e9"
+    },
+    {
+      "source": "server/guobiao-engine.ts",
+      "target": "src/engine/guobiao-engine.ts",
+      "sourceSha256": "6863ec4a94b38b10a87524e25e6ec1bcfad67f7ffcde09b03fc7184d914f07ce",
+      "extractedSha256": "6863ec4a94b38b10a87524e25e6ec1bcfad67f7ffcde09b03fc7184d914f07ce",
+      "vendoredSha256": "522230b194f85f68a5b427576d25d29e2eff2c9ab70f2b8ba8f586680f26a020",
+      "adaptation": "Standard MCR only (supplemental patterns excluded before scoring/exclusions); unconditional authority; checkpoint/private-view adapter."
+    },
+    {
+      "source": "server/core/guobiao-tiles.ts",
+      "target": "src/engine/core/guobiao-tiles.ts",
+      "sourceSha256": "e55cdf5691a852a227e1188f70fc5a6e9323a3a70c1eaaa54f32cd53768ea707",
+      "extractedSha256": "e55cdf5691a852a227e1188f70fc5a6e9323a3a70c1eaaa54f32cd53768ea707",
+      "vendoredSha256": "e55cdf5691a852a227e1188f70fc5a6e9323a3a70c1eaaa54f32cd53768ea707",
+      "adaptation": "Unchanged source"
+    },
+    {
+      "source": "server/core/guobiao-fan.ts",
+      "target": "src/engine/core/guobiao-fan.ts",
+      "sourceSha256": "1bf5b0b5a03dbd322a52938739246f9762c7853bc64c9b19997d97dc6ab78c4e",
+      "extractedSha256": "1bf5b0b5a03dbd322a52938739246f9762c7853bc64c9b19997d97dc6ab78c4e",
+      "vendoredSha256": "7d1f36bf266f09c980912d4c61c460e0d5893f5327d04e357128b64eed7fbbb0",
+      "adaptation": "Standard MCR only (supplemental patterns excluded before scoring/exclusions); unconditional authority; checkpoint/private-view adapter."
+    },
+    {
+      "source": "server/core/guobiao-fan-definitions.ts",
+      "target": "src/engine/core/guobiao-fan-definitions.ts",
+      "sourceSha256": "40eb05d8760bd87bd686130500e355a955457e0f93e33e77d570f23b41cd482e",
+      "extractedSha256": "40eb05d8760bd87bd686130500e355a955457e0f93e33e77d570f23b41cd482e",
+      "vendoredSha256": "40eb05d8760bd87bd686130500e355a955457e0f93e33e77d570f23b41cd482e",
+      "adaptation": "Unchanged source"
+    },
+    {
+      "source": "server/core/fixtures/guobiao-fan-golden-cases.ts",
+      "target": "test/fixtures/guobiao-fan-golden-cases.ts",
+      "sourceSha256": "38e6e701ef4e6363a404524a87c08e04414c74cbff6a85faab2d2050da99d2d7",
+      "vendoredSha256": "c0d99c9df5cb6acda50a4b350b23ef3d07e0b12fa99fabbbad5da7a237c9ebaa",
+      "adaptation": "Test fixture imports point to independent engine; prototype supplemental cases are explicitly separated from standard MCR assertions."
+    }
+  ]
+}

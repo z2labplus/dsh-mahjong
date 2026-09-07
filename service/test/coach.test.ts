@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createCoachCheckpoint} from '../src/coach';
+import {COACH_LESSONS,coachPassed} from '../src/coach-lessons';
+import {TableCore} from '../src/table-core';
+import {BloodEngine} from '../src/engine/blood-engine';
+const now=1800000000000,owner={v:1 as const,kind:'owner' as const,tenant:'test',owner:'student',exp:now+60000};
+for(const lesson of COACH_LESSONS)test(`coach ${lesson.id}: real deck, legal action, independent progress and timeout`,()=>{
+ const saved=createCoachCheckpoint(lesson.id,owner,crypto.randomUUID(),now);
+ const keys=saved.engine.secret.tileKeyById.map(row=>row[1]);
+ assert.equal(keys.length,108);for(let k=0;k<27;k++)assert.equal(keys.filter(value=>value===k).length,4);
+ let core=new TableCore(saved);core.join(0,now);
+ for(const seat of [1,2,3])assert.equal(core.decision(seat),null);
+ const catalog=core.catalog(0);assert.ok(catalog);
+ const engine=core.engine as BloodEngine;
+ const target=[...catalog.rawByActionId].find(([,raw])=>coachPassed(lesson.id,raw,id=>engine.tileKeyForId(id)));
+ assert.ok(target,`${lesson.id} must have a legal teaching answer`);
+ const decision=core.decision(0)!;
+ core.submitHuman(0,{actionId:crypto.randomUUID(),decisionId:decision.decisionId,action:target[1]},now+1);
+ assert.equal(core.metadata.coach?.status,'passed');assert.deepEqual(core.windows,{});
+ assert.equal(new TableCore(core.checkpoint()).metadata.coach?.status,'passed');
+ const timeout=new TableCore(saved);timeout.join(0,now);timeout.alarm(now+120000);
+ assert.equal(timeout.metadata.coach?.status,'retry');assert.equal(timeout.metadata.coach?.score,0);
+ assert.equal(saved.metadata.coach?.status,'active');
+});

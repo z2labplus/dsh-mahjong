@@ -8,3 +8,8 @@ build/
 .env
 .env.*
 !.env.example
+.local/
+**/.dev.vars*
+!service/.dev.vars.example
+**/.wrangler/
+.hand-build/

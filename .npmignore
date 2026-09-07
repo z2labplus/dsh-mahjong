@@ -1,0 +1,10 @@
+**/node_modules/
+**/.wrangler/
+**/.parcel-cache/
+**/.dev.vars*
+.local/
+.env*
+*.log
+service/dist/
+frontend/dist/
+**/.hand-build/

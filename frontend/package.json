@@ -1,0 +1,24 @@
+{
+  "name": "dsh-mahjong-hand",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "parcel build hand/index.html --dist-dir .hand-build --public-url / --no-source-maps --no-autoinstall",
+    "dev": "parcel hand/index.html --port 8788 --no-autoinstall",
+    "postbuild": "node scripts/finish-build.mjs",
+    "check": "tsc --noEmit && node scripts/verify-source.mjs"
+  },
+  "dependencies": {
+    "three": "0.179.1",
+    "events": "3.3.0"
+  },
+  "devDependencies": {
+    "parcel": "2.15.4",
+    "@parcel/packager-raw-url": "2.15.4",
+    "@parcel/transformer-image": "2.15.4",
+    "@types/three": "0.179.0",
+    "@types/events": "3.0.3",
+    "@types/jquery": "3.5.33",
+    "typescript": "5.9.3"
+  }
+}

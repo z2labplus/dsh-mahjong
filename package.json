@@ -7,35 +7,85 @@
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
-    "./package.json": "./package.json"
+    "./game-controller": "./lib/game-controller.js",
+    "./seat-agent-manager": "./lib/seat-agent-manager.js",
+    "./package.json": "./package.json",
+    "./service-control": "./lib/service-control.js",
+    "./seat-runtime": "./lib/seat-runtime.js",
+    "./service-spectator": "./lib/service-spectator.js"
   },
   "files": [
     "index.js",
     "client.js",
+    "lib",
+    "scripts",
     "cordis.patch.yml",
     "README.md",
-    "docs"
+    "docs",
+    "service",
+    "cordis.cloudflare.patch.example.yml",
+    "frontend",
+    "启动麻将.command",
+    "停止麻将.command"
   ],
   "scripts": {
-    "check": "node --check index.js && node --check client.js && node scripts/check-package.mjs",
-    "test": "node --test"
+    "check": "node scripts/check-syntax.mjs && node scripts/check-package.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check:service": "npm --prefix service run check",
+    "test:service": "npm --prefix service test",
+    "build:service": "npm --prefix service run build",
+    "check:frontend": "npm --prefix frontend run check",
+    "setup": "node scripts/local-test-stack.mjs install",
+    "start": "node scripts/local-test-stack.mjs start",
+    "stop": "node scripts/local-test-stack.mjs stop",
+    "status": "node scripts/local-test-stack.mjs status"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
+  },
+  "dependencies": {
+    "proxy-agent": "^6.5.0",
+    "undici": "^7.29.1",
+    "ws": "^8.18.3",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-agent": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-agent-loop": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-connection": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-runtime": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-conversation": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-layout": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-sidebar": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-workspace": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-credentials": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-host-webserver": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-llm": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-session": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-session-persistence": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-settings": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-storage": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-storage-domain": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-system-prompt": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.8"
   },
   "dsh": {
     "id": "dsh-mahjong",
     "name": "AI 麻将桌",
     "version": "0.0.1",
     "repo": "z2labplus/dsh-mahjong",
-    "permissions": "牌局展示, Harness 会话问答",
+    "permissions": "牌局展示, Harness 会话问答, 独立牌局服务, 独立 AI 座位会话",
     "client": {
       "platform": "web",
       "immediately": true,
       "inject": [
         "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-connection",
         "@deepseek-ai/dsh-client-ui-conversation",
-        "@deepseek-ai/dsh-client-ui-layout"
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-workspace"
       ]
     },
     "bundle": {

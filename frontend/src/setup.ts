@@ -1,0 +1,355 @@
+import { shuffle } from "./utils";
+import { Conditions, DealType, ThingType, GameType, Points, GAME_TYPES } from "./types";
+import { DEALS, DealPart, POINTS } from "./setup-deal";
+import { makeSlots } from "./setup-slots";
+import { Slot } from "./slot";
+import { Thing } from "./thing";
+import { GUOBIAO_DECK_SIZE, GUOBIAO_NON_FLOWER_TILE_COUNT, guobiaoTileTypeIndex } from "./guobiao-tiles";
+
+
+export class Setup {
+  slots: Map<string, Slot> = new Map();
+  slotNames: Array<string> = [];
+  things: Map<number, Thing> = new Map();
+  counters: Map<ThingType, number> = new Map();
+  start: Record<ThingType, number> = {
+    'TILE': 0,
+    'STICK': 1000,
+    'MARKER': 2000,
+  }
+  pushes: Array<[Slot, Slot]> = [];
+  conditions!: Conditions;
+
+  setup(conditions: Conditions): void {
+    this.conditions = conditions;
+
+    this.addSlots(conditions.gameType);
+    this.addTiles(conditions);
+    this.addSticks(conditions.gameType, conditions.points);
+    this.addMarker(conditions.gameType);
+    this.deal(0);
+  }
+
+  private wallSlots(): Array<Slot> {
+    return [...this.slots.values()].filter(
+      slot => slot.name.startsWith('wall'));
+  }
+
+  private addTiles(conditions: Conditions): void {
+    const wallSlots = this.wallSlots().map(slot => slot.name);
+    this.maybeShuffle(wallSlots, conditions);
+    let j = 0;
+    const tileCount = conditions.gameType === GameType.GUOBIAO ? GUOBIAO_DECK_SIZE : 136;
+    for (let i = 0; i < tileCount; i++) {
+      const tileIndex = this.tileIndex(i, conditions);
+      if (tileIndex !== null) {
+        this.addThing(ThingType.TILE, tileIndex, wallSlots[j++]);
+      }
+    }
+  }
+
+  private maybeShuffle<T>(array: Array<T>, conditions?: Conditions): void {
+    if ((conditions ?? this.conditions).dealType !== DealType.UNSHUFFLED) {
+      shuffle(array);
+    }
+  }
+
+  replace(conditions: Conditions, replacePoints: boolean): void {
+    // console.log('replace', conditions);
+
+    const whatReplace: Record<ThingType, boolean> = {
+      TILE: (
+        conditions.gameType !== this.conditions.gameType ||
+        conditions.back !== this.conditions.back ||
+        conditions.fives !== this.conditions.fives
+      ),
+      STICK: (
+        replacePoints ||
+        conditions.gameType !== this.conditions.gameType ||
+        conditions.points !== this.conditions.points
+      ),
+      MARKER: conditions.gameType !== this.conditions.gameType,
+    };
+
+    const map = new Map<number, string>();
+    for (const thing of [...this.things.values()]) {
+      thing.prepareMove();
+      if (whatReplace[thing.type]) {
+        this.things.delete(thing.index);
+      } else {
+        map.set(thing.index, thing.slot.name);
+      }
+    }
+    this.addSlots(conditions.gameType);
+    if (whatReplace.TILE) {
+      this.counters.set(ThingType.TILE, 0);
+      this.addTiles(conditions);
+    }
+    if (whatReplace.STICK) {
+      this.counters.set(ThingType.STICK, 0);
+      this.addSticks(conditions.gameType, conditions.points);
+    }
+    if (whatReplace.MARKER) {
+      this.counters.set(ThingType.MARKER, 0);
+      this.addMarker(conditions.gameType);
+    }
+
+    for (const thing of this.things.values()) {
+      if (!whatReplace[thing.type]) {
+        const slotName = map.get(thing.index);
+        if (slotName === undefined) {
+          throw `couldn't recover slot name for thing ${thing.index}`;
+        }
+        const slot = this.slots.get(slotName);
+        if (slot === undefined) {
+          throw `trying to move thing to slot ${slotName}, but it doesn't exist`;
+        }
+        thing.moveTo(slot, thing.rotationIndex);
+      }
+    }
+    this.conditions = conditions;
+  }
+
+  private tileIndex(i: number, conditions: Conditions): number | null {
+    if (conditions.gameType === GameType.GUOBIAO) {
+      const tileKey = i < 136
+        ? Math.floor(i / 4)
+        : GUOBIAO_NON_FLOWER_TILE_COUNT + (i - 136);
+      return guobiaoTileTypeIndex(tileKey, conditions.back);
+    }
+
+    let tileIndex = Math.floor(i / 4);
+
+    // 血战到底只使用万/筒/条 108 张，不启用红五（红五是日麻/立直语义）。
+    if (conditions.fives !== '000' && conditions.gameType !== GameType.BLOOD_BATTLE) {
+      if (tileIndex === 4 && i % 4 === 0) {
+        tileIndex = 34;
+      } else if (tileIndex === 13 &&
+          (i % 4 === 0 || (i % 4 === 1 && conditions.fives === '121'))) {
+        tileIndex = 35;
+      } else if (tileIndex === 22 && i % 4 === 0) {
+        tileIndex = 36;
+      }
+    }
+
+    if (conditions.gameType === GameType.BLOOD_BATTLE) {
+      // 仅保留序数牌 1-9（万/筒/条），去掉字牌
+      if (tileIndex >= 27) {
+        return null;
+      }
+    }
+
+    if (conditions.gameType === GameType.BAMBOO) {
+      if (!((18 <= tileIndex && tileIndex < 27) || tileIndex === 36)) {
+        return null;
+      }
+    }
+
+    if (conditions.gameType === GameType.THREE_PLAYER) {
+      if ((1 <= tileIndex && tileIndex < 8) || tileIndex === 34) {
+        return null;
+      }
+    }
+
+    tileIndex += 37 * conditions.back;
+    return tileIndex;
+  }
+
+  deal(seat: number): [number, number] {
+    const gameType = this.conditions.gameType;
+    const dealType = this.conditions.dealType;
+    // console.log('deal', gameType, dealType);
+
+    const dice: [number, number] = [
+      Math.floor(Math.random() * 6 + 1),
+      Math.floor(Math.random() * 6 + 1)
+    ];
+    const roll = dice[0] + dice[1];
+    // Debug
+    // const roll = (window.ROLL && window.ROLL < 12) ? window.ROLL + 1 : 2;
+    // window.ROLL = roll;
+
+    if (GAME_TYPES[gameType].seats.indexOf(seat) === -1) {
+      seat = 0;
+    }
+
+    const dealParts = DEALS[gameType][dealType]!;
+
+    const tiles = [...this.things.values()].filter(thing => thing.type === ThingType.TILE);
+    for (const thing of tiles) {
+      thing.prepareMove();
+    }
+
+    this.maybeShuffle(tiles);
+
+    for (const part of dealParts) {
+      this.dealPart(part, tiles, roll, seat);
+    }
+
+    if (tiles.length !== 0) {
+      throw `bad deal: ${tiles.length} remaining`;
+    }
+
+    return dice;
+  }
+
+  usesDice(): boolean {
+    const gameType = this.conditions.gameType;
+    const dealType = this.conditions.dealType;
+    const dealParts = DEALS[gameType][dealType]!;
+    for (const part of dealParts) {
+      if (part.roll) return true;
+    }
+    return false;
+  }
+
+  private dealPart(dealPart: DealPart, tiles: Array<Thing>, roll: number, seat: number): void {
+    if (dealPart.roll !== undefined && dealPart.roll !== roll) {
+      return;
+    }
+    if (dealPart.tiles !== undefined) {
+      const searched = [...dealPart.tiles];
+      this.maybeShuffle(searched);
+
+      for (let i = 0; i < searched.length; i++) {
+        // HACK: typeIndex includes back color
+        const idx = tiles.findIndex(tile =>
+          (tile.typeIndex === searched[i] || tile.typeIndex === searched[i] + 37));
+        if (idx === -1) {
+          throw `not found: ${searched[i]}`;
+        }
+        const targetIdx = tiles.length - i - 1;
+        const temp = tiles[targetIdx];
+        tiles[targetIdx] = tiles[idx];
+        tiles[idx] = temp;
+      }
+    }
+
+    for (const [slotName, slotSeat, n] of dealPart.ranges) {
+      if (tiles.length < n) {
+        throw `tile underflow at ${slotName}`;
+      }
+
+      const idx = this.slotNames.indexOf(slotName);
+      if (idx === -1) {
+        throw `slot not found: ${slotName}`;
+      }
+      const effectiveSeat = dealPart.absolute ? slotSeat : (slotSeat + seat) % 4;
+      for (let i = idx; i < idx + n; i++) {
+        const targetSlotName = this.slotNames[i] + '@' + effectiveSeat;
+        const slot = this.slots.get(targetSlotName);
+        if (slot === undefined) {
+          throw `slot not found: ${targetSlotName}`;
+        }
+        if (slot.thing !== null) {
+          throw `slot occupied: ${targetSlotName}`;
+        }
+
+        const thing = tiles.pop()!;
+        thing.moveTo(slot, dealPart.rotationIndex);
+      }
+    }
+  }
+
+  private addSticks(gameType: GameType, points: Points): void {
+    const seats = GAME_TYPES[gameType].seats;
+    const add = (index: number, n: number, slot: number): void => {
+      for (const seat of seats) {
+        for (let j = 0; j < n; j++) {
+          this.addThing(ThingType.STICK, index, `tray.${slot}.${j}@${seat}`);
+        }
+      }
+    };
+
+    // Debt
+    add(5, POINTS[points][0], 0);
+    // 10k
+    add(4, POINTS[points][1], 1);
+    // 5k
+    add(3, POINTS[points][2], 2);
+    // 1k
+    add(2, POINTS[points][3], 3);
+    // 500
+    add(1, POINTS[points][4], 4);
+    // 100
+    add(0, POINTS[points][5], 5);
+  }
+
+  private addMarker(gameType: GameType): void {
+    if (gameType === GameType.BLOOD_BATTLE) {
+      // 血战到底：四个方位都需要一个角标（用于显示定缺万/筒/条）。
+      for (let seat = 0; seat < 4; seat++) {
+        this.addThing(ThingType.MARKER, seat, `marker@${seat}`, 1);
+      }
+      return;
+    }
+    if (gameType === GameType.GUOBIAO) {
+      return;
+    }
+
+    // 其它玩法：保留原先的单个“东”角标（marker@0）。
+    this.addThing(ThingType.MARKER, 0, 'marker@0');
+  }
+
+  private addThing(
+    type: ThingType,
+    typeIndex: number,
+    slotName: string,
+    rotationIndex?: number
+  ): void {
+    if (this.slots.get(slotName) === undefined) {
+      throw `Unknown slot: ${slotName}`;
+    }
+
+    const counter = this.counters.get(type) ?? 0;
+    this.counters.set(type, counter + 1);
+    const thingIndex = this.start[type] + counter;
+    const slot = this.slots.get(slotName)!;
+
+    const thing = new Thing(thingIndex, type, typeIndex, slot);
+    this.things.set(thingIndex, thing);
+    if (rotationIndex !== undefined) {
+      thing.rotationIndex = rotationIndex;
+    }
+  }
+
+  private addSlots(gameType: GameType): void {
+    this.slots.clear();
+    this.slotNames.splice(0);
+    this.pushes.splice(0);
+
+    const slotNames: Set<string> = new Set();
+    for (const slot of makeSlots(gameType)) {
+      this.slots.set(slot.name, slot);
+      const shortName = slot.name.replace(/@.*/, '');
+      if (!slotNames.has(shortName)) {
+        slotNames.add(shortName);
+      }
+    }
+    this.slotNames.push(...slotNames.values());
+    Slot.setLinks(this.slots);
+
+    this.pushes.push(...Slot.computePushes([...this.slots.values()]));
+  }
+
+  getScores(): Array<number | null> {
+    const scores = new Array(4).fill(-20000);
+    scores.push((25000 + 20000) * 4); // remaining
+    const stickScores = [100, 500, 1000, 5000, 10000, 10000];
+
+    for (const slot of this.slots.values()) {
+      if (slot.group === 'tray' && slot.thing !== null) {
+        const score = stickScores[slot.thing.typeIndex];
+        scores[slot.seat!] += score;
+        scores[4] -= score;
+      }
+    }
+
+    const result = new Array(4).fill(null);
+    for (const seat of GAME_TYPES[this.conditions.gameType].seats) {
+      result[seat] = scores[seat];
+    }
+
+    return result;
+  }
+}

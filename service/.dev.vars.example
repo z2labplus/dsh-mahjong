@@ -1,0 +1,2 @@
+# Generate a unique secret of at least 32 characters for each deployment.
+SERVICE_SECRET=replace-with-a-random-secret-at-least-32-characters

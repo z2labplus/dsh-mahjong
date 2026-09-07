@@ -1,0 +1,669 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "c994064ecd44b1b005c6f65e47309ec75bbc4d6f",
+  "workingTree": true,
+  "scope": "Conservative static dependency inventory only; not a complete parity or license approval. No assets copied.",
+  "files": [
+    {
+      "source": "hand/index.html",
+      "sha256": "bb3f31c36ab1dfaa0fc6fb88a2beb5b4b358c87dea251a7b1058270a6480484c",
+      "bytes": 93026,
+      "category": "code"
+    },
+    {
+      "source": "img/Segment7Standard.otf",
+      "sha256": "f35b8ce74c9aedbd51e790b178c5dfbfe62068772db6e924a455247781cc7356",
+      "bytes": 10464,
+      "category": "asset",
+      "licenseStatus": "OFL per source README"
+    },
+    {
+      "source": "img/dice.auto.png",
+      "sha256": "4b43a8ce1d020020396f94e9f99207d1d42af0fc3d94f10a52a2aed7aacdbfcf",
+      "bytes": 2053,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/hand-ui-layout/bg.jpg",
+      "sha256": "0af40b7c2c485aa29968d167aa1b9781559fd2ffbdac0ff2c0bdf158d0ea2038",
+      "bytes": 44482,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/hand-ui-layout/stage_bg@1x.png",
+      "sha256": "773393cd70aa9f37954187240b97362c7389895fb17a79d4ca1b3c2c469bc352",
+      "bytes": 813382,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/hand-ui-layout/stage_bg@2x.png",
+      "sha256": "1370a78ed18b46c0c8acf070f2fb14e129f4fc28d7dde008e785c9692bbde016",
+      "bytes": 2699744,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/hand.svg",
+      "sha256": "27accfeffa00e99c3b081692428b79a2ae95782c4c67d5f8a8590543f89a91a9",
+      "bytes": 2877,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/icon-16.auto.png",
+      "sha256": "e5efe1b83cd9af8ae3bd355006124a841bc88b151493941c5ac372e1575b1a08",
+      "bytes": 359,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/icon-180.auto.png",
+      "sha256": "626068c8e6bbbf4b363c8917058c3c5c4f32e617f953152557725c43a4ca1d59",
+      "bytes": 2230,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/icon-32.auto.png",
+      "sha256": "83aa5569be15d3f9972ad14165b58968f911b5413cf26fe30d07239fa81d5d74",
+      "bytes": 573,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/icon-96.auto.png",
+      "sha256": "40e830089134bc1395fe727ce6fc73032629784915bf35c73bacc791ca963baf",
+      "bytes": 1231,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/dingquezhong.svg",
+      "sha256": "c33402a165ac165b9de4d2aa2a8a18252dffbb1cfd1efab3bb455702e3e69f5d",
+      "bytes": 4039,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/gang.svg",
+      "sha256": "c56e3a8ac2816cbee5591569f9163c6fe6532e5128ca72bacdc2525efc205dc1",
+      "bytes": 1229,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/guo.svg",
+      "sha256": "98dc413927a1ce6b7e64c75a3d35b8586ac7d50bdb4ccf90ef9dc52175be1a89",
+      "bytes": 1667,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/hu.svg",
+      "sha256": "4fe51c434fe2cd5b438ef4e77c8e40adfc0f14e9cefa772bb4f6dfc38eb2ac70",
+      "bytes": 16901,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/peng.svg",
+      "sha256": "118000cd6eaef3754aeabb9d39bc3d8c175a95717546c527e5174a22e4a4ce76",
+      "bytes": 1945,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/queding.svg",
+      "sha256": "c7edebb4a30e76cbf2d4402d96982d88de3c2b83b40dd5f24d6f1e504b3cb019",
+      "bytes": 2759,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/tiao.svg",
+      "sha256": "235bffe7862546ed2c482c196c161d7395af3c26492404cc2d9b4ded60422990",
+      "bytes": 1651,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/tong.svg",
+      "sha256": "75583fa3303d593c40906e04253c43ccfd7783b9aedb09a01d0313221d2f1408",
+      "bytes": 2212,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/svg/wan.svg",
+      "sha256": "5f7f813b064e18d68a125ea0c35093c3494e1e91c7d923c7d4f0c7fbea31ae18",
+      "bytes": 1024,
+      "category": "asset",
+      "licenseStatus": "needs-source-verification"
+    },
+    {
+      "source": "img/table.jpg",
+      "sha256": "3028ff6dd0c1c5f16e99e22fb96790f0148c4465368c77c776529973f8874e0f",
+      "bytes": 108953,
+      "category": "asset",
+      "licenseStatus": "CC0 per source README"
+    },
+    {
+      "source": "server/blood-calc-engine.ts",
+      "sha256": "88bdf418fbbd1d9a68d0d757b1ff9f00e284379c0ec067ab77c3f28cc7bbe766",
+      "bytes": 18234,
+      "category": "code"
+    },
+    {
+      "source": "server/core/blood-calc-notation.ts",
+      "sha256": "f13efdd5ea4cc30f616d9cb78cb95e94d46e885d471c9328a711a9c1c4a7278f",
+      "bytes": 6093,
+      "category": "code"
+    },
+    {
+      "source": "server/core/blood-split-engine.ts",
+      "sha256": "b21a55ab93aeb742b97d8c473ef5e851a7bd6310987d1bb2ec4b0c31bbc7608f",
+      "bytes": 27548,
+      "category": "code"
+    },
+    {
+      "source": "server/core/blood-split-top1.ts",
+      "sha256": "0e4c58fc074d39ee7b27ecae871d7e422cbda2b3963a0fa4a7052e35cf516e3c",
+      "bytes": 50348,
+      "category": "code"
+    },
+    {
+      "source": "server/core/blood-tiles.ts",
+      "sha256": "a8706f6d1d952d27e6393f4f600ec2cbadda1f2517eb86d2a035ed795d597049",
+      "bytes": 1073,
+      "category": "code"
+    },
+    {
+      "source": "server/core/blood-types.ts",
+      "sha256": "5bbc78d51c63159ea6972dac37744851e7ff275dfc3ca613941e197f693b27df",
+      "bytes": 94,
+      "category": "code"
+    },
+    {
+      "source": "server/core/ev-engine.ts",
+      "sha256": "04c41a89599226023fbf87caf97fbafe487a05edbacff03e1b0841491143a575",
+      "bytes": 18035,
+      "category": "code"
+    },
+    {
+      "source": "server/core/evplus-engine.ts",
+      "sha256": "f34e4ad086d41fffd9862ddcde85eca6c0738f6c0d7978546cd41adbdd1ab3e9",
+      "bytes": 22377,
+      "category": "code"
+    },
+    {
+      "source": "server/core/evplus-swap3-dingque.ts",
+      "sha256": "55ca5727aed0afefa5040733db4eb9d67a4b511ba589495f5550074fef4b0532",
+      "bytes": 26966,
+      "category": "code"
+    },
+    {
+      "source": "server/core/guobiao-fan-definitions.ts",
+      "sha256": "40eb05d8760bd87bd686130500e355a955457e0f93e33e77d570f23b41cd482e",
+      "bytes": 13138,
+      "category": "code"
+    },
+    {
+      "source": "server/core/guobiao-fan.ts",
+      "sha256": "1bf5b0b5a03dbd322a52938739246f9762c7853bc64c9b19997d97dc6ab78c4e",
+      "bytes": 79293,
+      "category": "code"
+    },
+    {
+      "source": "server/core/guobiao-tiles.ts",
+      "sha256": "e55cdf5691a852a227e1188f70fc5a6e9323a3a70c1eaaa54f32cd53768ea707",
+      "bytes": 6967,
+      "category": "code"
+    },
+    {
+      "source": "server/core/guobiao-win-context.ts",
+      "sha256": "15700e8ef7365795b29d1d3724d95e8ecd0ba5c908236309bea838653a96bc2e",
+      "bytes": 734,
+      "category": "code"
+    },
+    {
+      "source": "server/protocol.ts",
+      "sha256": "812042efdf4678e5024640fd83fc96720c30af172b9f6f6d274b8186805bdefd",
+      "bytes": 11396,
+      "category": "code"
+    },
+    {
+      "source": "server/reco/contract-validate.ts",
+      "sha256": "aa7ec6b9452837b4c2dd5f96f0f7fcd44f60252a04a152bef7e496af38ffa23f",
+      "bytes": 39207,
+      "category": "code"
+    },
+    {
+      "source": "server/reco/contract.ts",
+      "sha256": "38f2684347cab51e648732e5df4cd592887ea798eac60cd77fec8aac2742eed9",
+      "bytes": 4924,
+      "category": "code"
+    },
+    {
+      "source": "sound/discard.wav",
+      "sha256": "ce97b3a0bd775841c895150b8d563ca05ecf9d56211565c54a5497f04ce83545",
+      "bytes": 18700,
+      "category": "asset",
+      "licenseStatus": "CC0 per source README; verify modified/additional files"
+    },
+    {
+      "source": "sound/stick.wav",
+      "sha256": "89408553ee19867224ffda2706ac0751e25628d58f26bdce037757d5e610aff0",
+      "bytes": 43286,
+      "category": "asset",
+      "licenseStatus": "CC0 per source README; verify modified/additional files"
+    },
+    {
+      "source": "src/ai-settings-api.ts",
+      "sha256": "775303fedb6ef9a0455826ee5b52d40cbb8b22c659618d6f676736516407a044",
+      "bytes": 8849,
+      "category": "code"
+    },
+    {
+      "source": "src/asset-loader.ts",
+      "sha256": "7205ec6a1690126318661cded152d0d8246d68b836448948bd91ab98d373baac",
+      "bytes": 12481,
+      "category": "code"
+    },
+    {
+      "source": "src/base-client.ts",
+      "sha256": "45f8d049a474f8465d414e4b9131151f14ebf14dc6904a6971027260e2456bb8",
+      "bytes": 22880,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-ai-overlay.ts",
+      "sha256": "218178b097b23480c8315cc89b008024f51fd9d877dcd4473eb67bd0d52380d2",
+      "bytes": 71342,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-calc-engine.ts",
+      "sha256": "91dffb729a286942df55c2d4e6a4ff37392a77ac3d9c278af2ca97733cbd3137",
+      "bytes": 18296,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-calc-notation.ts",
+      "sha256": "806e3e4ab1d49988bb2a304284a2644f6be91fd99625f95d62d1d54d823dccaf",
+      "bytes": 53,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-controller.ts",
+      "sha256": "1e0cfb9027f9e30a7e5d0c14211094e84d2661dcd43a5a458a7c795c64b17f79",
+      "bytes": 92553,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-fan-examples.ts",
+      "sha256": "86dd9ba5512c87e692eb99566ac37657184ef21df1d22215609c11870519bc24",
+      "bytes": 6548,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-hu-overlay.ts",
+      "sha256": "14b7ff37c21de0443ea5547c17c0db043df078f28af482a17339d32cfd42b968",
+      "bytes": 9481,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-split-engine.ts",
+      "sha256": "d78e4b69126b95251fb817fd7c8d0a0a8febec85be1f852174471ac091149240",
+      "bytes": 52,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-split-overlay.ts",
+      "sha256": "36cac4d5377ccbd77c19dd78e9bbce499d7addaebb1d90506537eb3ec34d352c",
+      "bytes": 366528,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-split-top1.ts",
+      "sha256": "917257d722d54892a348d0aeabbf5373a13908289f07eb958d8f6c00bed3fffd",
+      "bytes": 50,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-tenpai-preview.ts",
+      "sha256": "42bfb490c099ad6cc9233a59bab67552db0d1c6c331145f63ec63dd7f5d8a259",
+      "bytes": 2914,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-tiles.ts",
+      "sha256": "009cd4188106a498eb39a1b11abcc9a0b2c961836f78106ffa47d1cbe51cceff",
+      "bytes": 45,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-ui.ts",
+      "sha256": "7cc2b3d989b72ee4c293fe433b4f30579ea94bda714bb6279fb2f15a0ed377ed",
+      "bytes": 43660,
+      "category": "code"
+    },
+    {
+      "source": "src/blood-win.ts",
+      "sha256": "d7511aefce65274420e39144ed685913fa5c435e55e0fabcde24945cf7a66b05",
+      "bytes": 2358,
+      "category": "code"
+    },
+    {
+      "source": "src/blood.ts",
+      "sha256": "ece1ca8a418cb2ebb53bc0303437a911309176f7c42c3cd89229774f7d0dc4f1",
+      "bytes": 5230,
+      "category": "code"
+    },
+    {
+      "source": "src/center.ts",
+      "sha256": "f706eb827ee5cabc44e3c9c46df938f7b817ed57e062bb2e172f7e4d4146f08b",
+      "bytes": 33426,
+      "category": "code"
+    },
+    {
+      "source": "src/client.ts",
+      "sha256": "f2953b80ebf567140710d7e5a0958f50fc3d0e263583c46d49178fe6f95eb1e9",
+      "bytes": 17547,
+      "category": "code"
+    },
+    {
+      "source": "src/dsh-hand-bootstrap.ts",
+      "sha256": "e0b55ff758955b9b208b38b23c06c5851385f394f625e2b3a477c642273435d8",
+      "bytes": 3074,
+      "category": "code"
+    },
+    {
+      "source": "src/evplus-swap3-dingque.ts",
+      "sha256": "c1d33514e61055b83ef31ba7ac3c47679dca506d3b6c87e7c841f1ed3f4fe8e9",
+      "bytes": 53,
+      "category": "code"
+    },
+    {
+      "source": "src/fireflies-fx.ts",
+      "sha256": "794d6210829c64ed0e819a86684d045ba3e4e2879c2e858c7f9bdc5a21056021",
+      "bytes": 9192,
+      "category": "code"
+    },
+    {
+      "source": "src/guobiao-paipu-runtime.ts",
+      "sha256": "2ea81b3dba406dbb0a66f4562e07eefb196c14fa4c8e102c4a4953277c89f456",
+      "bytes": 9260,
+      "category": "code"
+    },
+    {
+      "source": "src/guobiao-preferences.ts",
+      "sha256": "7e27ceb142d9a062973215e506182b62edd5039fcb07bf44bc97972c56181739",
+      "bytes": 1045,
+      "category": "code"
+    },
+    {
+      "source": "src/guobiao-tiles.ts",
+      "sha256": "45e1b66628a2d1bbaaa04a21db336df247442c3ed643a176fa8aa505eb8f0ecf",
+      "bytes": 46,
+      "category": "code"
+    },
+    {
+      "source": "src/guobiao-ui.ts",
+      "sha256": "3f8b2ed3bc7ded94a3c6b5b318ee9b0799051fbc9d26df7ad3cd2e20ae2593ea",
+      "bytes": 35330,
+      "category": "code"
+    },
+    {
+      "source": "src/guobiao.ts",
+      "sha256": "8a083380a248129ade2ee931a1e21a3b6170932b740fb78d9432321e6a2481f2",
+      "bytes": 3967,
+      "category": "code"
+    },
+    {
+      "source": "src/hand-embed-bridge.ts",
+      "sha256": "d20fe6da54b1d46ad86053165385692af9c8c5dc127df40cf9550f1ab880e52b",
+      "bytes": 1958,
+      "category": "code"
+    },
+    {
+      "source": "src/hand-hud.ts",
+      "sha256": "33f6fd15e44a5c83dcd0057b317aaaecf1cf53c5df7f26a749f0a6a7c70bdb50",
+      "bytes": 171623,
+      "category": "code"
+    },
+    {
+      "source": "src/hand-paipu-runtime.ts",
+      "sha256": "0bdfc0aaf932e517cc46af03f1f20e92fe92c34442725e0ea712397d967a09be",
+      "bytes": 46154,
+      "category": "code"
+    },
+    {
+      "source": "src/hand.ts",
+      "sha256": "bb3afb413a4e29f60e2339cd1b36143957daa82b72bc12d40377b03650376772",
+      "bytes": 112558,
+      "category": "code"
+    },
+    {
+      "source": "src/hud-action-button.ts",
+      "sha256": "792915529aaefcf20b5001d70a994412a950d3ec58de73bbe26975e5217217bc",
+      "bytes": 1211,
+      "category": "code"
+    },
+    {
+      "source": "src/hud-lucide.ts",
+      "sha256": "28a19b78d14867cf23017d1cd1d6f817a1f3bdea11c7346907e55844a3b2d3b7",
+      "bytes": 6644,
+      "category": "code"
+    },
+    {
+      "source": "src/mahjong-tile-urls.ts",
+      "sha256": "dafd4e52df18885747f5512a935ace61f0593f8bd76e7e33f92f146053176536",
+      "bytes": 3725,
+      "category": "code"
+    },
+    {
+      "source": "src/main-view.ts",
+      "sha256": "8d4a95af25a31222c260c7282d3a317302821833827d1abcf97aa888e729bb69",
+      "bytes": 49252,
+      "category": "code"
+    },
+    {
+      "source": "src/mobile-hand-layout.ts",
+      "sha256": "a36d86bdbc3e9fb81155529c9dd8fc8da759acdfff1b428c67a6fb52e0c21e0b",
+      "bytes": 34978,
+      "category": "code"
+    },
+    {
+      "source": "src/mouse-tracker.ts",
+      "sha256": "83a4ca820bcdced383c83b8af0b63ccbed2f67b7e0e4f24db8bd6dd74e8c1259",
+      "bytes": 3519,
+      "category": "code"
+    },
+    {
+      "source": "src/movement.ts",
+      "sha256": "5d8829bd0da5957e7c0f2c2e7db166519fc358e594c78084751e82a89d24d85e",
+      "bytes": 5498,
+      "category": "code"
+    },
+    {
+      "source": "src/object-view.ts",
+      "sha256": "dd304d2472792c88f6ae75c976ccc91ad73374e7652adccbfd1b852ffd64942a",
+      "bytes": 10208,
+      "category": "code"
+    },
+    {
+      "source": "src/paipu-api.ts",
+      "sha256": "adf598e35384508ee115775bf49c39c466c51a5027faf979aa311b0d85fa37fd",
+      "bytes": 6630,
+      "category": "code"
+    },
+    {
+      "source": "src/partial-case-runtime.ts",
+      "sha256": "dafe2f415a0b1542423085b4b63e7b09f905c315a81900e4079f142b0ef1b14a",
+      "bytes": 5657,
+      "category": "code"
+    },
+    {
+      "source": "src/player-id.ts",
+      "sha256": "b971f41c15576af6128b1b3a94e868dbb9fbc49f54fd0531266792539337905f",
+      "bytes": 1322,
+      "category": "code"
+    },
+    {
+      "source": "src/practice-branch-api.ts",
+      "sha256": "971d13cbb99db4364f53b04408494bb08c91c04b2ef851b16165a2d16109c634",
+      "bytes": 2799,
+      "category": "code"
+    },
+    {
+      "source": "src/pwa-manifest.ts",
+      "sha256": "21768dbc5292fa9d0bd5734c9cfabe21fffa122fc44a1a6440c64200312cdff7",
+      "bytes": 682,
+      "category": "code"
+    },
+    {
+      "source": "src/reco-api.ts",
+      "sha256": "fbe0685b8b5db1ae85e98fd4b4038ba804e501f4864ffd20557ac7f677174358",
+      "bytes": 2202,
+      "category": "code"
+    },
+    {
+      "source": "src/reco-glossary.ts",
+      "sha256": "813a19e514412040afa2da6ae93d9958424e11dffbabc6650c21cb4cb11837dd",
+      "bytes": 6713,
+      "category": "code"
+    },
+    {
+      "source": "src/selection-box.ts",
+      "sha256": "eaf4cdb4ae2cf67634da8aff0a43bc44212b78bd7d1544ea16ba0a6d94e21712",
+      "bytes": 5264,
+      "category": "code"
+    },
+    {
+      "source": "src/setup-deal.ts",
+      "sha256": "7deedf42dc579bfee8ebca08ceab7084f08701b208ca56aea39c34388d17290b",
+      "bytes": 5931,
+      "category": "code"
+    },
+    {
+      "source": "src/setup-slots.ts",
+      "sha256": "25c7c932dc113ae5bdbf790452ebbe17028342e80f1c704bf94ae39985d47370",
+      "bytes": 13988,
+      "category": "code"
+    },
+    {
+      "source": "src/setup.ts",
+      "sha256": "2e1b1ee4174163c57abe7accc3a89fb2f4f4d96a1a223a474669fa324e877fe4",
+      "bytes": 10804,
+      "category": "code"
+    },
+    {
+      "source": "src/slot.ts",
+      "sha256": "91038e29dc8e4ef024e7a5cf0b3ea3f9fed0d36a7ec87cb26564327dfcb534c7",
+      "bytes": 7823,
+      "category": "code"
+    },
+    {
+      "source": "src/sound-player.ts",
+      "sha256": "8ed1f1d5d235fa5cb30ef176ad815bb8f49e37656c3e83ab50ca96df5d085432",
+      "bytes": 25619,
+      "category": "code"
+    },
+    {
+      "source": "src/style.css",
+      "sha256": "bfbfa2b690af83228b64f0c2ce89170642816e935b54ad21ccb02faa4c1c7750",
+      "bytes": 80141,
+      "category": "code"
+    },
+    {
+      "source": "src/thing-group.ts",
+      "sha256": "e6bf1cf3995e34fdcbfb075a15c8a8955fa1769e015960a47f8465c42bf04a30",
+      "bytes": 24528,
+      "category": "code"
+    },
+    {
+      "source": "src/thing.ts",
+      "sha256": "8daf8d2ac787f4714087c393ade13aecf524810f79615bf0e424fdbc52cf066f",
+      "bytes": 2022,
+      "category": "code"
+    },
+    {
+      "source": "src/tile-voice-urls.ts",
+      "sha256": "98c22710e70a4d6aaa7814511a593643713bc0ee09ca52fd6253953425fbe3ac",
+      "bytes": 7385,
+      "category": "code"
+    },
+    {
+      "source": "src/touch-ui.ts",
+      "sha256": "241c7a5388c966b33de537a1468fc9a85abe9f0f00742189730606538bb535c9",
+      "bytes": 28036,
+      "category": "code"
+    },
+    {
+      "source": "src/types.ts",
+      "sha256": "3150edefc8678c3fa29ca9e1329bdadb040c211d0c6d7a92bbd486fb2d41128d",
+      "bytes": 3594,
+      "category": "code"
+    },
+    {
+      "source": "src/user-sync.ts",
+      "sha256": "bf239dc569de8dc377f946fff0b0445a5bd0c758c1aaa0440677b09065081156",
+      "bytes": 712,
+      "category": "code"
+    },
+    {
+      "source": "src/user.ts",
+      "sha256": "4296f945169e3313f219c7e3276cf1a7af9bd304e50da797e227f9f87c741059",
+      "bytes": 9324,
+      "category": "code"
+    },
+    {
+      "source": "src/utils.ts",
+      "sha256": "8653aa3e6281f8ed2140d28540494b5e42ec729ddbb86fdabb2a1bfe74e5f19f",
+      "bytes": 3301,
+      "category": "code"
+    },
+    {
+      "source": "src/world.ts",
+      "sha256": "50bc4bb710693b389b6fea043bc1ef615b3c7cd729dec6463dda0b258e94a82c",
+      "bytes": 109805,
+      "category": "code"
+    },
+    {
+      "source": "src/ws-url.ts",
+      "sha256": "4ff4d59134fd06fbc543c6cdc5cf6ef81888cb8fb68fe6db4f99061a740d6734",
+      "bytes": 1172,
+      "category": "code"
+    }
+  ],
+  "unresolved": [],
+  "dynamicUrlExpressions": [
+    {
+      "source": "src/dsh-hand-bootstrap.ts",
+      "line": 50
+    },
+    {
+      "source": "src/dsh-hand-bootstrap.ts",
+      "line": 60
+    },
+    {
+      "source": "src/hand-embed-bridge.ts",
+      "line": 25
+    },
+    {
+      "source": "src/hand-embed-bridge.ts",
+      "line": 31
+    },
+    {
+      "source": "src/hand-hud.ts",
+      "line": 1807
+    },
+    {
+      "source": "src/pwa-manifest.ts",
+      "line": 9
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_图层_1" data-name="图层 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 26">
+  <defs>
+    <style>
+      .tile-face {
+        fill: #eeeeeb;
+      }
+
+      .tile-ink {
+        fill: none;
+        stroke: #111111;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: .72;
+      }
+
+      .tile-outer {
+        fill: #111111;
+      }
+    </style>
+  </defs>
+  <rect class="tile-outer" x=".1" y=".1" width="18.8" height="25.8" rx="1.35" ry="1.35"/>
+  <rect class="tile-face" x=".9" y=".9" width="17.2" height="24.2" rx=".68" ry=".68"/>
+  <path class="tile-ink" d="M2.55,5.05V2.55H5.05"/>
+  <path class="tile-ink" d="M13.95,2.55H16.45V5.05"/>
+  <path class="tile-ink" d="M16.45,20.95V23.45H13.95"/>
+  <path class="tile-ink" d="M5.05,23.45H2.55V20.95"/>
+  <path class="tile-ink" d="M5,2.55H14L16.45,5V21L14,23.45H5L2.55,21V5Z"/>
+</svg>

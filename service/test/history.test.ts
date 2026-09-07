@@ -1,0 +1,26 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {TableCore,normalizeTable} from '../src/table-core';
+import {projectFrame,practiceCheckpoint,validateArchive} from '../src/history';
+const now=1800000000000;
+const owner={v:1 as const,kind:'owner' as const,tenant:'test',owner:'alice',exp:now+60000};
+for(const ruleset of ['blood','guobiao'] as const)test(`${ruleset}: historical projection and independent practice preserve original state`,()=>{
+ const metadata=normalizeTable({ruleset,seats:[0,1,2,3].map(seat=>({seat,kind:'human',owner:seat===0}))},owner,crypto.randomUUID(),now);
+ const core=new TableCore(metadata);for(let s=0;s<4;s++)core.join(s,now);
+ const source=core.checkpoint(),frame=projectFrame(source,0,now);
+ assert.doesNotMatch(JSON.stringify(frame),/tileKeyById|pendingResponsesById|snapshotKey/);
+ assert.ok(frame.view.entries.find(([kind])=>kind===(ruleset==='blood'?'blood':'gb'))![2].wallOrder.every((id:any)=>id===null));
+ assert.deepEqual(validateArchive({schema:'dsh-mahjong.replay.v1',gameId:metadata.gameId,frames:[frame]}).frames[0]!.view,frame.view);
+ const next={...structuredClone(metadata),gameId:crypto.randomUUID(),tableName:'独立练习'};
+ const branch=new TableCore(practiceCheckpoint(source,next,0,now+5000));
+ assert.equal(branch.metadata.mode,'practice');assert.equal(branch.metadata.source?.gameId,metadata.gameId);
+ assert.notEqual(branch.metadata.gameId,metadata.gameId);assert.deepEqual(branch.windows,{});
+ assert.deepEqual(core.checkpoint(),source);
+ for(let s=0;s<4;s++)branch.join(s,now+5000);
+ const seat=[0,1,2,3].find(s=>branch.decision(s))!,decision=branch.decision(seat)!;
+ branch.submitHuman(seat,{actionId:crypto.randomUUID(),decisionId:decision.decisionId,action:branch.catalog(seat).rawByActionId.get(decision.legalActions[0]!.legalActionId)},now+5001);
+ assert.deepEqual(core.checkpoint(),source);
+ assert.notEqual(branch.decision(seat)?.decisionId,core.decision(seat)?.decisionId);
+ const hidden=structuredClone(frame);hidden.view.entries.find(([kind])=>kind===(ruleset==='blood'?'blood':'gb'))![2].wallOrder[0]=1;
+ assert.throws(()=>validateArchive({schema:'dsh-mahjong.replay.v1',gameId:metadata.gameId,frames:[hidden]}),{code:'REPLAY_HIDDEN_STATE'});
+});

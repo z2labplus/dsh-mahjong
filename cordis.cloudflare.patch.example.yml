@@ -1,0 +1,10 @@
+# Independent blood and standard MCR service configuration.
+# Build frontend/ and service/ first; configure the local owner token.
+- insert:
+  - id: dsh-mahjong
+    name: dsh-mahjong
+    config:
+      service:
+        url: https://your-mahjong-service.workers.dev
+        tokenEnv: DSH_MAHJONG_SERVICE_TOKEN
+        handUrlBase: https://your-mahjong-service.workers.dev/hand/
