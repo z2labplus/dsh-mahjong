@@ -1,4 +1,4 @@
-# dsh-mahjong · AI 麻将桌
+# dsh-mahjong · 麻将实验室
 
 在本地官方 DeepSeek Harness 中打麻将、复盘和练习。牌桌与游戏服务由本项目提供，可在本机运行，也可部署到 Cloudflare。管理员统一托管和使用者自行部署使用同一套功能。
 

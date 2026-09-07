@@ -917,7 +917,7 @@ test("starting a table uses the Workspace runtime and the per-process request to
     { method: "workspace.connect", workspaceId: "workspace-1" },
     {
       method: "session.rename",
-      payload: { sessionId: "mahjong-session", title: "AI 麻将桌 · 测试桌" },
+      payload: { sessionId: "mahjong-session", title: "麻将实验室 · 测试桌" },
     },
   ]);
   assert.equal(fetchCalls.length, 1);

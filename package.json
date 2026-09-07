@@ -1,7 +1,7 @@
 {
   "name": "dsh-mahjong",
   "version": "0.0.1",
-  "description": "基于 DeepSeek Harness 的 AI 麻将桌 / AI Mahjong table for DeepSeek Harness",
+  "description": "基于 DeepSeek Harness 的麻将实验室 / Mahjong Lab for DeepSeek Harness",
   "type": "module",
   "main": "index.js",
   "exports": {
@@ -72,7 +72,7 @@
   },
   "dsh": {
     "id": "dsh-mahjong",
-    "name": "AI 麻将桌",
+    "name": "麻将实验室",
     "version": "0.0.1",
     "repo": "z2labplus/dsh-mahjong",
     "permissions": "牌局展示, Harness 会话问答, 独立牌局服务, 独立 AI 座位会话",

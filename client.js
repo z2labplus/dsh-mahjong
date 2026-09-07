@@ -385,7 +385,7 @@ window.__ModuleLoader__.load({
           rememberSession(sessionId);
           await waitForListedSession(sessionId);
         }
-        var renamed = await api.sessions.rename({ sessionId, title: "AI 麻将桌 · " + title });
+        var renamed = await api.sessions.rename({ sessionId, title: "麻将实验室 · " + title });
         if (!renamed || !renamed.result || renamed.result.ok !== true) {
           throw new Error(responseError(renamed && renamed.result, "牌局会话命名失败"));
         }
