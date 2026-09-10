@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 const root = new URL('../', import.meta.url);
 const manifest = JSON.parse(await readFile(new URL('../../docs/hand-parity-manifest.json', import.meta.url), 'utf8'));
-const allowed = new Set([...manifest.transportAdaptations,...(manifest.rulesAdaptations??[])]);
+const allowed = new Set([...manifest.transportAdaptations,...(manifest.rulesAdaptations??[]),...(manifest.approvedVisualAdaptations??[])]);
 for (const file of manifest.files) {
   const bytes = await readFile(new URL(file.source, root));
   const hash = createHash('sha256').update(bytes).digest('hex');

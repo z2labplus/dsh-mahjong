@@ -14,7 +14,7 @@
       "sha256": "bb3f31c36ab1dfaa0fc6fb88a2beb5b4b358c87dea251a7b1058270a6480484c",
       "bytes": 93026,
       "category": "code",
-      "vendoredSha256": "fe087a6a59adc08ce01c6cc6840588aba06579a33536d5b2fa53996de7f3d896"
+      "vendoredSha256": "5628cfce27e895bcc65cc5f1abad3c700f017e956019634ede6b3d09c36195db"
     },
     {
       "source": "img/1s.svg",
@@ -4076,7 +4076,7 @@
       "sha256": "f706eb827ee5cabc44e3c9c46df938f7b817ed57e062bb2e172f7e4d4146f08b",
       "bytes": 33426,
       "category": "code",
-      "vendoredSha256": "f706eb827ee5cabc44e3c9c46df938f7b817ed57e062bb2e172f7e4d4146f08b"
+      "vendoredSha256": "12099da7df420fd43ea05989eeff12fdae2191077b02f1257dfcbc531f921563"
     },
     {
       "source": "src/client.ts",
@@ -4154,7 +4154,7 @@
       "sha256": "33f6fd15e44a5c83dcd0057b317aaaecf1cf53c5df7f26a749f0a6a7c70bdb50",
       "bytes": 171623,
       "category": "code",
-      "vendoredSha256": "dca04548b94a7a1548c7e6669a2d67f2986966abf391605aa3c973aaa23cfd9f"
+      "vendoredSha256": "d5bd2359b00a698964d7fcc69c0a7615cc87ab9739d0b49065b592fb279f8310"
     },
     {
       "source": "src/hand-paipu-runtime.ts",
@@ -4359,7 +4359,7 @@
       "sha256": "3150edefc8678c3fa29ca9e1329bdadb040c211d0c6d7a92bbd486fb2d41128d",
       "bytes": 3594,
       "category": "code",
-      "vendoredSha256": "3150edefc8678c3fa29ca9e1329bdadb040c211d0c6d7a92bbd486fb2d41128d"
+      "vendoredSha256": "612ebb1863aa0c02df17a0033408bd8ff4bac36891a378e173d88050c0d207e5"
     },
     {
       "source": "src/user-sync.ts",
@@ -4387,7 +4387,7 @@
       "sha256": "50bc4bb710693b389b6fea043bc1ef615b3c7cd729dec6463dda0b258e94a82c",
       "bytes": 109805,
       "category": "code",
-      "vendoredSha256": "50bc4bb710693b389b6fea043bc1ef615b3c7cd729dec6463dda0b258e94a82c"
+      "vendoredSha256": "eb3ce67e516c035ad340922bc91bc46a547a1185e56506dc12ed04e6f0039310"
     },
     {
       "source": "src/ws-url.ts",
@@ -4458,5 +4458,19 @@
     "src/hand-hud.ts"
   ],
   "rulesAdaptationReason": "2026-09-07 已确认标准国标：前后端采用相同 81 番种计算，原 HUD 仅更新规则文字并移除原型增补说明，不改变牌桌布局、绘制、素材或交互。",
-  "connectionAdaptationReason": "2026-09-07 修复同一真人座位多页面互踢重连：4001 接管关闭进入 replaced 状态，清除待发动作，旧页面仅允许明确点击后重新接管；普通网络断线保持自动恢复。仅更新传输状态与原有提示层文案/动作，原画布、布局和素材保持不变。"
+  "connectionAdaptationReason": "2026-09-07 修复同一真人座位多页面互踢重连：4001 接管关闭进入 replaced 状态，清除待发动作，旧页面仅允许明确点击后重新接管；普通网络断线保持自动恢复。仅更新传输状态与原有提示层文案/动作，原画布、布局和素材保持不变。",
+  "approvedVisualAdaptations": [
+    "hand/index.html",
+    "src/hand-hud.ts",
+    "src/world.ts",
+    "src/types.ts",
+    "src/center.ts"
+  ],
+  "nicknameApproval": "2026-09-08 用户要求每位选手显示昵称并确认继续；仅在既有头像卡下增加文字，不改牌桌、牌张或布局坐标体系。",
+  "nicknameCardIntegrationApproval": "2026-09-08 用户确认开发：头像、积分、昵称合为一张卡片；昵称与上方等宽、左右对齐，共用背景、边框和圆角；长昵称不撑宽卡片。保留原头像尺寸、积分字号与牌桌坐标体系。",
+  "nicknameSeparateRowsApproval": "2026-09-08 用户要求使用 taste skill 开发：头像下积分独占一行、昵称独占一行；两行等宽、居中，分区清楚；采用独立行底色和一条细分隔线，仍共用整张卡片的外边框。",
+  "sourceReplayRepairApproval": "2026-09-08 用户要求逐项修复赛事回放中手牌、弃牌、副露、牌墙的矛盾：仅赛事回放遵循已公开手牌，结算自摸牌仅展示一次，显示余墙数量示意；不改变实时对局或素材。",
+  "sourceReplayAlignmentApproval": "2026-09-09 用户要求整理至视频与牌谱回放一致：仅赛事历史回放在第三家胡牌时结束、亮出最后一家的手牌；暂停回放停用无视频依据的循环倒计时，显示--，保留余牌数量与行牌位置；实时对局保持原逻辑。",
+  "sourceReplayWallVisibilityRepair": "已撤回其牌墙绘制和提示位置调整，见 sourceReplayCountOnlyRestoration。保留同轮修复：赛事回放定缺角标只读当前帧，不继承后续时点或其他视角的本地缓存。",
+  "sourceReplayCountOnlyRestoration": "2026-09-09 用户明确原 MJLab 牌桌只显示余牌数，不显示实体牌墙。撤回误加的赛事回放牌墙模型、缩放、位置例外和定缺提示上移，恢复与实时对局相同的隐藏墙牌行为及原提示位置。牌墙数据继续用于摸牌顺序、剩余数量和守恒核对；不改变牌谱、其他牌张或牌桌相机。"
 }

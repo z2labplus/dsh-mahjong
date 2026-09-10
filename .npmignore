@@ -8,3 +8,4 @@
 service/dist/
 frontend/dist/
 **/.hand-build/
+**/.dsh-build/

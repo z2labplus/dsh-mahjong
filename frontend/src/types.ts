@@ -27,6 +27,8 @@ export interface ThingInfo {
 }
 
 export interface MatchInfo {
+  // Curated source replay presentation only; never changes live-game visibility.
+  sourceReplay?: { revealedSeats: number[]; wallLayout: 'schematic' };
   // Display-only marker for curated, incomplete historical cases; never a live game rule.
   caseStudy?: { eventIndex: number; partial: true };
   dealer: number;

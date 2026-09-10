@@ -37,7 +37,7 @@ export class HistoryRuntime {
       const timer=window.setTimeout(()=>{window.removeEventListener('message',receive);reject(new Error('请从 Harness 牌谱入口打开'));},15000);
       const receive=(event:MessageEvent)=>{
         if(event.source!==window.parent||event.origin!==this.parentOrigin||event.data?.type!=='dsh-mahjong:history-frame')return;
-        try{this.apply(event.data.frame,event.data.count,event.data.first);clearTimeout(timer);resolve();}
+        try{this.apply(event.data.frame,event.data.count,event.data.first);clearTimeout(timer);resolve();const requestId=event.data.requestId,appliedIndex=this.index;requestAnimationFrame(()=>requestAnimationFrame(()=>window.parent.postMessage({type:'dsh-mahjong:history-applied',gameId:this.gameId,eventIndex:appliedIndex,requestId},this.parentOrigin)));}
         catch(error){clearTimeout(timer);reject(error);}
       };
       window.addEventListener('message',receive);

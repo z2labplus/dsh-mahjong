@@ -13,3 +13,5 @@ build/
 !service/.dev.vars.example
 **/.wrangler/
 .hand-build/
+
+.dsh-build/

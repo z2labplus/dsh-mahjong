@@ -5,8 +5,9 @@
   "scripts": {
     "build": "parcel build hand/index.html --dist-dir .hand-build --public-url / --no-source-maps --no-autoinstall",
     "dev": "parcel hand/index.html --port 8788 --no-autoinstall",
-    "postbuild": "node scripts/finish-build.mjs",
-    "check": "tsc --noEmit && node scripts/verify-source.mjs"
+    "postbuild": "node scripts/finish-build.mjs && npm run build:embedded",
+    "check": "tsc --noEmit && node scripts/verify-source.mjs",
+    "build:embedded": "parcel build hand/index.html --dist-dir .dsh-build --public-url /dsh-mahjong/view/ --no-source-maps --no-autoinstall"
   },
   "dependencies": {
     "three": "0.179.1",

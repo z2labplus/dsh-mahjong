@@ -231,3 +231,44 @@ test("isolates every process token and rejects forged Host or cross-site fetch m
     await second.close();
   }
 });
+
+test('source catalog uses the client envelope, authenticated navigation rejects caller-supplied frames',async()=>{
+ const calls=[];const host=await serve({sourceCases:()=>({ok:true,items:[{caseId:'local-case'}]}),stepSource:async value=>{calls.push(value);return {phase:'active'};}});
+ try{
+  const response=await fetch(host.origin+'/dsh-mahjong/api/sources',{headers:authorizedHeaders(host)});
+  assert.deepEqual(await response.json(),{ok:true,items:[{caseId:'local-case'}]});
+  const headers=authorizedHeaders(host,{'Content-Type':'application/json',Origin:host.origin,'Sec-Fetch-Site':'same-origin'});
+  const body={sessionId:'s',eventIndex:77,seat:2,lesson:null,viewMode:'follow'};
+  const rejected=await fetch(host.origin+'/dsh-mahjong/api/sources/step',{method:'POST',headers,body:JSON.stringify({...body,frame:{}})});assert.equal(rejected.status,400);
+  const allowed=await fetch(host.origin+'/dsh-mahjong/api/sources/step',{method:'POST',headers,body:JSON.stringify(body)});assert.equal(allowed.status,200);assert.deepEqual(calls,[body]);
+ }finally{await host.close();}
+});
+
+test('source editor accepts record drafts only with same-origin process authorization and no arbitrary file path',async()=>{
+ const calls=[],host=await serve({sourceEdit:async(op,body)=>{calls.push([op,body]);return {saved:true};}});
+ try{
+  const headers=authorizedHeaders(host,{'Content-Type':'application/json',Origin:host.origin,'Sec-Fetch-Site':'same-origin'}),url=host.origin+'/dsh-mahjong/api/source-editor/draft';
+  const body={sessionId:'s',clientId:'test-client',record:{events:[]},baseHash:'base',diskHash:'disk',selection:'event-1'};
+  const post=(payload,overrides={})=>fetch(url,{method:'POST',headers:{...headers,...overrides},body:JSON.stringify(payload)});
+  assert.equal((await post(body,{[REQUEST_TOKEN_HEADER]:'invalid'})).status,403);
+  assert.equal((await post(body,{Origin:'https://foreign.example'})).status,403);
+  assert.equal((await post({...body,recordPath:'/tmp/unregistered'})).status,400);
+  assert.equal((await post({...body,record:{text:'x'.repeat(2*1024*1024)}})).status,413);
+  assert.deepEqual(calls,[]);assert.equal((await post(body)).status,200);assert.equal(calls[0][0],'draft');
+ }finally{await host.close();}
+});
+test('editor validation accepts an explicit base version but rejects supplied diagnostic or frame data',async()=>{
+ const calls=[],host=await serve({sourceEdit:async(op,body)=>{calls.push([op,body]);return {ok:false,diagnostics:{baselineVersion:5}};}});
+ try{
+  const headers=authorizedHeaders(host,{'Content-Type':'application/json',Origin:host.origin,'Sec-Fetch-Site':'same-origin'}),url=host.origin+'/dsh-mahjong/api/source-editor/validate',body={sessionId:'s',record:{},baseHash:'a'.repeat(64),eventIndex:51};
+  const allowed=await fetch(url,{method:'POST',headers,body:JSON.stringify(body)});assert.equal(allowed.status,200);assert.deepEqual(calls,[['validate',body]]);
+  const rejected=await fetch(url,{method:'POST',headers,body:JSON.stringify({...body,diagnostics:{}})});assert.equal(rejected.status,400);assert.equal(calls.length,1);
+ }finally{await host.close();}
+});
+test('source video endpoint cannot accept a browser-chosen local filesystem path',async()=>{
+ const host=await serve({sourceVideo:()=>undefined});
+ try{const headers=authorizedHeaders(host,{'Content-Type':'application/json',Origin:host.origin});const url=host.origin+'/dsh-mahjong/api/source-editor/video';
+  assert.equal((await fetch(url,{method:'POST',headers,body:JSON.stringify({sessionId:'s',path:'/etc/passwd'})})).status,400);
+  assert.equal((await fetch(url,{method:'POST',headers,body:JSON.stringify({sessionId:'s'})})).status,404);
+ }finally{await host.close();}
+});

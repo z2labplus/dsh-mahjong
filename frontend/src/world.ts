@@ -2647,6 +2647,9 @@ export class World {
       (bloodState && (bloodState.revealAllHands || bloodState.phase === 'settling' || bloodState.phase === 'done')) ||
       (guobiaoState && (guobiaoState.revealAllHands || guobiaoState.phase === 'settling' || guobiaoState.phase === 'done'))
     );
+    const sourceReplay = this.client.match.get(0)?.sourceReplay;
+    const sourceRevealedSeats = new Set(sourceReplay?.revealedSeats ?? []);
+    const seatRevealed = (seat: number) => revealAllHands || sourceRevealedSeats.has(seat);
     const revealAllGuobiaoMelds = !!(
       guobiaoDisplayState &&
       (guobiaoDisplayState.revealAllHands || guobiaoDisplayState.phase === 'settling' || guobiaoDisplayState.phase === 'done')
@@ -2659,16 +2662,16 @@ export class World {
     const mobileOpponentHandPackedPlaces =
       this.isSortedMobileHand() && viewerSeat !== null && !revealAllHands
         ? this.computeMobileOpponentHandPackedPlaces(viewerSeat, (seat) => {
-            // 胡牌玩家的暗手：平躺背面（不亮牌）直到结算亮牌。
-            return bloodState?.players?.[seat]?.hu ? 2 : 0;
+            // 实时对局胡家暗手盖住；赛事回放遵循该帧的公开牌信息。
+            return seatRevealed(seat) ? 1 : bloodState?.players?.[seat]?.hu ? 2 : 0;
           })
         : null;
     const mobileRevealedOpponentHandPlaces =
-      this.isSortedMobileHand() && viewerSeat !== null && revealAllHands
+      this.isSortedMobileHand() && viewerSeat !== null && (revealAllHands || sourceRevealedSeats.size > 0)
         ? (() => {
             const map = new Map<number, Place>();
             for (let seat = 0; seat < 4; seat++) {
-              if (seat === viewerSeat) continue;
+              if (seat === viewerSeat || !seatRevealed(seat)) continue;
               const sorted = this.computeMobileSelfHandSortedPlaces(seat, 1);
               for (const [id, place] of sorted.entries()) {
                 map.set(id, place);
@@ -2713,7 +2716,8 @@ export class World {
         slot.group.startsWith('wall');
       const handTile = isHandTile(thing);
       const selfHand = handTile && slot.seat === viewerSeat;
-      const huPlayer = handTile && !revealAllHands && bloodState?.players?.[slot.seat ?? -1]?.hu;
+      const revealedHand = handTile && slot.seat !== null && seatRevealed(slot.seat);
+      const huPlayer = handTile && !revealedHand && bloodState?.players?.[slot.seat ?? -1]?.hu;
       const forceFaceDownForHu = !!(handTile && !selfHand && huPlayer);
       const meldRotationIndex =
         this.guobiaoForcedConcealedGangRotationIndex(slot, guobiaoConcealedGangRows, revealAllGuobiaoMelds) ??
@@ -2721,7 +2725,7 @@ export class World {
 
       // 移动端：默认手牌用“竖立”显示；结算亮牌时仅对手“推倒”(face-up 平放)。
       // 对手平时只显示背面；自家可本地隐藏（翻到背面）。
-      const forcedRotationIndex = handTile ? (!selfHand && revealAllHands ? 1 : (forceFaceDownForHu ? 2 : 0)) : meldRotationIndex;
+      const forcedRotationIndex = handTile ? (!selfHand && revealedHand ? 1 : (forceFaceDownForHu ? 2 : 0)) : meldRotationIndex;
       let place = slot.placeWithOffset(forcedRotationIndex);
       // 移动端血战/国标：自家手牌在本地排序（不改服务器 slotName，避免同步侧产生歧义）。
       if (handTile && selfHand && mobileSelfHandPlaces) {
@@ -2734,7 +2738,7 @@ export class World {
       // - 常规：按“张数打包”到连续位置（背面信息，顺序不重要）
       // - 结算亮牌：按“该玩家自己看到的顺序”排序，并推倒为 face-up
       if (handTile && !selfHand) {
-        if (revealAllHands && mobileRevealedOpponentHandPlaces) {
+        if (revealedHand && mobileRevealedOpponentHandPlaces) {
           const revealed = mobileRevealedOpponentHandPlaces.get(thing.index);
           if (revealed) {
             place = revealed;
@@ -2783,12 +2787,12 @@ export class World {
       // - 默认：只让自己看到牌面
       // - 结算（revealAllHands=true）：所有人都亮牌
       if (handTile) {
-        if (!revealAllHands && selfHand && thing.claimedBy === null && this.localHandHidden.has(thing.index)) {
+        if (!revealedHand && selfHand && thing.claimedBy === null && this.localHandHidden.has(thing.index)) {
           place = {
             ...place,
             rotation: place.rotation.clone().multiply(HAND_LOCAL_BACK_ROTATION),
           };
-        } else if (!selfHand && !revealAllHands && !forceFaceDownForHu) {
+        } else if (!selfHand && !revealedHand && !forceFaceDownForHu) {
           place = {
             ...place,
             rotation: place.rotation.clone().multiply(HAND_LOCAL_BACK_ROTATION),
@@ -2858,13 +2862,13 @@ export class World {
         (selected && this.selected.indexOf(this.hovered!) !== -1);
       const temporary = held && thing.claimedBy === this.seat && !canDrop;
 
-      // 移动端血战：牌墙只作为“牌库计数”的来源，不需要 3D 墙牌模型占画面。
+      // 实时对局与赛事回放均只显示余牌数量，不绘制实体牌墙。
       // 注意：不能简单从渲染列表里移除（TileThingGroup 依赖 index 连续映射），
       // 所以用 scale=0 让实例矩阵为零来隐藏。
       // 胡牌展示：自摸胡时，hand.extra 那张就是胡牌，本体不再显示（避免与“胡牌展示区”重复）。
       const hideHuExtra =
         this.isBloodMobile() &&
-        !revealAllHands &&
+        (!revealAllHands || !!sourceReplay) &&
         thing.type === ThingType.TILE &&
         slot.seat !== null &&
         slot.name === `hand.extra@${slot.seat}` &&

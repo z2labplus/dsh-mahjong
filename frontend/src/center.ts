@@ -251,9 +251,18 @@ export class Center {
     const bloodState = this.client.blood.get(0) as BloodState | null;
     const state = gbState ?? bloodState;
     const phase = state?.phase ?? null;
+    const sourceReplay = !!this.client.match.get(0)?.sourceReplay;
     const shouldRunCountdown =
       phase === 'swap3' || phase === 'dingque' || phase === 'playing';
-    if (shouldRunCountdown && !this.countdownLoopEnabled) {
+    // A recorded hand has no live decision timer. Keep its turn indication and
+    // remaining-tile count, but do not invent a cycling clock over paused video.
+    if (sourceReplay) {
+      this.countdownLoopEnabled = false;
+      if (this.countdownSeconds !== null) {
+        this.countdownSeconds = null;
+        this.dirty = true;
+      }
+    } else if (shouldRunCountdown && !this.countdownLoopEnabled) {
       this.countdownLoopEnabled = true;
       this.resetCountdownLoop();
     } else if (!shouldRunCountdown && this.countdownLoopEnabled) {
@@ -273,6 +282,12 @@ export class Center {
   }
 
   private resetCountdownLoop(nowMs: number = Date.now()): void {
+    if (this.client.match.get(0)?.sourceReplay) {
+      this.countdownLoopEnabled = false;
+      this.countdownSeconds = null;
+      this.dirty = true;
+      return;
+    }
     this.countdownLoopBaseMs = Math.trunc(nowMs);
     if (!this.countdownLoopEnabled) {
       if (this.countdownSeconds !== CENTER_COUNTDOWN_START) {

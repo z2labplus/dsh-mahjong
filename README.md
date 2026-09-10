@@ -85,4 +85,20 @@ npm --prefix service test
 
 本次旧后端清理、代码 review、升级边界和回滚说明见 [兼容层移除记录](docs/compatibility-removal.md)。
 
-源码来源及修改分别记录在 `service/source-manifest.json` 和 `docs/hand-parity-manifest.json`。477 项图片、字体和声音保持来源字节一致，保留各自许可；上游代码许可见 `service/licenses/`、`frontend/licenses/`。历史设计与阶段报告保留在 `docs/`，当前实现以本 README 和验收记录为准。支付、课程商城、视频编辑器和自动发布不在本次范围。
+新增需求：[赛事完整牌谱 → 麻将实验室讲解 → B站视频 → 接手挑战](docs/champion-content-workflow.md)，规则与评价细节见[冠军关键一步提案 v4](docs/champion-decision-challenge.md)。首例需交付完整牌谱与真实回放、关键步分析、讲解成片、文案和封面，由用户查看后手动发布到B站，再开放挑战及结果对照。我们准备本地投稿素材，B站上传、平台草稿、投稿和后续改稿或评论由用户操作；挑战开发与内部测试可提前进行。新增能力尚未完成，与已完成的历史回放、独立练习和基础教练关卡分开追踪。
+
+源码来源及修改分别记录在 `service/source-manifest.json` 和 `docs/hand-parity-manifest.json`。477 项图片、字体和声音保持来源字节一致，保留各自许可；上游代码许可见 `service/licenses/`、`frontend/licenses/`。历史设计与阶段报告保留在 `docs/`，当前实现以本 README 和验收记录为准。支付、课程商城、通用视频编辑器和无人值守批量投稿系统不在首例范围；上述新增链路中的视频制作与完整投稿素材包属于必做交付，B站发布由用户本人完成。
+
+## 在 DSH 回放里纠正赛事牌谱
+
+本地血战原谱支持工具栏“纠正牌谱”：修改起手、换三张、定缺、行牌及转账，插入删除动作，草稿恢复、校验预览和版本恢复。保存后在同一牌桌更新，不需要重启。支持本地视频定位及独立实见手牌、牌河、副露核对。程序通过不等于已核实视频。详见 [范围与验收](docs/replay-correction-requirements.md)。
+
+维护者首次登记原谱（已登记的案例无需重复登记）：
+
+```sh
+node scripts/register-source-record.mjs /绝对路径/原谱.json /绝对路径/视频.mp4
+```
+
+新案例建议原谱放在项目 `.local/source-records/<case-id>/record.json`，视频参数可省略。登记拒绝将同一源文件挂到不同案例，不移动既有用户文件；新登记案例首次加载插件后可见。后续编辑在 DSH 面板完成。云端编辑、协作、国标原谱编辑和直接点击 3D 牌张不在此首版内。
+
+新克隆的仓库不包含本机 `.local` 案例、用户草稿、视频或账号配置，需要自行登记案例。`test/fixtures` 中的数据用于程序回归，含特意保留的旧版误记，不作为已核实的赛事牌谱发布。修改摸牌时可选择只改摸牌或同时更正紧邻的同玩家弃牌；两步可成组撤销，多项改动可先存草稿再统一校验。

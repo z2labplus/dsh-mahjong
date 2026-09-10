@@ -1,3 +1,4 @@
+import { createHandAssetsHandler, HAND_ASSET_PREFIX } from "./lib/hand-assets.js";
 import { randomBytes } from "node:crypto";
 import { createServiceControl, normalizeServiceUrl } from "./lib/service-control.js";
 
@@ -100,6 +101,8 @@ export function apply(ctx, config, internals = {}) {
     )),
     "dsh-mahjong: client game bootstrap",
   );
+
+  ctx.effect(() => ctx.webServer.register({kind:"prefix",path:HAND_ASSET_PREFIX.slice(0,-1),handler:createHandAssetsHandler()}), "dsh-mahjong: embedded real hand assets");
 
   let resolveController;
   let rejectController;

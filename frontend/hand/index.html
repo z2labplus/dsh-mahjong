@@ -1147,7 +1147,7 @@
             box-sizing: border-box;
         }
 
-        /* /hand/：玩家 HUD（头像/积分/定缺） */
+        /* /hand/：玩家 HUD（头像/积分/昵称/定缺） */
         #hud-overlay {
           position: absolute;
           inset: 0;
@@ -1235,8 +1235,20 @@
           40% { opacity: 1; }
           100% { opacity: 0.55; }
         }
+        .hud-nickname {
+          width: 100%; min-width: 0; box-sizing: border-box; padding: 0 4px;
+          background: #1d1712;
+          border-top: 1px solid rgba(242, 201, 76, 0.28);
+          color: #f6eee2; font-weight: 600;
+          font-size: max(11px, calc(var(--hud-h, 100px) * .16));
+          line-height: calc(var(--hud-nickname-h, 22px) - 1px);
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+          text-align: center; pointer-events: none;
+        }
         .hud-card-inner {
           position: relative;
+          display: flex;
+          flex-direction: column;
           width: 100%;
           height: 100%;
           box-sizing: border-box;
@@ -1247,7 +1259,7 @@
           box-shadow: 0 8px 18px rgba(0,0,0,0.35);
         }
         .hud-avatar {
-          height: 68%;
+          flex: 0 0 calc((var(--hud-h, 120px) - 2px) * 0.68);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1261,15 +1273,23 @@
           object-fit: cover;
           object-position: 50% 50%;
         }
+        .hud-details {
+          flex: 1;
+          min-height: 0;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: minmax(0, 1fr) var(--hud-nickname-h, 22px);
+          background: #1d1712;
+          border-top: 1px solid rgba(255,255,255,0.10);
+        }
 	        .hud-score {
-	          height: 32%;
+	          min-height: 0;
+	          min-width: 0;
 	          display: flex;
 	          align-items: center;
 	          justify-content: center;
 	          overflow: hidden;
-	          background:
-	            linear-gradient(180deg, rgba(72, 44, 26, 0.96), rgba(26, 15, 8, 0.96));
-	          border-top: 1px solid rgba(255,255,255,0.10);
+	          background: linear-gradient(180deg, #482c1a, #302016);
 	          color: rgba(242, 201, 76, 0.96);
 	          font-weight: 800;
 	          font-size: calc(var(--hud-h, 120px) * 0.22);

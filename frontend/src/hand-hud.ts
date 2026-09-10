@@ -839,6 +839,7 @@ export class HandHudOverlay {
     el: HTMLDivElement;
     avatarImg: HTMLImageElement;
     lastAvatarSrc: string;
+    nicknameText: HTMLDivElement;
     scoreText: HTMLDivElement;
     scoreInner: HTMLSpanElement;
     lastScoreKey: string;
@@ -916,14 +917,20 @@ export class HandHudOverlay {
       scoreInner.textContent = '--';
       scoreText.appendChild(scoreInner);
 
-      inner.appendChild(avatar);
-      inner.appendChild(scoreText);
-
       const badgeText = document.createElement('div');
       badgeText.className = 'hud-badge hidden';
 
+      const nicknameText = document.createElement('div');
+      nicknameText.className = 'hud-nickname';
+      const details = document.createElement('div');
+      details.className = 'hud-details';
+      details.appendChild(scoreText);
+      details.appendChild(nicknameText);
+      inner.appendChild(avatar);
+      inner.appendChild(details);
+      el.dataset.seat = String(seat);
       el.appendChild(inner);
-      // 放进 inner：让跑光严格裁切在“头像+分数面板”的外轮廓内（不超出 HUD 边框）。
+      // 头像、积分与昵称共用外轮廓，跑光沿完整信息卡裁切。
       inner.appendChild(turnRing);
       el.appendChild(badgeText);
       root.appendChild(el);
@@ -933,6 +940,7 @@ export class HandHudOverlay {
         el,
         avatarImg,
         lastAvatarSrc: '',
+        nicknameText,
         scoreText,
         scoreInner,
         lastScoreKey: '',
@@ -4076,7 +4084,9 @@ export class HandHudOverlay {
       card.el.classList.toggle('hud-turn', turnHudSeat !== null && card.seat === turnHudSeat);
 
       const width = layoutVp.width * box.w;
-      const height = layoutVp.height * box.h;
+      const baseHeight = layoutVp.height * box.h;
+      const nicknameHeight = Math.max(16, baseHeight * 0.22);
+      const height = baseHeight + nicknameHeight;
       const side: 'left' | 'right' = rel === 0 || rel === 3 ? 'left' : 'right';
       // baseTop/baseHeight 来自采样图；固定布局直接使用 box，轨道布局再做 rail 对齐。
       let top = layoutVp.top + layoutVp.height * box.y;
@@ -4153,7 +4163,8 @@ export class HandHudOverlay {
       card.el.style.top = `${top}px`;
       card.el.style.width = `${width}px`;
       card.el.style.height = `${height}px`;
-      card.el.style.setProperty('--hud-h', `${height}px`);
+      card.el.style.setProperty('--hud-h', `${baseHeight}px`);
+      card.el.style.setProperty('--hud-nickname-h', `${nicknameHeight}px`);
 
       if (viewerSeat !== null && card.seat === viewerSeat) {
         ownRect = { left, top, width, height };
@@ -4170,7 +4181,10 @@ export class HandHudOverlay {
         card.avatarImg.src = avatar;
         card.lastAvatarSrc = avatar;
       }
-      card.avatarImg.alt = nick?.trim() || String(card.seat + 1);
+      const displayName = nick?.trim() || `玩家${card.seat + 1}`;
+      card.avatarImg.alt = displayName;
+      card.nicknameText.textContent = displayName;
+      card.nicknameText.title = displayName;
 
       const bloodPlayer = blood?.players?.[card.seat] ?? null;
       const scoreValue = isGuobiaoGame
@@ -4178,17 +4192,19 @@ export class HandHudOverlay {
         : bloodPlayer?.beans;
       const scoreKey = formatScore(scoreValue);
       card.scoreInner.textContent = scoreKey;
-      if (card.lastScoreKey !== scoreKey || card.lastScoreW !== width || card.lastScoreH !== height) {
-        fitHudScoreText(card.scoreText, card.scoreInner, height);
+      if (card.lastScoreKey !== scoreKey || card.lastScoreW !== width || card.lastScoreH !== baseHeight) {
+        fitHudScoreText(card.scoreText, card.scoreInner, baseHeight);
         card.lastScoreKey = scoreKey;
         card.lastScoreW = width;
-        card.lastScoreH = height;
+        card.lastScoreH = baseHeight;
       }
 
       const inSwap3 = blood?.phase === 'swap3';
       const inDingque = blood?.phase === 'dingque';
       const isSelfCard = viewerSeat !== null && card.seat === viewerSeat;
-      const selfLocalDingque = isSelfCard ? this.client.localDingqueSuit() : null;
+      // A historical frame must not inherit the local choice cached while
+      // viewing a later frame (or another seat) when seeking back to dingque.
+      const selfLocalDingque = isSelfCard && !this.client.match.get(0)?.sourceReplay ? this.client.localDingqueSuit() : null;
       const dingqueSuit = (isSelfCard ? (bloodPlayer?.dingque ?? selfLocalDingque) : bloodPlayer?.dingque) ?? null;
       const selfCommitted = isSelfCard && (isDingqueCommitted(bloodPlayer) || selfLocalDingque !== null);
       let badgeStrip = false;

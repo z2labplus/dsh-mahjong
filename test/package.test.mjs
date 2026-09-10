@@ -1014,7 +1014,8 @@ test("each dynamic plugin process wires one fresh request token into boot and HT
     assert.match(second.boot.requestToken, /^[0-9A-Za-z_-]{40,}$/);
     assert.notEqual(first.boot.requestToken, second.boot.requestToken);
     assert.equal(JSON.stringify(first.boot).includes("owner-secret"), false);
-    assert.equal(first.harness.httpRegistrations.length, 1);
+    assert.equal(first.harness.httpRegistrations.length, 2);
+    assert.ok(first.harness.httpRegistrations.some(route => route.path === "/dsh-mahjong/view"));
     assert.equal(
       first.harness.registrations.some((tool) => tool.name === "dsh_mahjong_m0_status"),
       false,
@@ -1022,14 +1023,14 @@ test("each dynamic plugin process wires one fresh request token into boot and HT
     );
 
     const accepted = await invoke(
-      first.harness.httpRegistrations[0].handler,
+      first.harness.httpRegistrations.find(route => route.path === "/dsh-mahjong/api").handler,
       first.boot.requestToken,
     );
     assert.equal(accepted.status, 200);
     assert.equal(accepted.payload.ok, true);
 
     const crossProcess = await invoke(
-      first.harness.httpRegistrations[0].handler,
+      first.harness.httpRegistrations.find(route => route.path === "/dsh-mahjong/api").handler,
       second.boot.requestToken,
     );
     assert.equal(crossProcess.status, 403);

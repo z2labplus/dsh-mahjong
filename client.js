@@ -32,6 +32,15 @@ window.__ModuleLoader__.load({
     var focusResizeListeners = new Set();
 
     var CSS = `
+      [data-dsh-source-editing] .dsh-mj-resize-handle{display:none}
+      .dsh-mj-correction{position:fixed;z-index:80;right:12px;top:134px;bottom:12px;width:min(600px,46vw);display:flex;flex-direction:column;box-sizing:border-box;color:var(--dsw-alias-label-primary,#17191c);background:var(--dsw-alias-bg-layer-1,#fff);border:1px solid var(--dsw-alias-border-l2,#d9dce1);border-radius:6px;pointer-events:auto;font-size:13px;line-height:1.6;box-shadow:0 3px 12px #00000012}
+      .dsh-mj-correction *{box-sizing:border-box}.dsh-mj-correction header,.dsh-mj-correction footer{padding:12px 16px;flex-shrink:0}.dsh-mj-correction header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--dsw-alias-border-l2,#ddd)}.dsh-mj-correction header strong{font-size:16px}.dsh-mj-correction small{display:block;color:var(--dsw-alias-label-secondary,#656b75)}
+      .dsh-mj-correction button,.dsh-mj-correction select,.dsh-mj-correction input{font:inherit;color:inherit;background:var(--dsw-alias-bg-layer-1,#fff);border:1px solid var(--dsw-alias-border-l2,#d9dce1);border-radius:5px;min-height:32px;padding:4px 8px;max-width:100%}.dsh-mj-correction button{cursor:pointer;white-space:nowrap}.dsh-mj-correction button:hover{background:var(--dsw-alias-interactive-bg-hover,#eef0f3)}.dsh-mj-correction button:disabled{opacity:.45;cursor:default}.dsh-mj-correction :focus-visible{outline:2px solid var(--dsw-alias-brand-primary,#3168d8);outline-offset:2px}
+      .dsh-mj-correction nav{display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--dsw-alias-border-l2,#ddd);flex-wrap:wrap}.dsh-mj-correction nav button{border:0;background:transparent}.dsh-mj-correction nav button[aria-pressed=true]{color:var(--dsw-alias-brand-primary,#3168d8);background:var(--dsw-alias-interactive-bg-hover,#eef0f3)}
+      .dsh-edit-body{overflow:auto;min-height:0;flex:1;padding:12px 16px}.dsh-edit-body>details{border-top:1px solid var(--dsw-alias-border-l2,#ddd);padding:12px 0}.dsh-mj-correction details summary{cursor:pointer;font-weight:550}.dsh-mj-correction details details{padding:8px 0}.dsh-mj-correction h3{font-size:13px;margin:16px 0 6px}.dsh-mj-correction p{margin:8px 0}.dsh-edit-field{display:flex;flex-direction:column;gap:4px;min-width:0;margin:6px 0}.dsh-edit-field>span{font-size:12px;color:var(--dsw-alias-label-secondary,#656b75)}.dsh-edit-field input,.dsh-edit-field select{width:100%}.dsh-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}.dsh-edit-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}.dsh-edit-transfer{display:grid;grid-template-columns:1fr 1fr 70px auto;gap:6px;align-items:end}.dsh-edit-transfer>button{margin-bottom:6px}
+      .dsh-edit-tiles{border:1px solid var(--dsw-alias-border-l2,#ddd);border-radius:5px;padding:6px 10px;margin:12px 0}.dsh-edit-tiles legend{font-size:12px}.dsh-edit-tiles button{font-size:12px;min-height:29px;padding:2px 5px}.dsh-edit-content{padding:0;border:0;margin:0;min-width:0}.dsh-edit-muted,.dsh-edit-context{color:var(--dsw-alias-label-secondary,#656b75);font-size:12px}.dsh-edit-errors{border-left:3px solid #b64332;padding:8px 12px;background:#b6433208}.dsh-edit-errors strong{color:#a63225}.dsh-edit-diffs p,.dsh-edit-path{overflow-wrap:anywhere;font-size:12px}.dsh-edit-diffs details{padding:6px 0}.dsh-edit-version{border-bottom:1px solid var(--dsw-alias-border-l2,#ddd);padding:12px 0}.dsh-mj-correction video{width:100%;display:block;margin:10px 0}.dsh-mj-correction footer{border-top:1px solid var(--dsw-alias-border-l2,#ddd)}.dsh-mj-correction footer p{font-size:12px;margin:0 0 8px}.dsh-mj-correction button.dsh-edit-primary{color:#fff;background:var(--dsw-alias-brand-primary,#3168d8);border-color:transparent}.dsh-mj-correction button.dsh-edit-primary:disabled{background:#7a8ba8}
+      @media(max-width:999px){.dsh-mj-correction{width:calc(100vw - 24px);top:46vh;bottom:12px}.dsh-mj-correction header{padding:8px 12px}.dsh-edit-grid{grid-template-columns:1fr 1fr}}
+
       .dsh-mj-overlay{position:fixed;inset:0;z-index:20;pointer-events:none!important}
       .dsh-mj-stage{box-sizing:border-box;position:fixed;display:block;margin:0;padding:0;overflow:visible;pointer-events:auto;border:0;border-radius:0;outline:0;background:transparent;box-shadow:none;filter:none;clip-path:none;mask:none;visibility:hidden}
       .dsh-mj-stage[data-frame-status="live"][data-layout-ready="true"],.dsh-mj-stage[data-frame-status="error"][data-layout-ready="true"]{visibility:visible}
@@ -62,6 +71,9 @@ window.__ModuleLoader__.load({
       .dsh-mj-brand-logo{display:inline-flex;width:22px;height:22px;flex:none;align-items:center;justify-content:center}
       .dsh-mj-brand-logo img{display:block;width:34px;height:34px;max-width:none;flex:none;object-fit:contain}
       .dsh-mj-sidebar-label{min-width:0;flex:1;overflow:hidden;text-align:left;text-overflow:ellipsis;white-space:nowrap}
+      header:has([data-dsh-source-controls]) [class*="_titleRow"]{flex-wrap:wrap;gap:8px;min-width:0}
+      header:has([data-dsh-source-controls]) [class*="_headerUtilities"]{width:100%;max-width:100%;min-width:0;flex-wrap:wrap;align-items:flex-start}
+      [data-dsh-source-controls]{flex:1 1 520px;min-width:0}
       .dsh-mj-sidebar-dot{width:6px;height:6px;flex:none;border-radius:50%;background:var(--dsw-alias-state-success-primary,#32a866)}
       .dsh-mj-dialog-layer{position:fixed;inset:0;z-index:2;display:flex;box-sizing:border-box;align-items:center;justify-content:center;padding:24px;pointer-events:auto;background:rgba(8,10,14,.48)}
       .dsh-mj-dialog{box-sizing:border-box;width:min(860px,calc(100vw - 48px));max-height:min(820px,calc(100vh - 48px));overflow:auto;border:1px solid var(--dsw-alias-border-l2,#d9dce1);border-radius:6px;color:var(--dsw-alias-label-primary,#17191c);background:var(--dsw-alias-bg-layer-1,#fff);box-shadow:0 18px 60px rgba(0,0,0,.24)}
@@ -260,6 +272,7 @@ window.__ModuleLoader__.load({
       var stateRequests = new Map();
       var caseSessions = new Map();
       var historySessions = new Map();
+      var sourceSessions = new Map(), sourceRequests = new Map();
       var catalogRequest = null;
       var connection = typeof ctx.get === "function" ? ctx.get("connection") : ctx.connection;
       var snapshot = {
@@ -420,6 +433,39 @@ window.__ModuleLoader__.load({
         }
       }
 
+      async function openSources(){
+        publish({sourcesOpen:true,panelOpen:false,libraryOpen:false,formError:null});
+        try{var result=await requestJson("/sources");publish({sources:result.items});}catch(error){publish({formError:error.message});}
+      }
+      async function openSource(caseId,eventIndex=0,seat=0,workspaceId,lesson=null,viewMode="fixed"){
+        if(snapshot.formStatus==="starting")return;publish({formStatus:"starting",formError:null});
+        try{
+          var key=caseId+":"+eventIndex+":"+seat+":"+lesson+":"+viewMode,known=sourceSessions.get(key);
+          var sessionId=known&&ctx.sessions.list.getSnapshot().byId[known]?known:await createVisibleSession("赛事回放 · "+(eventIndex+1)+"步",workspaceId);
+          var result=await requestJson("/sources/open",{method:"POST",body:JSON.stringify({sessionId,caseId,eventIndex,seat,lesson,viewMode})});
+          var state=normalizeGameState(result,sessionId);publishSession(sessionId,state);sourceSessions.set(key,sessionId);
+          await connection.api.sessions.rename({sessionId,title:"麻将实验室 · "+state.game.tableName});
+          ctx.sessions.open(sessionId);setOverlayMode("large");
+          publish({sourcesOpen:false,libraryOpen:false,panelOpen:false,formStatus:"idle",pendingSessionId:null});return state;
+        }catch(error){publish({formStatus:"error",formError:error.message});}
+      }
+      async function stepSource(sessionId,eventIndex,seat,lesson=null,viewMode){
+        var pending=sourceRequests.get(sessionId),request={sessionId,eventIndex,seat,lesson,viewMode};
+        if(pending){pending.next=request;return pending.promise;}
+        var work={next:request};sourceRequests.set(sessionId,work);publish({sourceLoading:true,formError:null});
+        work.promise=(async()=>{try{
+          while(work.next){var next=work.next;work.next=null;var result=await requestJson("/sources/step",{method:"POST",body:JSON.stringify(next)});publishSession(sessionId,normalizeGameState(result,sessionId));}
+        }catch(error){publish({formError:error.message});}finally{sourceRequests.delete(sessionId);publish({sourceLoading:sourceRequests.size>0});}})();
+        return work.promise;
+      }
+      async function askSource(sessionId){
+        var game=snapshot.statesBySession[sessionId]?.game,source=game?.sourceReplay;if(!source||snapshot.sourceLoading||correctionPanelOpen)return;
+        if(source.questionHash!==source.sourceHash)sourceSessions.clear();
+        if(source.questionHash!==source.sourceHash||source.questionIndex!==game.historyIndex||source.questionSeat!==source.seat||source.questionLesson!==source.lesson){
+          var state=await openSource(source.caseId,game.historyIndex,source.fixedSeat??source.seat,undefined,source.lesson,source.viewMode);if(!state)return;
+        }
+        setOverlayMode("compact");focusNativeComposer();
+      }
       async function openCase(eventIndex, workspaceId) {
         if (snapshot.formStatus === "starting") return;
         publish({ formStatus: "starting", formError: null });
@@ -534,6 +580,10 @@ window.__ModuleLoader__.load({
         loadSession,
         startGame,
         openCase,
+        openSources,openSource,stepSource,askSource,
+        async sourceEditorRequest(op,input){var payload=await requestJson('/source-editor/'+op,{method:'POST',body:JSON.stringify(input)});if(payload.result.state){publishSession(input.sessionId,payload.result.state);sourceSessions.clear();}return payload.result;},
+        async sourceEditorVideo(sessionId){var response=await fetch(API_BASE+'/source-editor/video',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','x-dsh-mahjong-request-token':API_REQUEST_TOKEN},body:JSON.stringify({sessionId})});if(!response.ok){var p=await response.json();throw new Error(p.error?.message??'视频打开失败');}return response.blob();},
+        closeSources(){publish({sourcesOpen:false,formError:null});},
         openLibrary,
         openLessons,
         startLesson,
@@ -558,7 +608,7 @@ window.__ModuleLoader__.load({
       var localHttp = parsed.protocol === "http:" &&
         (parsed.hostname === "localhost" || parsed.hostname === "localhost." || parsed.hostname === "[::1]" || /^127(?:\.[0-9]{1,3}){3}$/.test(parsed.hostname));
       var configuredHttps = parsed.protocol === "https:";
-      return (localHttp || configuredHttps) && (parsed.pathname === "/hand" || parsed.pathname === "/hand/");
+      return (localHttp || configuredHttps) && (parsed.pathname === "/hand" || parsed.pathname === "/hand/" || (parsed.origin === window.location.origin && parsed.pathname === "/dsh-mahjong/view/hand/"));
     }
     function safeHandUrl(candidate, gameId) {
       if (typeof candidate !== "string" || typeof gameId !== "string" || !gameId) return null;
@@ -736,16 +786,17 @@ window.__ModuleLoader__.load({
             else if(["share","practice"].includes(data.action))props.controller.openLibrary();
             return;
           }
-          if(data && game?.mode === "replay" && data.gameId === expectedGameId) {
-            if(data.type === "dsh-mahjong:history-request") {frame.contentWindow.postMessage({type:"dsh-mahjong:history-frame",frame:game.historyFrame,count:game.historyCount,first:game.historyFirst},expectedOrigin);return;}
-            if(data.type === "dsh-mahjong:history-step" && Number.isInteger(data.eventIndex)) {props.controller.openHistory(expectedGameId,data.eventIndex);return;}
+          if(data && ["replay","source-replay"].includes(game?.mode) && data.gameId === expectedGameId) {
+            if(data.type === "dsh-mahjong:history-request") {frame.contentWindow.postMessage({type:"dsh-mahjong:history-frame",frame:correctionPreviewActive?correctionPreview.frame:game.historyFrame,count:correctionPreviewActive?correctionPreview.count:game.historyCount,first:game.historyFirst},expectedOrigin);return;}
+            if(data.type === "dsh-mahjong:history-step" && correctionPanelOpen)return;
+            if(data.type === "dsh-mahjong:history-step" && Number.isInteger(data.eventIndex)) {if(game.mode==="source-replay")props.controller.stepSource(currentSessionId,data.eventIndex,game.sourceReplay.seat);else props.controller.openHistory(expectedGameId,data.eventIndex);return;}
           }
           if (!data || data.type !== HAND_READY_MESSAGE || data.gameId !== expectedGameId) return;
           setFrameStatus("live");
         }
         window.addEventListener("message", onFrameMessage);
         requestHandReady(frameRef.current, frameUrl);
-        if(game?.historyFrame && frameRef.current?.contentWindow)frameRef.current.contentWindow.postMessage({type:"dsh-mahjong:history-frame",frame:game.historyFrame,count:game.historyCount,first:game.historyFirst},expectedOrigin);
+        if(!correctionPreviewActive && game?.historyFrame && frameRef.current?.contentWindow)frameRef.current.contentWindow.postMessage({type:"dsh-mahjong:history-frame",frame:game.historyFrame,count:game.historyCount,first:game.historyFirst},expectedOrigin);
         return () => window.removeEventListener("message", onFrameMessage);
       }, [frameUrl, game && game.caseFrame, game && game.historyFrame]);
 
@@ -776,7 +827,7 @@ window.__ModuleLoader__.load({
           observedScroller = replaceObservedTarget(scroller, observedScroller);
           observedComposer = replaceObservedTarget(composer, observedComposer);
           if (!active || !scroller) { stage.removeAttribute("data-layout-ready"); return; }
-          applyStageGeometry(stage, calculateStageGeometry(scroller, composer, mode, dragPreferenceRef.current));
+          applyStageGeometry(stage, editorLayout(scroller, composer, mode, dragPreferenceRef.current));
         }
         function scheduleSync() {
           if (scheduledFrame === null) scheduledFrame = requestAnimationFrame(sync);
@@ -800,6 +851,7 @@ window.__ModuleLoader__.load({
           var target = event.target;
           if (target instanceof Element && target.closest("[data-composer-seat]")) setOverlayMode("compact");
         }
+        window.addEventListener("dsh-correction-layout",scheduleSync);
         resizeObserver.observe(appFrame);
         var initialScroller = appFrame.querySelector("[data-conversation-scroll]");
         if (initialScroller) contentMutationObserver.observe(initialScroller.parentElement || initialScroller, { childList: true, subtree: true });
@@ -812,6 +864,7 @@ window.__ModuleLoader__.load({
         appFrame.addEventListener("pointerdown", onComposerPointerDown, true);
         sync();
         return () => {
+          window.removeEventListener("dsh-correction-layout",scheduleSync);
           resizeObserver.disconnect();
           frameMutationObserver.disconnect();
           contentMutationObserver.disconnect();
@@ -828,6 +881,7 @@ window.__ModuleLoader__.load({
       }, []);
 
       function resizeTargets() {
+        if(correctionPanelOpen)return null;
         var root = rootRef.current;
         var stage = stageRef.current;
         var shellOverlay = root && root.closest("[data-shell-overlay]");
@@ -1278,6 +1332,7 @@ window.__ModuleLoader__.load({
             "form",
             { className: "dsh-mj-form", onSubmit },
             react.createElement("button",{type:"button",className:"dsh-mj-secondary",onClick:()=>props.controller.openLibrary()},"我的牌谱 · 导入 / 复盘 / 分享"),
+            react.createElement("button",{type:"button",className:"dsh-mj-secondary",onClick:()=>props.controller.openSources()},"赛事案例 · 完整回放与讲解"),
             react.createElement("button",{type:"button",className:"dsh-mj-secondary",onClick:()=>props.controller.openLessons()},"教练课程"),
             react.createElement("div", { className: "dsh-mj-notice", style: { marginTop: 0, marginBottom: 18, alignItems: "center" } },
               react.createElement("span", { style: { flex: 1 } }, "牌谱模式 · 天府夺魁 8-8：LC 自摸三条（局部案例，只读）"),
@@ -1414,6 +1469,300 @@ window.__ModuleLoader__.load({
       );
     }
 
+    function SourcesDialog(props){
+      var client=useController(props.controller),workspaces=props.useWorkspaces(v=>v),sessions=props.useSessions(v=>v),ref=react.useRef(null);
+      if(!client.sourcesOpen)return null;
+      return react.createElement("div",{className:"dsh-mj-dialog-layer",onMouseDown:e=>{if(e.target===e.currentTarget)props.controller.closeSources();}},
+        react.createElement("div",{className:"dsh-mj-dialog",role:"dialog","aria-modal":"true","aria-label":"赛事案例",ref,onKeyDown:e=>{if(e.key==="Escape")props.controller.closeSources();else trapDialogFocus(e,ref.current);}},
+          react.createElement("header",{className:"dsh-mj-dialog-header"},react.createElement("h2",{className:"dsh-mj-dialog-title"},"赛事案例"),react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>props.controller.closeSources()},"关闭")),
+          react.createElement("div",{className:"dsh-mj-form"},
+            (client.sources??[]).map(c=>react.createElement("section",{key:c.caseId,style:{marginBottom:20}},
+              react.createElement("h3",null,c.title),react.createElement("p",null,c.players.map(p=>p.name).join(" · ")+" · "+c.count+" 个回放时点"),
+              react.createElement("p",{style:{fontSize:12}},c.notice),
+              react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting",onClick:()=>props.controller.openSource(c.caseId,0,0,resolveWorkspaceId(workspaces,sessions.current))},"整副回放")," ",
+              react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting"||!c.hasLessons,onClick:()=>props.controller.openSource(c.caseId,c.keyIndex,c.keySeat,resolveWorkspaceId(workspaces,sessions.current),0)},c.hasLessons?"关键步讲解":"讲解待复核"))),
+            client.sources?.length===0?react.createElement("p",null,"本机尚未安装赛事案例。"):null,
+            react.createElement("details",null,react.createElement("summary",null,"较早的局部案例"),react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>{props.controller.closeSources();props.controller.openCase(0,resolveWorkspaceId(workspaces,sessions.current));}},"天府夺魁 · LC 自摸三条（局部）")),
+            client.formError?react.createElement("p",{role:"alert"},client.formError):null)));
+    }
+    var correctionPanelOpen=false;
+    var correctionPreviewActive=false;
+    var correctionPreview=null;
+    var editTiles=[...'spm'].flatMap(s=>Array.from({length:9},(_,i)=>`${i+1}${s}`));
+    var editActions={draw:'摸牌',discard:'弃牌',peng:'碰',gang_exposed:'明杠',gang_concealed:'暗杠',gang_added:'补杠',draw_replacement:'杠后补牌',hu_ron:'点炮胡',hu_tsumo:'自摸',end:'流局结束'};
+    var editTileName=t=>/^[1-9][spm]$/.test(t)?'一二三四五六七八九'[+t[0]-1]+({s:'条',p:'筒',m:'万'}[t[1]]):'未选牌';
+    var editSort=xs=>xs.slice().sort((a,b)=>editTiles.indexOf(a)-editTiles.indexOf(b));
+    var editClone=x=>JSON.parse(JSON.stringify(x));
+    var editH=(tag,props,...children)=>react.createElement(tag,props,...children);
+    function editDrawPair(record,eventId,tile){
+      var i=record.events.findIndex(e=>e.id===eventId),draw=record.events[i],discard=record.events[i+1];
+      if(!draw||!['draw','draw_replacement'].includes(draw.action)||!/^([1-9])[spm]$/.test(tile)||tile===draw.tile||!discard||discard.action!=='discard'||discard.seat!==draw.seat)return null;
+      return {drawId:draw.id,discardId:discard.id,drawSeq:i+1,discardSeq:i+2,seat:draw.seat,drawTile:draw.tile,discardTile:discard.tile,tile};
+    }
+    function editDrawChoice(record,pair,both){
+      var current=editDrawPair(record,pair.drawId,pair.tile);
+      if(!current||JSON.stringify(current)!==JSON.stringify(pair))throw new Error('关联步骤已变化，请重新选择要修改的摸牌。');
+      var next=JSON.parse(JSON.stringify(record));next.events.find(e=>e.id===pair.drawId).tile=pair.tile;
+      if(both)next.events.find(e=>e.id===pair.discardId).tile=pair.tile;
+      return next;
+    }
+    function editRestoredDraft(data,local){
+      // This tab's cache contains the latest edit, even if an older request
+      // reached the server later. A clean cache also cancels an older draft.
+      var draft=local??data.draft;
+      if(!draft||JSON.stringify(draft.record)===JSON.stringify(data.record)&&(!draft.reason||draft.reason==='纠正牌谱'))return null;
+      return draft;
+    }
+    function editDraftWriter(write){
+      var pending=Promise.resolve();
+      return payload=>{var next=pending.catch(()=>{}).then(()=>write(payload));pending=next;return next;};
+    }
+    function editorLayout(scroller,composer,mode,preference){
+      if(!correctionPanelOpen)return calculateStageGeometry(scroller,composer,mode,preference);
+      var rect=scroller.getBoundingClientRect(),panel=document.querySelector('.dsh-mj-correction')?.getBoundingClientRect();
+      if(!panel)return calculateStageGeometry(scroller,composer,mode,preference);
+      var small=window.innerWidth<1000,right=small?rect.right:panel.left-12,bottom=small?panel.top-28:(composer?.getBoundingClientRect().top??rect.bottom);
+      var w=Math.max(0,Math.min(right-rect.left,(bottom-rect.top)*TABLE_RATIO));
+      return {left:rect.left+(right-rect.left-w)/2,top:rect.top,width:w,height:w/TABLE_RATIO};
+    }
+    function applyEditorFrame(frame,count){
+      return new Promise((resolve,reject)=>{
+        var iframe=document.querySelector('.dsh-mj-frame'),target=iframe?.contentWindow;
+        if(!target||!frame){reject(new Error('牌桌尚未就绪'));return;}
+        var origin=new URL(iframe.src,location.href).origin,id=crypto.randomUUID();
+        var timer=setTimeout(()=>finish(new Error('已保存，回放加载失败。请点击重试加载。')),8000);
+        function finish(error){clearTimeout(timer);window.removeEventListener('message',receive);error?reject(error):resolve();}
+        function receive(e){if(e.source===target&&e.origin===origin&&e.data?.type==='dsh-mahjong:history-applied'&&e.data.requestId===id&&e.data.gameId===frame.gameId&&e.data.eventIndex===frame.eventIndex)finish();}
+        window.addEventListener('message',receive);
+        target.postMessage({type:'dsh-mahjong:history-frame',frame,count,first:0,requestId:id},origin);
+      });
+    }
+    function EditTileList({label,tiles,onChange}){
+      return editH('fieldset',{className:'dsh-edit-tiles'},editH('legend',null,label+' · '+tiles.length+'张'),
+        editH('div',{className:'dsh-edit-row'},...editSort(tiles).map((t,i)=>editH('button',{key:i,type:'button',title:'移除'+editTileName(t),'aria-label':label+'移除'+editTileName(t),onClick:()=>{var n=tiles.slice();n.splice(n.indexOf(t),1);onChange(n);}},editTileName(t),' ×')),
+          editH('select',{'aria-label':label+'添加牌',value:'',onChange:e=>{if(e.target.value)onChange(editSort([...tiles,e.target.value]));}},editH('option',{value:''},'＋ 添加牌'),...editTiles.map(t=>editH('option',{key:t,value:t},editTileName(t))))));
+    }
+    function editSummary(value,players){
+      if(value===undefined||value===null)return '无';
+      if(Array.isArray(value))return value.map(v=>editSummary(v,players)).join('；');
+      if(typeof value==='object'){
+        if(value.action)return '事件 '+value.seq+' · '+(players?.[value.seat]?.name??'玩家')+' '+(editActions[value.action]??value.action)+' '+(value.tile?editTileName(value.tile):'')+' · '+value.atSeconds+'秒'+(value.triggerEventId?' · 来源 '+value.triggerEventId:'')+(value.meldEventId?' · 原碰 '+value.meldEventId:'')+(value.scoreTransfers?.length?' · 转账 '+editSummary(value.scoreTransfers,players):'')+(value.evidence?' · 证据：'+({unverified:'未核实','user-corrected':'用户更正','direct-observation':'直接观察',inferred:'连续状态推定',video_observed:'原谱标为视频观察（尚待复核）',uniquely_inferred:'原谱标为连续状态推定'}[value.evidence.kind]??value.evidence.kind)+'；'+(value.evidence.explanation??'')+(value.evidence.reference?'；依据：'+value.evidence.reference:''):'');
+        if(value.fromSeat!==undefined&&value.toSeat!==undefined)return (players?.[value.fromSeat]?.name??value.fromSeat)+' → '+(players?.[value.toSeat]?.name??value.toSeat)+' '+(value.tiles?value.tiles.map(editTileName).join('、'):value.points+'分');
+        var names={seat:'座位',name:'昵称',dingque:'定缺',dealtHand:'换牌前',openingHand:'换牌后',initialHandPoints:'初始分',transfers:'换牌',direction:'方向',explanation:'说明',kind:'证据状态',sourceRange:'时间范围',eventId:'关联事件',area:'区域',tiles:'实见牌',scope:'可见范围',atSeconds:'视频秒数'};
+        return Object.entries(value).map(([k,v])=>(names[k]??k)+'：'+editSummary(v,players)).join('；');
+      }
+      if(editTiles.includes(value))return editTileName(value);
+      return String(value);
+    }
+    function editChanges(a,b){
+      if(!a||!b)return [];var rows=[];
+      for(var key of new Set([...Object.keys(a),...Object.keys(b)]))if(!['events','version','verification','settlement','settlementBySeat','unplayedWall','revisionHistory'].includes(key)&&JSON.stringify(a[key])!==JSON.stringify(b[key]))rows.push({label:({players:'玩家与手牌',dealer:'庄家',exchange:'换三张',observations:'视频核对',source:'来源',timing:'阶段时间',title:'标题',scoring:'计分说明',ruleset:'规则',dingqueSourceRange:'定缺时间范围',championIdentity:'冠军身份依据'})[key]??key,before:a[key],after:b[key]});
+      var old=new Map(a.events.map(e=>[e.id,e])),next=new Map(b.events.map(e=>[e.id,e]));
+      for(var id of new Set([...old.keys(),...next.keys()]))if(JSON.stringify(old.get(id))!==JSON.stringify(next.get(id)))rows.push({label:'事件 '+(next.get(id)?.seq??old.get(id)?.seq),before:old.get(id),after:next.get(id)});
+      return rows;
+    }
+    function SourceCorrectionEditor(props){
+      var h=editH,source=props.game.sourceReplay;
+      var [loaded,setLoaded]=react.useState(null),[record,setRecord]=react.useState(null),[selected,setSelected]=react.useState(source.items[props.game.historyIndex]?.eventId??'phase-dealt');
+      var [tab,setTab]=react.useState('event'),[busy,setBusy]=react.useState(false),[status,setStatus]=react.useState('正在读取牌谱…'),[validation,setValidation]=react.useState(null),[reason,setReason]=react.useState('纠正牌谱');
+      var [undo,setUndo]=react.useState([]),[redo,setRedo]=react.useState([]),[video,setVideo]=react.useState(null),[retry,setRetry]=react.useState(false),[diffVersion,setDiffVersion]=react.useState(null);
+      var [pendingPair,setPendingPair]=react.useState(null);
+      var errorsRef=react.useRef(null);
+      react.useEffect(()=>{if(pendingPair){var box=document.querySelector('[aria-label="关联摸打更正"]');box?.scrollIntoView({block:'nearest'});box?.querySelector('button')?.focus();}},[pendingPair]);
+      var videoRef=react.useRef(null),latest=react.useRef(null),operation=react.useRef(null),alive=react.useRef(true);
+      var clientId=react.useMemo(()=>{var key='dsh-source-editor-client',id=sessionStorage.getItem(key);if(!id){id=crypto.randomUUID();sessionStorage.setItem(key,id);}return id;},[]);
+      var localKey='dsh-source-draft:'+source.caseId+':'+clientId;
+      var call=(op,input={})=>props.controller.sourceEditorRequest(op,{sessionId:props.sessionId,...input});
+      var writeDraft=react.useMemo(()=>editDraftWriter(payload=>call('draft',payload)),[props.sessionId]);
+      var persistDraft=()=>writeDraft(draftPayload());
+      var currentFrame=()=>{var g=props.controller.getSnapshot().statesBySession[props.sessionId]?.game;return g?applyEditorFrame(g.historyFrame,g.historyCount):Promise.resolve();};
+      react.useEffect(()=>{
+        alive.current=true;correctionPanelOpen=true;document.documentElement.setAttribute('data-dsh-source-editing','true');window.dispatchEvent(new Event('dsh-correction-layout'));
+        call('get',{clientId}).then(data=>{
+          if(!alive.current)return;var local=null;
+          try{local=JSON.parse(localStorage.getItem(localKey));}catch(_){}
+          var draft=editRestoredDraft(data,local);
+          setLoaded({...data,baseHash:draft?.baseHash??data.baseHash,diskHash:draft?.diskHash??data.diskHash});setRecord(draft?.record??data.record);
+          if(draft?.selection)setSelected(draft.selection);if(draft?.reason)setReason(draft.reason);
+          setStatus(draft?'已恢复未提交草稿；当前正式回放未改变。':data.externalChanged?'源文件有外部修改，请先重新读取并比较。':'当前正式版本 v'+(data.record.version??1)+' · 视频核对未完成');
+        }).catch(e=>setStatus(e.message));
+        return()=>{alive.current=false;if(latest.current?.record&&latest.current?.loaded)persistDraft().catch(()=>{});correctionPanelOpen=false;document.documentElement.removeAttribute('data-dsh-source-editing');correctionPreviewActive=false;window.dispatchEvent(new Event('dsh-correction-layout'));currentFrame().catch(()=>{});};
+      },[]);
+      react.useEffect(()=>()=>{if(video)URL.revokeObjectURL(video);},[video]);
+      latest.current={record,loaded,selected,reason};
+      function draftPayload(){var x=latest.current;return {clientId,record:x.record,baseHash:x.loaded.baseHash,diskHash:x.loaded.diskHash,selection:x.selected,reason:x.reason};}
+      react.useEffect(()=>{
+        if(!loaded||!record)return;
+        // Persist the baseline too: undoing every change must supersede a
+        // previously saved draft instead of resurrecting it on the next open.
+        var draft={...draftPayload(),at:new Date().toISOString()};
+        try{localStorage.setItem(localKey,JSON.stringify(draft));}catch(e){setStatus('浏览器草稿空间不足，请使用保存草稿。');}
+        if(busy)return;var timer=setTimeout(()=>persistDraft().catch(e=>{if(alive.current)setStatus('自动保存草稿失败：'+e.message);}),650);
+        return()=>clearTimeout(timer);
+      },[record,loaded,selected,busy,reason]);
+      function change(fn){var next=editClone(record);fn(next);next.events.forEach((e,i)=>e.seq=i+1);setUndo(u=>[...u.slice(-49),editClone(record)]);setRedo([]);setRecord(next);setValidation(null);setPendingPair(null);operation.current=null;setStatus('草稿已修改，尚未生效；可继续修改其他事件，再统一校验。');}
+      function navigate(id){if(busy||pendingPair)return;setSelected(id);if(validation?.ok)setValidation(null);setStatus(validation&&!validation.ok?'已定位。可继续修改；下方保留上次校验的差异提示。':'已切换编辑事件，请校验并预览查看对应草稿画面。');}
+      function jumpToEvent(id){if(!record.events.some(e=>e.id===id)){setStatus('该事件已删除，请检查修改对比。');return;}setTab('event');navigate(id);document.querySelector('.dsh-edit-body')?.scrollTo({top:0});}
+      function editEvent(patch){change(r=>Object.assign(r.events.find(e=>e.id===selected),patch));}
+      function editEventTile(tile){var pair=editDrawPair(record,selected,tile);if(pair){setPendingPair(pair);setStatus('请选择只改摸牌，或将关联摸打一起更正。');}else editEvent({tile});}
+      function choosePair(both){try{var next=editDrawChoice(record,pendingPair,both);change(r=>Object.assign(r,next));setStatus(both?'摸牌和弃牌已作为一组修改，点击一次撤销可恢复两步。':'已只修改摸牌，关联弃牌保持当前记录；可继续编辑后统一校验。');}catch(error){setPendingPair(null);setStatus(error.message);}}
+      async function run(fn){if(busy)return;setBusy(true);try{await fn();}catch(e){setStatus(e.message);}finally{if(alive.current)setBusy(false);}}
+      function indexFor(r,id){if(id==='phase-dealt')return 0;if(id==='phase-exchanged')return 1;if(id==='phase-dingque')return 2;if(id==='phase-settlement')return r.events.length+3;return Math.max(0,r.events.findIndex(e=>e.id===id)+3);}
+      async function preview(r=record){
+        var result=await call('validate',{record:r,eventIndex:indexFor(r,selected),baseHash:loaded.baseHash});setValidation(result);
+        if(!result.ok){setStatus('校验未通过；已列出出错位置、本次修改和可比较的手牌差异。可以保存草稿继续修改。');correctionPreviewActive=false;setTimeout(()=>errorsRef.current?.scrollIntoView({block:'nearest'}),0);await currentFrame();return;}
+        correctionPreview={frame:result.preview,count:result.count};correctionPreviewActive=true;await applyEditorFrame(result.preview,result.count);
+        setStatus('草稿预览 · '+(r.players.find(p=>p.seat===result.preview.perspective.seat)?.name??'玩家')+'视角 · 未生效。数据校验通过；视频核对未完成。');
+      }
+      async function commit(){
+        if(!validation?.ok)return;await persistDraft();
+        operation.current??=crypto.randomUUID();
+        var result=await call('commit',{...draftPayload(),selection:undefined,operationId:operation.current,reason,selectedEventId:selected});
+        if(!result.saved){setValidation(result);setStatus('校验未通过，草稿已保留。');return;}
+        correctionPreviewActive=false;setRetry(true);
+        try{await applyEditorFrame(result.state.game.historyFrame,result.state.game.historyCount);setRetry(false);setStatus('已更新回放 · v'+result.version+'；视频核对未完成，旧讲解待复核。');}
+        catch(e){setStatus(e.message);}
+        var fresh=await call('get',{clientId});setLoaded(fresh);setRecord(fresh.record);setSelected(result.state.game.sourceReplay.items[result.state.game.historyIndex].eventId);setValidation(null);setUndo([]);setRedo([]);setReason('纠正牌谱');operation.current=null;localStorage.removeItem(localKey);
+      }
+      var btn=(text,fn,disabled=false,primary=false)=>h('button',{type:'button',className:primary?'dsh-edit-primary':'',disabled:busy||!!pendingPair||disabled,onClick:fn},text);
+      var select=(label,value,options,onChange)=>h('label',{className:'dsh-edit-field'},h('span',null,label),h('select',{'aria-label':label,disabled:busy||!!pendingPair,value:value??'',onChange:e=>onChange(e.target.value)},...options.map(([v,text])=>h('option',{key:v,value:v},text))));
+      var input=(label,value,onChange,type='text')=>h('label',{className:'dsh-edit-field'},h('span',null,label),h('input',{'aria-label':label,disabled:busy||!!pendingPair,type,value:value??'',step:type==='number'?'any':undefined,onChange:e=>onChange(type==='number'?Number(e.target.value):e.target.value)}));
+      if(!record)return h('aside',{className:'dsh-mj-correction','aria-label':'牌谱纠错'},h('header',null,h('strong',null,'牌谱纠错'),btn('关闭',props.onClose)),h('p',{role:'status'},status));
+      var e=record.events.find(e=>e.id===selected),ei=record.events.findIndex(e=>e.id===selected),players=record.players,seats=players.map(p=>[p.seat,p.name]);
+      var stages=[['phase-dealt','换牌前'],['phase-exchanged','换牌后'],['phase-dingque','定缺完成']];
+      var eventOptions=[...stages,...record.events.map((x,i)=>[x.id,'事件 '+(i+1)+' · '+players[x.seat]?.name+' '+editActions[x.action]+' '+(x.tile?editTileName(x.tile):'')]),['phase-settlement','本副结算']];
+      var changes=editChanges(loaded.record,record);
+      var diagnosis=validation?.diagnostics;
+      var describeEvent=x=>x?(players[x.seat]?.name??'玩家')+' '+(editActions[x.action]??x.action)+' '+(x.tile?editTileName(x.tile):'')+'（'+x.atSeconds+'秒）':'无';
+      var countTiles=tiles=>[...new Set(tiles)].map(t=>tiles.filter(x=>x===t).length+'张'+editTileName(t)).join('、');
+      var at=e?.atSeconds??({['phase-dealt']:record.timing?.dealt??record.exchange.sourceRange?.[0],['phase-exchanged']:record.timing?.exchanged??record.exchange.sourceRange?.[1],['phase-dingque']:record.timing?.dingque??record.dingqueSourceRange?.[1],['phase-settlement']:record.timing?.settlement??record.events.at(-1)?.atSeconds})[selected]??0;
+      var differences=rows=>h('div',{className:'dsh-edit-diffs'},...rows.map((row,i)=>h('details',{key:i},h('summary',null,row.label),h('p',null,'修改前：'+editSummary(row.before,players)),h('p',null,'修改后：'+editSummary(row.after,players)))));
+      function insert(after){var id='event-'+crypto.randomUUID();change(r=>r.events.splice(ei<0?0:ei+(after?1:0),0,{id,seat:e?.seat??0,action:'draw',tile:'',atSeconds:at,evidence:{kind:'unverified',explanation:''}}));setSelected(id);setTab('event');}
+      function swapSeats(a,b){
+        change(r=>{
+          var remap=n=>n===a?b:n===b?a:n;
+          r.players.forEach(p=>p.seat=remap(p.seat));r.players.sort((x,y)=>x.seat-y.seat);r.dealer=remap(r.dealer);
+          r.exchange.transfers.forEach(t=>{t.fromSeat=remap(t.fromSeat);t.toSeat=remap(t.toSeat);});
+          r.events.forEach(x=>{x.seat=remap(x.seat);if(x.fromSeat!==undefined)x.fromSeat=remap(x.fromSeat);x.scoreTransfers?.forEach(t=>{t.fromSeat=remap(t.fromSeat);t.toSeat=remap(t.toSeat);});});
+          r.observations?.forEach(o=>o.seat=remap(o.seat));
+        });
+      }
+      function recalculateOpening(){
+        var hands=players.map(p=>p.dealtHand.slice()),transfers=record.exchange.transfers;
+        for(var t of transfers)for(var tile of t.tiles){var pos=hands[t.fromSeat].indexOf(tile);if(pos<0)throw new Error(players[t.fromSeat].name+'换牌前没有'+editTileName(tile));hands[t.fromSeat].splice(pos,1);}
+        for(var t of transfers)hands[t.toSeat].push(...t.tiles);
+        change(r=>r.players.forEach((p,i)=>p.openingHand=editSort(hands[i])));
+      }
+      var eventPanel=e?h('section',null,
+        h('p',{className:'dsh-edit-context'},'回放第 '+(indexFor(record,selected)+1)+' 步 ／ 行牌事件 '+(ei+1)+' ／ '+players[e.seat]?.name+' ／ '+editActions[e.action]+' ／ '+at+' 秒'),
+        h('div',{className:'dsh-edit-grid'},select('行动玩家',e.seat,seats,v=>editEvent({seat:+v})),select('动作',e.action,Object.entries(editActions),v=>editEvent({action:v})),select('牌张',e.tile,[['','请选择'],...editTiles.map(t=>[t,editTileName(t)])],editEventTile),input('视频时间（秒）',e.atSeconds,v=>editEvent({atSeconds:v}),'number')),
+        ['peng','gang_exposed','hu_ron'].includes(e.action)?select('关联弃牌',e.triggerEventId,[['','请选择来源'],...record.events.slice(0,ei).filter(x=>x.action==='discard').map(x=>[x.id,'事件 '+x.seq+' · '+players[x.seat].name+'打'+editTileName(x.tile)])],v=>{var from=record.events.find(x=>x.id===v);editEvent({triggerEventId:v,triggerSeq:from?.seq,fromSeat:from?.seat});}):null,
+        e.action==='gang_added'?select('关联原碰牌',e.meldEventId,[['','请选择副露'],...record.events.slice(0,ei).filter(x=>x.action==='peng'&&x.seat===e.seat).map(x=>[x.id,'事件 '+x.seq+' · 碰'+editTileName(x.tile)])],v=>editEvent({meldEventId:v})):null,
+        h('div',{className:'dsh-edit-grid'},select('证据状态',e.evidence?.kind??'unverified',[['unverified','未核实'],['user-corrected','用户更正'],['direct-observation','直接观察'],['inferred','连续状态推定'],['video_observed','原谱标为视频观察（尚待复核）'],['uniquely_inferred','原谱标为连续状态推定']],v=>editEvent({evidence:{...e.evidence,kind:v}})),input('截图位置或文字依据',e.evidence?.reference??'',v=>editEvent({evidence:{...e.evidence,reference:v}}))),
+        input('此步说明',e.evidence?.explanation??'',v=>editEvent({evidence:{...e.evidence,explanation:v}})),
+        h('h3',null,'此步积分转账'),...(e.scoreTransfers??[]).map((t,i)=>h('div',{key:i,className:'dsh-edit-transfer'},select('付款方 '+(i+1),t.fromSeat,seats,v=>change(r=>r.events[ei].scoreTransfers[i].fromSeat=+v)),select('收款方 '+(i+1),t.toSeat,seats,v=>change(r=>r.events[ei].scoreTransfers[i].toSeat=+v)),input('分数 '+(i+1),t.points,v=>change(r=>r.events[ei].scoreTransfers[i].points=v),'number'),btn('移除',()=>change(r=>r.events[ei].scoreTransfers.splice(i,1))))),btn('添加转账',()=>editEvent({scoreTransfers:[...(e.scoreTransfers??[]),{fromSeat:(e.seat+1)%4,toSeat:e.seat,points:1}]})),
+        h('p',{className:'dsh-edit-muted'},'终局积分由初始分及转账计算；本功能不替代赛事番型核验。'),
+        h('div',{className:'dsh-edit-row'},btn('前插动作',()=>insert(false)),btn('后插动作',()=>insert(true)),btn('上移',()=>change(r=>{[r.events[ei-1],r.events[ei]]=[r.events[ei],r.events[ei-1]];}),ei===0),btn('下移',()=>change(r=>{[r.events[ei+1],r.events[ei]]=[r.events[ei],r.events[ei+1]];}),ei===record.events.length-1),btn('删除动作',()=>{change(r=>r.events.splice(ei,1));setSelected(record.events[ei-1]?.id??'phase-dingque');})))
+        :h('section',null,h('p',null,'当前是'+(eventOptions.find(x=>x[0]===selected)?.[1]??'开局阶段')+'。在“玩家与换牌”编辑起手、换牌和定缺。'),btn('插入行牌动作',()=>insert(false)));
+      var playersPanel=h('section',null,
+        select('庄家',record.dealer,seats,v=>change(r=>r.dealer=+v)),h('p',{className:'dsh-edit-muted'},'座位 1—4 按行牌顺序。昵称只修改显示身份；更换庄家或手牌会重新校验全局归属。'),
+        ...players.map((p,i)=>h('details',{key:i,open:i===0},h('summary',null,'座位 '+(i+1)+' · '+p.name),h('div',{className:'dsh-edit-grid'},input('座位 '+(i+1)+' 昵称',p.name,v=>change(r=>r.players[i].name=v)),select(p.name+'定缺',p.dingque,[['s','缺条'],['p','缺筒'],['m','缺万']],v=>change(r=>r.players[i].dingque=v)),input(p.name+'初始分',p.initialHandPoints??0,v=>change(r=>r.players[i].initialHandPoints=v),'number')),h(EditTileList,{label:p.name+'换牌前手牌',tiles:p.dealtHand,onChange:v=>change(r=>r.players[i].dealtHand=v)}),h('p',null,'换牌后记录：'+p.openingHand.map(editTileName).join('、')),select(p.name+'交换座位','',[['','选择交换对象'],...players.filter(x=>x.seat!==i).map(x=>[x.seat,'与座位 '+(x.seat+1)+' '+x.name+' 交换'])],v=>{if(v!=='')swapSeats(i,+v);}),h('p',{className:'dsh-edit-muted'},'交换会移动双方起手、定缺、全部行动、转账及观察归属；需重新检查行牌顺序和换牌方向。'))),
+        h('h3',null,'换三张'),select('换牌方向',record.exchange.direction,[['previous_in_turn_order','交给行牌顺序的上一家'],['next_in_turn_order','交给行牌顺序的下一家'],['opposite','交给对家']],v=>change(r=>{r.exchange.direction=v;var offset={previous_in_turn_order:3,next_in_turn_order:1,opposite:2}[v];r.exchange.transfers.forEach(t=>t.toSeat=(t.fromSeat+offset)%4);})),
+        ...record.exchange.transfers.map((t,i)=>h('div',{key:i},h('p',null,players[t.fromSeat].name+' → '+players[t.toSeat].name),h(EditTileList,{label:players[t.fromSeat].name+'换出',tiles:t.tiles,onChange:v=>change(r=>r.exchange.transfers[i].tiles=v)}))),
+        btn('按起手与换牌更新换后记录',()=>run(async()=>recalculateOpening())),h('p',{className:'dsh-edit-muted'},'这个按钮明确更新计算记录。视频中实际看到的换后手牌，请另录为“视频实见核对”，不覆盖原始观察。'),
+        h('h3',null,'阶段时间（秒）'),h('div',{className:'dsh-edit-grid'},...['dealt','exchanged','dingque','settlement'].map((key,i)=>input(['发牌完成','换牌完成','定缺完成','结算时间'][i],record.timing?.[key]??[record.exchange.sourceRange?.[0],record.exchange.sourceRange?.[1],record.dingqueSourceRange?.[1],record.events.at(-1)?.atSeconds][i],v=>change(r=>{r.timing??={};r.timing[key]=v;}),'number'))));
+      var observationsPanel=h('section',null,h('p',null,'只填写视频中亲眼看到的牌。遮挡部分选“部分可见”，不要抄计算快照当作观察。'),
+        btn('新增实见核对',()=>change(r=>(r.observations??=[]).push({id:'obs-'+crypto.randomUUID(),eventId:selected,seat:e?.seat??source.seat,area:'hand',scope:'partial',tiles:[],atSeconds:at,evidence:{kind:'direct-observation',explanation:''}}))),
+        ...(record.observations??[]).map((o,i)=>{var upd=patch=>change(r=>Object.assign(r.observations[i],patch)),result=validation?.observationResults?.find(x=>x.id===o.id);return h('details',{key:o.id,open:true},h('summary',null,'核对 '+(i+1)+' · '+players[o.seat]?.name+(result?' · '+({match:'实见牌与计算值相符',mismatch:'实见牌与计算值不符',missing:'原事件已删除'})[result.status]:'')),select('核对步骤 '+(i+1),o.eventId,eventOptions,v=>upd({eventId:v})),h('div',{className:'dsh-edit-grid'},select('核对玩家 '+(i+1),o.seat,seats,v=>upd({seat:+v})),select('核对区域 '+(i+1),o.area,[['hand','手牌'],['river','牌河（不含被碰胡取走的牌）'],['meld','副露']],v=>upd({area:v})),select('可见范围 '+(i+1),o.scope,[['partial','部分可见'],['complete','完整可见']],v=>upd({scope:v})),input('核对视频秒数 '+(i+1),o.atSeconds,v=>upd({atSeconds:v}),'number')),h(EditTileList,{label:'实见牌 '+(i+1),tiles:o.tiles,onChange:v=>upd({tiles:v})}),input('核对依据 '+(i+1),o.evidence?.explanation??'',v=>upd({evidence:{kind:'direct-observation',explanation:v}})),result?.actual?h('p',null,'计算结果：'+result.actual.map(editTileName).join('、')):null,btn('删除核对',()=>change(r=>r.observations.splice(i,1))));}));
+      var versionPanel=h('section',null,
+        h('p',null,'载入历史版本后，先预览差异再保存。恢复会新增版本，中间历史保留。'),
+        ...(loaded.versions??[]).map(v=>h('div',{key:v.hash,className:'dsh-edit-version'},
+          h('strong',null,'v'+v.version+' · '+v.reason),h('small',null,v.at?new Date(v.at).toLocaleString():'编辑前版本'),
+          h('div',{className:'dsh-edit-row'},
+            btn('查看改动',()=>setDiffVersion(v)),
+            btn('载入此版本草稿',()=>run(async()=>{
+              var old=await call('version',{versionHash:v.hash});change(r=>{for(var k of Object.keys(r))delete r[k];Object.assign(r,old.record);});
+              setReason('恢复至牌谱 v'+v.version);setStatus('历史版本已载入草稿，校验并预览后可保存为新版本。');
+            }))
+          )
+        )),
+        diffVersion?h('section',null,h('h3',null,'v'+diffVersion.version+' 的修改'),
+          differences((diffVersion.changes??[]).map(x=>({...x,label:x.eventId?'事件 '+(x.after?.seq??x.before?.seq):({players:'玩家',exchange:'换牌',dealer:'庄家',observations:'视频核对',source:'来源'})[x.field]??x.field})))
+        ):null
+      );
+      return h('aside',{className:'dsh-mj-correction','aria-label':'牌谱纠错',onKeyDown:ev=>{if(ev.key==='Escape'&&!busy)props.onClose();}},
+        h('header',null,h('div',null,h('strong',null,'牌谱纠错'),h('small',null,'v'+(loaded.record.version??1)+' · '+(correctionPreviewActive?'草稿预览 · 未生效':'正式回放'))),btn('取消',props.onClose)),
+        h('nav',{'aria-label':'纠错栏目'},...Object.entries({event:'行牌事件',players:'玩家与换牌',observations:'视频实见核对',versions:'版本记录'}).map(([key,label])=>h('button',{key,type:'button',disabled:busy||!!pendingPair,'aria-pressed':tab===key,onClick:()=>setTab(key)},label))),
+        h('div',{className:'dsh-edit-body'},select('纠错步骤',selected,eventOptions,navigate),
+          h('div',{className:'dsh-edit-row'},btn('撤销',()=>{operation.current=null;setRedo(x=>[...x,record]);setRecord(undo.at(-1));setUndo(x=>x.slice(0,-1));setValidation(null);setStatus('已撤销上一次修改；关联摸打作为一组恢复。');},!undo.length),btn('重做',()=>{operation.current=null;setUndo(x=>[...x,record]);setRecord(redo.at(-1));setRedo(x=>x.slice(0,-1));setValidation(null);setStatus('已重做上一次修改，请重新校验。');},!redo.length)),
+          pendingPair?h('section',{role:'group','aria-label':'关联摸打更正',style:{padding:12,border:'1px solid var(--dsw-alias-border-l2,#ddd)',borderRadius:6,background:'var(--dsw-alias-bg-layer-2,#f5f5f5)'}},
+            h('strong',null,'检查关联弃牌'),
+            h('p',{'aria-live':'polite'},'准备将事件 '+pendingPair.drawSeq+' 的摸牌从'+editTileName(pendingPair.drawTile)+'改为'+editTileName(pendingPair.tile)+'。事件 '+pendingPair.discardSeq+' 当前记录为弃'+editTileName(pendingPair.discardTile)+'，是否也需要更正？'),
+            h('p',{className:'dsh-edit-muted'},'请按原视频选择；摸到一张牌后，也可以打出手里的其他牌。'),
+            h('div',{className:'dsh-edit-row'},h('button',{type:'button',disabled:busy,onClick:()=>choosePair(false)},'只改摸牌'),h('button',{type:'button',disabled:busy,onClick:()=>choosePair(true)},'摸打都改为'+editTileName(pendingPair.tile)),h('button',{type:'button',disabled:busy,onClick:()=>{setPendingPair(null);setStatus('已取消这次修改，草稿保持原样。');}},'取消这次修改'))):null,
+          h('fieldset',{disabled:busy||!!pendingPair,className:'dsh-edit-content'},({event:eventPanel,players:playersPanel,observations:observationsPanel,versions:versionPanel})[tab]),
+          h('details',null,h('summary',null,'原视频与源文件'),h('p',{className:'dsh-edit-path'},loaded.sourcePath),h('p',null,record.source?.url?h('a',{href:record.source.url,target:'_blank',rel:'noreferrer'},'打开原始视频出处'):null),
+            h('div',{className:'dsh-edit-row'},loaded.hasVideo?btn('打开已关联视频',()=>run(async()=>{setStatus('正在读取本地视频…');var blob=await props.controller.sourceEditorVideo(props.sessionId);setVideo(URL.createObjectURL(blob));setStatus('视频已打开，可定位当前步骤。');})):null,h('label',null,'补选本地视频 ',h('input',{type:'file',accept:'video/*','aria-label':'补选本地视频',onChange:ev=>{var file=ev.target.files?.[0];if(file)setVideo(URL.createObjectURL(file));}}))),
+            video?h('div',null,h('video',{ref:videoRef,src:video,controls:true,preload:'metadata',onLoadedMetadata:()=>{if(videoRef.current)videoRef.current.currentTime=at;}}),btn('定位当前步骤 '+at+' 秒',()=>{videoRef.current.currentTime=at;videoRef.current.pause();})):h('p',{className:'dsh-edit-muted'},'视频未在面板打开；这不妨碍保存草稿。'),
+            btn('重新读取源文件',()=>run(async()=>{var fresh=await call('get',{clientId}),disk=await call('reread');setUndo(x=>[...x,record]);setRedo([]);setLoaded({...fresh,diskHash:disk.diskHash});setRecord(disk.record);setValidation(null);setStatus('已读取源文件到草稿。请展开修改对比，校验后再保存。');})),btn('导出当前草稿',()=>{var url=URL.createObjectURL(new Blob([JSON.stringify(record,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=source.caseId+'-草稿.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);})),
+          h('details',{open:changes.length>0},h('summary',null,'修改对比 · '+changes.length+' 项'),differences(changes),changes.length?h('p',{className:'dsh-edit-muted'},'修改会重新计算后续手牌、牌河、副露、余牌和积分；该案例的旧讲解及挑战依据需重新核对。'):h('p',null,'尚无修改。')),
+          validation?.issues?.length?h('section',{className:'dsh-edit-errors',role:'alert',ref:errorsRef},
+            h('h3',null,'校验未通过'),...validation.issues.map((x,i)=>h('div',{key:i},h('strong',null,(x.seq?'事件 '+x.seq+' · ':'')+(players[x.seat]?.name??'')+'：'+x.message),x.expected?h('p',null,'应为：'+x.expected.map(editTileName).join('、')+'；记录：'+(x.actual??[]).map(editTileName).join('、')):null,x.eventId?btn('定位错误事件',()=>jumpToEvent(x.eventId)):btn('检查起手与换牌',()=>setTab('players')),x.seq>1?btn('检查前一步',()=>jumpToEvent(record.events[x.seq-2]?.id)):null)),
+            diagnosis?h('div',{'data-dsh-edit-diagnostics':true},
+              h('h3',null,'与修改前'+(diagnosis.baselineVersion?' v'+diagnosis.baselineVersion:'')+' 对照'),
+              h('p',null,'本次修改了 '+diagnosis.changes.length+' 条行牌事件。'),
+              ...diagnosis.changes.map(x=>h('div',{key:x.eventId},h('p',null,'事件 '+x.seq+'：'+describeEvent(x.before)+' → '+describeEvent(x.after)),h('small',null,'修改项目：'+x.fields.map(k=>({seat:'行动玩家',action:'动作',tile:'牌张',fromSeat:'来源玩家',triggerEventId:'关联弃牌',meldEventId:'关联原碰',atSeconds:'时间',scoreTransfers:'积分转账',added:'新增动作',deleted:'删除动作',order:'顺序'})[k]??k).join('、')),x.after?btn('检查修改事件 '+x.seq,()=>jumpToEvent(x.eventId)):h('p',null,'此事件已删除，请检查修改对比或撤销。'))),
+              ...diagnosis.setupChanges.map((x,i)=>h('p',{key:i},(players[x.seat]?.name??'开局')+'的起手、换牌或开局设置已修改。',btn('检查开局设置',()=>setTab('players')))),
+              ...diagnosis.handDifferences.map(x=>h('div',{key:x.seat},h('strong',null,(players[x.seat]?.name??'玩家')+' · 出错动作执行前的暗手差异'),
+                h('p',null,[x.more.length?'多 '+countTiles(x.more):'',x.less.length?'少 '+countTiles(x.less):''].filter(Boolean).join('；')),
+                h('details',null,h('summary',null,'查看修改前后手牌'),h('p',null,'修改前：'+x.beforeHand.map(editTileName).join('、')),h('p',null,'当前草稿：'+x.draftHand.map(editTileName).join('、'))))),
+              !diagnosis.handDifferences.length?h('p',null,'没有可展示的暗手差异；请根据具体错误检查动作、来源或开局设置。'):null,
+              diagnosis.suspectedEvents.length?h('div',null,h('h3',null,'建议检查关联步骤'),h('div',{className:'dsh-edit-row'},...diagnosis.suspectedEvents.map(x=>btn('检查事件 '+x.seq+' · '+editActions[x.action]+editTileName(x.tile),()=>jumpToEvent(x.eventId))))):null,
+              h('p',{className:'dsh-edit-muted'},diagnosis.notice)):null):null,
+          validation?.warnings?.length?h('div',{className:'dsh-edit-muted'},...validation.warnings.map((w,i)=>h('p',{key:i},w))):null,
+          input('本次修正说明',reason,setReason)),
+        h('footer',null,h('p',{role:'status','aria-live':'polite'},status),retry?btn('重试加载',()=>run(async()=>{await currentFrame();setRetry(false);setStatus('已更新回放；视频核对未完成。');})):null,h('div',{className:'dsh-edit-row'},btn('保存草稿',()=>run(async()=>{await persistDraft();setStatus('草稿已保存。正式回放未改变。');})),btn('校验并预览',()=>run(()=>preview())),btn('保存并更新回放',()=>run(commit),!validation?.ok,true))));
+    }
+
+    function SourceReplayControls(props){
+      var game=props.state.game,source=game.sourceReplay,client=props.client;
+      var [editing,setEditing]=react.useState(false);
+      var play=react.useState(false),playing=play[0],setPlaying=play[1];
+      var speed=react.useState(1000),interval=speed[0],setIntervalMs=speed[1];
+      var following=source.viewMode==="follow";
+      react.useEffect(()=>{setPlaying(false);},[props.sessionId]);
+      react.useEffect(()=>{
+        if(!playing||editing||client.sourceLoading)return;
+        if(game.historyIndex>=game.historyCount-1||client.formError){setPlaying(false);return;}
+        var timer=setTimeout(()=>props.controller.stepSource(props.sessionId,game.historyIndex+1,source.seat),interval);
+        return()=>clearTimeout(timer);
+      },[playing,editing,game.historyIndex,client.sourceLoading,client.formError,source.seat,source.viewMode,props.sessionId,interval]);
+      var step=(i,seat=source.seat,lesson=null,viewMode)=>{if(editing)return;setPlaying(false);return props.controller.stepSource(props.sessionId,i,seat,lesson,viewMode);};
+      var lecture=source.lesson===null?null:source.lessons[source.lesson];
+      var button=(text,fn,disabled=false)=>react.createElement("button",{className:"dsh-mj-mode-button",disabled:disabled||editing,onClick:fn},text);
+      return react.createElement("div",{"data-dsh-source-controls":true,style:{display:"flex",flexDirection:"column",gap:5,maxWidth:"100%",fontSize:12}},
+        react.createElement("div",{style:{display:"flex",gap:5,alignItems:"center",flexWrap:"wrap"}},
+          button("赛事案例",()=>{setPlaying(false);props.controller.openSources();}),
+          source.editable?button("纠正牌谱",()=>{setPlaying(false);setEditing(true);}):null,
+          button("上一步",()=>step(game.historyIndex-1),client.sourceLoading||game.historyIndex===0),
+          button(playing?"暂停":"播放",()=>setPlaying(!playing),game.historyIndex===game.historyCount-1),
+          button("下一步",()=>step(game.historyIndex+1),client.sourceLoading||game.historyIndex+1===game.historyCount),
+          react.createElement("select",{"aria-label":"回放步骤",disabled:editing,value:game.historyIndex,onChange:e=>{var index=Number(e.target.value),keep=source.lesson!==null&&(source.lessons[source.lesson].sequence??[source.lessons[source.lesson].step]).includes(index);step(index,source.seat,keep?source.lesson:null);},style:{maxWidth:220}},source.items.map(item=>react.createElement("option",{key:item.index,value:item.index},(item.index+1)+" / "+game.historyCount+" · "+item.label))),
+          react.createElement("select",{"aria-label":"观察模式",disabled:editing||client.sourceLoading,value:source.viewMode??"fixed",onChange:e=>step(game.historyIndex,source.seat,source.lesson,e.target.value),title:"跟随每一步的行动玩家；弃牌后仍停留在出牌者视角"},
+            react.createElement("option",{value:"fixed"},"固定玩家"),react.createElement("option",{value:"follow",disabled:source.followAvailable===false},"跟随行动玩家")),
+          react.createElement("select",{"aria-label":"观察选手",disabled:editing||client.sourceLoading||following,value:source.seat,onChange:e=>step(game.historyIndex,Number(e.target.value),source.lesson)},source.players.map(p=>react.createElement("option",{key:p.seat,value:p.seat},p.name))),
+          react.createElement("select",{"aria-label":"播放间隔",value:interval,onChange:e=>setIntervalMs(Number(e.target.value))},[500,1000,2000].map(ms=>react.createElement("option",{key:ms,value:ms},ms/1000+"秒/步"))),
+          button("关键步",()=>step(source.keyIndex,source.keySeat)),
+          react.createElement("select",{"aria-label":"讲解章节",disabled:editing,value:source.lesson??-1,onChange:e=>{var n=Number(e.target.value);step(n<0?game.historyIndex:source.lessons[n].step,n<0?source.seat:source.keySeat,n<0?null:n);},style:{maxWidth:235}},
+            react.createElement("option",{value:-1},"关键步讲解…"),source.lessons.map((l,i)=>react.createElement("option",{key:i,value:i},(i+1)+". "+l.title))),
+          react.createElement("span",null,"录像约 "+Math.floor(source.items[game.historyIndex].at/60)+":"+(source.items[game.historyIndex].at%60).toFixed(1).padStart(4,"0"))),
+        lecture?react.createElement("div",{"data-dsh-source-lesson":true,style:{padding:"4px 0",maxWidth:1150,lineHeight:"20px"}},react.createElement("strong",{style:{fontSize:15}},lecture.title+" · "),lecture.lines.join("；"),lecture.hypothesis?react.createElement("strong",{style:{color:"#a14a16"}},"【假设选择，非原选手实打】"):null):null,
+        react.createElement("div",{"data-dsh-source-question":true,style:{fontSize:11,color:"var(--color-text-secondary,#666)"}},
+          (source.questionHash!==source.sourceHash?"下方旧问答仍绑定修改前版本；点击提问这一步使用新版。 · ":"")+"下方问答固定："+source.players[source.questionSeat].name+" · 第 "+(source.questionIndex+1)+" 个时点。切换后点击“提问这一步”建立对应问答。 · "+source.notice,
+          client.formError?react.createElement("span",{role:"alert"},client.formError):null),
+        editing?react.createElement(SourceCorrectionEditor,{controller:props.controller,sessionId:props.sessionId,game,onClose:()=>setEditing(false)}):null);
+    }
+
     function LibraryDialog(props) {
       var client=useController(props.controller);
       var workspaces=props.useWorkspaces((value)=>value);
@@ -1434,6 +1783,7 @@ window.__ModuleLoader__.load({
           react.createElement("header",{className:"dsh-mj-dialog-header"},react.createElement("h2",{className:"dsh-mj-dialog-title"},"我的牌谱"),
             react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>props.controller.closeLibrary()},"关闭")),
           react.createElement("div",{className:"dsh-mj-form"},
+            react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>props.controller.openSources()},"赛事案例 · 完整回放与讲解"),
             react.createElement("p",null,"逐步复盘与问答。完整记录可以导出和分享；可重建的历史局面可以另开练习。"),
             react.createElement("input",{ref:fileRef,type:"file",accept:".json,application/json",style:{display:"none"},onChange:async e=>{
               var file=e.target.files?.[0];if(!file)return;
@@ -1494,6 +1844,7 @@ window.__ModuleLoader__.load({
         react.createElement(InviteDialog, props),
         react.createElement(LibraryDialog, props),
         react.createElement(LessonsDialog, props),
+        react.createElement(SourcesDialog, props),
       );
     }
 
@@ -1540,6 +1891,7 @@ window.__ModuleLoader__.load({
       }, [props.sessionId]);
       if (!state || state.phase !== "active" || !state.game) return null;
       function onClick() {
+        if(state?.game?.mode === "source-replay" && !compact){props.controller.askSource(props.sessionId);return;}
         if (compact) setOverlayMode("large");
         else { setOverlayMode("compact"); focusNativeComposer(); }
       }
@@ -1595,6 +1947,7 @@ window.__ModuleLoader__.load({
         coaching?.coach?.status!=="active"?react.createElement("span",{role:"status",style:{maxWidth:380,fontSize:12}},coaching?.coach?.feedback):null,
         react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>props.controller.openLessons()},"课程与进度"),
         react.createElement("button",{className:"dsh-mj-mode-button",disabled:client.formStatus==="starting",onClick:()=>props.controller.startLesson(state.game.coach.lessonId,resolveWorkspaceId(workspaces,props.sessionId))},"再练一次"));
+      if(state?.game?.mode === "source-replay")return react.createElement(SourceReplayControls,{...props,state,client});
       if(state?.game?.mode === "replay")return react.createElement("div",{style:{display:"flex",gap:6,alignItems:"center"}},
         react.createElement("button",{className:"dsh-mj-mode-button",disabled:client.formStatus==="starting"||state.game.historyIndex<=(state.game.historyFirst??0),onClick:()=>props.controller.openHistory(state.game.gameId,state.game.historyIndex-1,resolveWorkspaceId(workspaces,props.sessionId))},"上一步"),
         react.createElement("span",null,"步骤 "+state.game.historyIndex+" / "+(state.game.historyCount-1)),
@@ -1604,8 +1957,8 @@ window.__ModuleLoader__.load({
         client.formError?react.createElement("span",{role:"alert"},client.formError):null);
       if (!state || state.game?.mode !== "case") return react.createElement("div", null, react.createElement("button", {
         type: "button", className: "dsh-mj-mode-button", disabled: client.formStatus === "starting",
-        onClick: () => props.controller.openCase(0, resolveWorkspaceId(workspaces, props.sessionId)),
-      }, "案例复盘"),modelNotice?react.createElement("span",{role:"status",style:{fontSize:12,color:"var(--color-text-warning, #a65d00)"}},modelNotice):null,react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>props.controller.openLibrary()},"我的牌谱"),
+        onClick: () => props.controller.openSources(),
+      }, "赛事案例"),modelNotice?react.createElement("span",{role:"status",style:{fontSize:12,color:"var(--color-text-warning, #a65d00)"}},modelNotice):null,react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>props.controller.openLibrary()},"我的牌谱"),
         react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>props.controller.openLessons()},"教练课程"),
         react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>props.controller.newTable()},"开新桌"), client.formError ? react.createElement("span", { role: "alert" }, client.formError) : null);
       return react.createElement("div", { style: { display: "flex", gap: 4 }, "aria-label": "案例步骤（每步独立问答）" },
