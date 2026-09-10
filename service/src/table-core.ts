@@ -9,13 +9,14 @@ import { buildBloodAiDecisionCatalog, buildBloodAiDecisionEnvelope } from './eng
 import { BloodTop1ActionPicker } from './engine/blood-top1-action-picker';
 import type { Entry } from './engine/protocol';
 import type { ReplayEvent } from './engine/replay-store';
+import { prepareChallengeDraw, challengeAction, recordChallengeAction, challengeSummary, type ChallengeState } from './challenge-policy';
 
 export const DEFAULT_INITIAL_POINTS = 4_800;
 export const MAX_INITIAL_POINTS = 1_000_000;
 export type Seat = { seat: number; kind: 'ai' | 'human'; owner?: boolean; modelId?: string; modelLabel?: string; initialPoints?: number };
 export type TableMetadata = {
   gameId: string; tenant: string; owner: string; tableName: string; ruleset: 'blood' | 'guobiao'; ruleVersion?: string; ruleOptions?: { autoBuhua?: boolean };
-  timeoutMs: number; createdAtMs: number; seats: Seat[]; joined: number[]; mode?: 'practice' | 'live' | 'coach'; coach?:CoachState; source?: {gameId:string;eventIndex:number}; seatEpochs?: Record<number,number>;
+  timeoutMs: number; createdAtMs: number; seats: Seat[]; joined: number[]; mode?: 'practice' | 'live' | 'coach' | 'challenge'; coach?:CoachState; source?: {gameId:string;eventIndex:number}; seatEpochs?: Record<number,number>;
 };
 type Window = { decisionId: string; snapshotKey: string; openedAtMs: number; deadlineAtMs: number };
 type Receipt = { seat: number; actionId: string; fingerprint: string; humanFingerprint?: string; ack: any };
@@ -23,6 +24,7 @@ export type Checkpoint = {
   version: 1; metadata: TableMetadata; entries: Entry[];
   engine: ReturnType<BloodEngine['exportCheckpoint']> | ReturnType<GuobiaoEngine['exportCheckpoint']>;
   windows: Record<number, Window>; receipts: Receipt[];
+  challenge?: ChallengeState;
 };
 function shortText(value: unknown, max: number, fallback?: string): string {
   if (value === undefined && fallback !== undefined) return fallback;
@@ -58,6 +60,7 @@ export function normalizeTable(input: any, owner: Access, gameId: string, now: n
 }
 
 export class TableCore {
+  challenge?: ChallengeState;
   metadata: TableMetadata;
   readonly game: Game;
   readonly engine: BloodEngine | GuobiaoEngine;
@@ -68,6 +71,7 @@ export class TableCore {
   private receipts: Receipt[] = [];
   constructor(source: TableMetadata | Checkpoint) {
     const saved = 'version' in source ? structuredClone(source) : null;
+    this.challenge = saved?.challenge;
     this.metadata = structuredClone(saved ? saved.metadata : source as TableMetadata);
     this.game = new Game(this.metadata.gameId, saved?.entries);
     this.engine = new (this.metadata.ruleset === 'guobiao' ? GuobiaoEngine : BloodEngine)(this.game, { appendReplayEvents: events => this.events.push(...events) });
@@ -100,7 +104,7 @@ export class TableCore {
     this.game.systemUpdate([
       // Persisted tables without initialPoints retain their original zero baseline.
       ['seats', `seat-${seat}`, { seat, startBeans: config.initialPoints ?? 0 }],
-      ['nicks', `seat-${seat}`, config.modelLabel ?? `玩家 ${seat + 1}`],
+      ['nicks', `seat-${seat}`, (this.challenge ? this.challenge.names[seat] : config.modelLabel) ?? `玩家 ${seat + 1}`],
       ['match', 0, { ...match, seatActors: { ...match.seatActors, [seat]: config } }],
     ]);
     this.progress(now);
@@ -109,13 +113,21 @@ export class TableCore {
     if (!this.catalogCache.has(seat)) this.catalogCache.set(seat, this.engine instanceof GuobiaoEngine
       ? guobiaoCatalog(this.game, this.engine, seat)
       : this.state ? buildBloodAiDecisionCatalog({ game: this.game, engine: this.engine, state: this.state, seat }) : null);
-    return this.catalogCache.get(seat);
+    const catalog=this.catalogCache.get(seat);
+    if(this.challenge && catalog){
+      const seen=new Map<number,number>(this.game.entries('tileFacePublic').map(([id,k])=>[Number(id),k]));
+      for(const [id,t] of this.game.entries('things'))if(t.slotName?.startsWith('hand.')&&t.slotName.endsWith(`@${seat}`)&&this.engine instanceof BloodEngine)seen.set(Number(id),this.engine.tileKeyForId(Number(id))!);
+      const counts=Array(27).fill(0);for(const k of seen.values())if(Number.isInteger(k)&&k>=0&&k<27)counts[k]++;
+      catalog.visibleCounts=counts;
+    }
+    return catalog;
   }
   progress(now: number): void {
     this.catalogCache.clear();
     if (this.metadata.joined.length < 4 || (this.metadata.coach && this.metadata.coach.status !== 'active')) {this.windows = {}; return;}
     for (let i = 0; i < 12; i++) {
       const revision = this.game.revision;
+      if(this.challenge)prepareChallengeDraw(this);
       this.engine.tick(now);
       if (this.game.revision === revision) break;
       if (i === 11) throw new ServiceError('ENGINE_DID_NOT_SETTLE', 500);
@@ -125,7 +137,7 @@ export class TableCore {
       const catalog = this.catalog(seat);
       if (!catalog || !catalog.publicActions.length) { delete this.windows[seat]; continue; }
       if (this.windows[seat]?.snapshotKey === catalog.snapshotKey) continue;
-      this.windows[seat] = { decisionId: crypto.randomUUID(), snapshotKey: catalog.snapshotKey, openedAtMs: now, deadlineAtMs: now + this.metadata.timeoutMs };
+      this.windows[seat] = { decisionId: crypto.randomUUID(), snapshotKey: catalog.snapshotKey, openedAtMs: now, deadlineAtMs: now + (this.challenge&&seat===this.challenge.seat?120000:this.metadata.timeoutMs) };
     }
   }
   decision(seat: number) {
@@ -133,7 +145,8 @@ export class TableCore {
     const catalog = this.catalog(seat);
     if (!window || !catalog || window.snapshotKey !== catalog.snapshotKey) return null;
     const config = this.metadata.seats[seat]!;
-    return (this.metadata.ruleset === 'guobiao' ? guobiaoEnvelope : buildBloodAiDecisionEnvelope)(catalog, { gameId: this.metadata.gameId, seat, ...window, modelId: config.modelId, modelLabel: config.modelLabel });
+    const envelope = (this.metadata.ruleset === 'guobiao' ? guobiaoEnvelope : buildBloodAiDecisionEnvelope)(catalog, { gameId: this.metadata.gameId, seat, ...window, modelId: config.modelId, modelLabel: config.modelLabel });
+    return this.challenge && config.kind==='ai' ? {...envelope,sourcePriority:{policy:'source-priority-v1',legalActionId:challengeAction(this,seat).action.legalActionId}} : envelope;
   }
   submit(seat: number, message: any, now: number): any {
     const actionId = shortText(message.actionId, 120);
@@ -153,12 +166,14 @@ export class TableCore {
     if (!catalog || catalog.snapshotKey !== window.snapshotKey) throw new ServiceError('AI_DECISION_STALE', 409);
     const raw = catalog.rawByActionId.get(action.legalActionId);
     if (!raw) throw new ServiceError('AI_ACTION_NOT_LEGAL', 422);
+    if(this.challenge&&this.metadata.seats[seat]?.kind==='ai'&&challengeAction(this,seat).action.legalActionId!==action.legalActionId)throw new ServiceError('CHALLENGE_POLICY_REQUIRED',422);
     const teaching=this.metadata.coach && seat===0 ? {
       passed:coachPassed(this.metadata.coach.lessonId,raw,id=>this.engine instanceof BloodEngine?this.engine.tileKeyForId(id):null),
       lesson:coachLesson(this.metadata.coach.lessonId)!,
     }:null;
     const result = this.engine.handleAction(`seat-${seat}`, raw, now);
     if (!result.ok) throw new ServiceError('AI_ENGINE_REJECTED', 422);
+    if(this.challenge)recordChallengeAction(this,seat,catalog,action.legalActionId,false);
     this.recordResolution(seat, window, catalog, now, 'agent', action.legalActionId);
     delete this.windows[seat];
     if(teaching)this.metadata.coach={...this.metadata.coach!,status:teaching.passed?'passed':'retry',score:teaching.passed?100:0,feedback:teaching.passed?teaching.lesson.success:teaching.lesson.retry};
@@ -213,12 +228,13 @@ export class TableCore {
       const window = entry[1];
       const catalog = this.catalog(seat);
       if (catalog && catalog.snapshotKey === window.snapshotKey) {
-        const raw = this.engine instanceof GuobiaoEngine ? guobiaoTop1(this.engine.listHandTilesForSeat(seat),this.state.players[seat].melds.filter((m:any)=>m.kind!=='flower').length,[...catalog.rawByActionId.values()])
+        const raw = this.challenge ? catalog.rawByActionId.get(challengeAction(this,seat).action.legalActionId) : this.engine instanceof GuobiaoEngine ? guobiaoTop1(this.engine.listHandTilesForSeat(seat),this.state.players[seat].melds.filter((m:any)=>m.kind!=='flower').length,[...catalog.rawByActionId.values()])
           : new BloodTop1ActionPicker().pickAction({ game: this.game, engine: this.engine, state: this.state!, seat, scene: catalog.scene });
         const legal = [...catalog.rawByActionId].find(([, value]) => sameAction(value, raw));
         if (!legal) throw new ServiceError('FALLBACK_NOT_LEGAL', 500);
         const result = this.engine.handleAction(`seat-${seat}`, legal[1], now);
         if (!result.ok) throw new ServiceError('FALLBACK_REJECTED', 500);
+        if(this.challenge)recordChallengeAction(this,seat,catalog,legal[0],true);
         this.recordResolution(seat, window, catalog, now, 'timeout_top1', legal[0]);
       }
       delete this.windows[seat];
@@ -251,8 +267,9 @@ export class TableCore {
       if (kind === 'match' && value) {
         // Present the service deadline through the original HUD configuration;
         // the extracted engine still delegates timeouts to TableCore.
-        value.friendConfig = { waitMode: 'timeoutAuto', timeoutMs: this.metadata.timeoutMs };
+        value.friendConfig = { waitMode: 'timeoutAuto', timeoutMs: this.challenge&&seat===this.challenge.seat?120000:this.metadata.timeoutMs };
         if(this.metadata.coach)value.coach={...this.metadata.coach,title:coachLesson(this.metadata.coach.lessonId)!.title,goal:coachLesson(this.metadata.coach.lessonId)!.goal};
+        if(this.challenge)value.challenge=challengeSummary(this);
       }
       if (!['blood','gb'].includes(kind) || !value) continue;
       // Preserve the wall count for presentation without revealing future tile IDs.
@@ -270,7 +287,7 @@ export class TableCore {
     return { type: 'UPDATE', full: true, entries };
   }
   checkpoint(): Checkpoint {
-    return structuredClone({ version: 1, metadata: this.metadata, entries: this.game.snapshotEntries(), engine: this.engine.exportCheckpoint(), windows: this.windows, receipts: this.receipts });
+    return structuredClone({ version: 1, metadata: this.metadata, entries: this.game.snapshotEntries(), engine: this.engine.exportCheckpoint(), windows: this.windows, receipts: this.receipts,...(this.challenge?{challenge:this.challenge}:{}) });
   }
 }
 function sameAction(a: any, b: any): boolean {

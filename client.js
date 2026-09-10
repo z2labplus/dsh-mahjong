@@ -437,6 +437,16 @@ window.__ModuleLoader__.load({
         publish({sourcesOpen:true,panelOpen:false,libraryOpen:false,formError:null});
         try{var result=await requestJson("/sources");publish({sources:result.items});}catch(error){publish({formError:error.message});}
       }
+      async function startChallenge(caseId,workspaceId){
+        if(snapshot.formStatus==="starting")return;publish({formStatus:"starting",formError:null});
+        try{
+          var sessionId=await createVisibleSession("接手续打训练",workspaceId);
+          var result=await requestJson("/challenge/start",{method:"POST",body:JSON.stringify({sessionId,caseId})});
+          var state=normalizeGameState(result,sessionId);publishSession(sessionId,state);
+          await connection.api.sessions.rename({sessionId,title:"麻将实验室 · "+state.game.tableName});
+          ctx.sessions.open(sessionId);setOverlayMode("large");publish({sourcesOpen:false,panelOpen:false,formStatus:"idle",pendingSessionId:null});
+        }catch(error){publish({formStatus:"error",formError:error.message});}
+      }
       async function openSource(caseId,eventIndex=0,seat=0,workspaceId,lesson=null,viewMode="fixed"){
         if(snapshot.formStatus==="starting")return;publish({formStatus:"starting",formError:null});
         try{
@@ -580,7 +590,7 @@ window.__ModuleLoader__.load({
         loadSession,
         startGame,
         openCase,
-        openSources,openSource,stepSource,askSource,
+        openSources,openSource,startChallenge,stepSource,askSource,
         async sourceEditorRequest(op,input){var payload=await requestJson('/source-editor/'+op,{method:'POST',body:JSON.stringify(input)});if(payload.result.state){publishSession(input.sessionId,payload.result.state);sourceSessions.clear();}return payload.result;},
         async sourceEditorVideo(sessionId){var response=await fetch(API_BASE+'/source-editor/video',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','x-dsh-mahjong-request-token':API_REQUEST_TOKEN},body:JSON.stringify({sessionId})});if(!response.ok){var p=await response.json();throw new Error(p.error?.message??'视频打开失败');}return response.blob();},
         closeSources(){publish({sourcesOpen:false,formError:null});},
@@ -1480,7 +1490,9 @@ window.__ModuleLoader__.load({
               react.createElement("h3",null,c.title),react.createElement("p",null,c.players.map(p=>p.name).join(" · ")+" · "+c.count+" 个回放时点"),
               react.createElement("p",{style:{fontSize:12}},c.notice),
               react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting",onClick:()=>props.controller.openSource(c.caseId,0,0,resolveWorkspaceId(workspaces,sessions.current))},"整副回放")," ",
-              react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting"||!c.hasLessons,onClick:()=>props.controller.openSource(c.caseId,c.keyIndex,c.keySeat,resolveWorkspaceId(workspaces,sessions.current),0)},c.hasLessons?"关键步讲解":"讲解待复核"))),
+              react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting"||!c.hasLessons,onClick:()=>props.controller.openSource(c.caseId,c.keyIndex,c.keySeat,resolveWorkspaceId(workspaces,sessions.current),0)},c.hasLessons?"关键步讲解":"讲解待复核")," ",
+              c.challengeAvailable?react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting"||!c.challengeServiceReady,onClick:()=>props.controller.startChallenge(c.caseId,resolveWorkspaceId(workspaces,sessions.current))},c.challengeServiceReady?"接手续打 · 训练规则":"接续挑战 · 牌局服务待更新"):null,
+              c.challengeAvailable?react.createElement("p",{style:{fontSize:12}},"接替 "+c.players[c.keySeat].name+"，从关键步自由出牌。其他座位优先沿用原谱；接手后使用血战训练规则、底分 1，未知尾墙固定种子重建。结算分别查看本次净得分与关键步模拟评估；不代表完整赛事规则或选手水平。AI 超时 38 秒按相同规则继续，玩家超时会记录托管动作。"):null)),
             client.sources?.length===0?react.createElement("p",null,"本机尚未安装赛事案例。"):null,
             react.createElement("details",null,react.createElement("summary",null,"较早的局部案例"),react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>{props.controller.closeSources();props.controller.openCase(0,resolveWorkspaceId(workspaces,sessions.current));}},"天府夺魁 · LC 自摸三条（局部）")),
             client.formError?react.createElement("p",{role:"alert"},client.formError):null)));
@@ -1919,13 +1931,50 @@ window.__ModuleLoader__.load({
       );
     }
 
+    function ChallengeQuality({evaluation}){
+      if(!evaluation)return react.createElement("p",null,"这份牌谱尚无匹配版本的多次模拟评估，未套用旧评估。");
+      var q=evaluation,chosen=q.rows.find(r=>r.tile===q.chosenTile),number=n=>(n>0?"+":"")+n.toFixed(2),tile=t=>"一二三四五六七八九"[+t[0]-1]+({m:"万",p:"筒",s:"条"}[t[1]]);
+      return react.createElement("section",null,
+        react.createElement("strong",null,"关键步决策评估 · "+q.samples+" 组配对模拟"),
+        chosen?react.createElement("p",null,"本次首打"+tile(chosen.tile)+"：模拟平均净得分 "+number(chosen.meanNet)+"；相对原选择打"+tile(q.referenceTile)+"，平均差额 "+number(chosen.difference)+"，95% 区间 ["+number(chosen.interval95[0])+", "+number(chosen.interval95[1])+"]。"+(chosen.tile===q.referenceTile?"与原选手选择相同。":chosen.interval95[0]<=0&&chosen.interval95[1]>=0?"现有样本无法区分两种选择的优劣。":chosen.interval95[1]<0?"在此陪练模型下，样本倾向原选择。":"在此陪练模型下，样本倾向本次选择。")+(q.automatic?"首步为超时托管，不作为本人决策评价。":"")):null,
+        react.createElement("p",null,q.notice),
+        react.createElement("details",null,react.createElement("summary",null,"比较所有候选牌"),
+          react.createElement("table",{style:{borderCollapse:"collapse",width:"100%",fontVariantNumeric:"tabular-nums"}},
+            react.createElement("thead",null,react.createElement("tr",null,["首打","模拟平均净分","比原选择多得分","95% 区间"].map(label=>react.createElement("th",{key:label,style:{textAlign:"left",padding:4}},label)))),
+            react.createElement("tbody",null,q.rows.map(r=>react.createElement("tr",{key:r.tile},[tile(r.tile),number(r.meanNet),number(r.difference),"["+number(r.interval95[0])+", "+number(r.interval95[1])+"]"].map((text,i)=>react.createElement("td",{key:i,style:{padding:4,borderTop:"1px solid var(--color-border-default, #ddd)"}},text))))))));
+    }
+
+    function ChallengeControls({state,controller}){
+      var c=state.game.challenge,expanded=react.useState(false),show=expanded[0],setShow=expanded[1],dialog=react.useRef(null),opener=react.useRef(null);
+      react.useEffect(()=>{if(show){dialog.current?.querySelector("button")?.focus();return()=>opener.current?.focus();}},[show]);
+      if(!c)return react.createElement("span",{role:"status"},"正在恢复挑战状态…");
+      var signed=n=>n>0?"+"+n:String(n),tile=t=>t?"一二三四五六七八九"[+t[0]-1]+({m:"万",p:"筒",s:"条"}[t[1]]):"";
+      return react.createElement("div",{style:{minWidth:0,fontSize:12,whiteSpace:"normal"}},
+        react.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},
+          react.createElement("strong",null,"接手续打 · "+c.name),react.createElement("span",null,"训练规则 · 原谱优先"),
+          react.createElement("span",{style:{fontVariantNumeric:"tabular-nums"}},"接手后净得分 "+signed(c.net)),
+          react.createElement("button",{className:"dsh-mj-mode-button",ref:opener,onClick:()=>setShow(true)},c.finished?"查看结果与调整":"规则说明"),
+          react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>controller.openSources()},"赛事案例 / 重新挑战")),
+        c.finished?react.createElement("p",{role:"status",style:{margin:"4px 0"}},"本次 "+signed(c.net)+" · 原谱打法在相同训练条件下 "+signed(c.referenceNet)+" · 差额 "+signed(c.difference)+"。录像原段净得分 "+signed(c.historicalNet)+"（历史记录）。"):null,
+        show?react.createElement("div",{className:"dsh-mj-dialog-layer",style:{zIndex:60},onMouseDown:e=>{if(e.target===e.currentTarget)setShow(false);}},
+          react.createElement("section",{className:"dsh-mj-dialog",ref:dialog,role:"dialog","aria-modal":"true","aria-label":"接续挑战结果与说明",style:{maxHeight:"80vh",overflowY:"auto",whiteSpace:"normal"},onKeyDown:e=>{if(e.key==="Escape")setShow(false);else trapDialogFocus(e,dialog.current);}},
+            react.createElement("header",{className:"dsh-mj-dialog-header"},react.createElement("h2",{className:"dsh-mj-dialog-title"},c.finished?"接续挑战结果":"接续挑战规则"),react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>setShow(false)},"关闭")),
+            react.createElement("div",{className:"dsh-mj-form"},
+              c.finished?react.createElement("p",null,"接手后净得分 "+signed(c.net)+"；同条件原谱打法 "+signed(c.referenceNet)+"；差额 "+signed(c.difference)+"。这是本次续打结果。"):null,
+              react.createElement("p",null,c.rules),
+              c.finished?react.createElement("div",null,react.createElement(ChallengeQuality,{evaluation:c.decisionQuality}),react.createElement("p",null,c.qualityNotice),
+                react.createElement("ol",null,c.quality.map((q,i)=>react.createElement("li",{key:i},"打"+tile(q.tile)+"："+(q.shanten===0?"听牌":q.shanten+"向听")+"，可见进张 "+q.effective+" 张；同一步效率优先方案 "+q.bestShanten+" 向听、"+q.bestEffective+" 张。"+(q.timeout?"（超时托管，不计作本人决策）":"")))),
+                react.createElement("details",null,react.createElement("summary",null,"逐步动作与调整原因"),react.createElement("ol",null,c.log.map((row,i)=>react.createElement("li",{key:i},c.names[row.seat]+" · "+({draw:"摸",discard:"打",hu:"胡",peng:"碰",gang:"杠",kong:"杠",pass:"过"}[row.kind]??row.kind)+tile(row.tile)+"："+row.reason+(row.sourceSeq?"（原谱事件 "+row.sourceSeq+"）":"")+(row.timeout?"（超时托管）":""))))))
+              :react.createElement("p",null,"结算后展示原谱对照、关键步模拟评估、出牌效率与逐步调整记录，避免提前泄露后续牌。玩家可思考 120 秒；超时会标明托管动作。")))):null);
+    }
+
     function MahjongCaseUtility(props) {
       var client = useController(props.controller);
       var state = client.statesBySession[props.sessionId];
       var workspaces = props.useWorkspaces((value) => value);
       var coaching=client.coachStatuses?.[props.sessionId];
       react.useEffect(()=>{
-        if(!props.sessionId || !["live","practice"].includes(state?.game?.mode))return;
+        if(!props.sessionId || !["live","practice","challenge"].includes(state?.game?.mode))return;
         var timer=setInterval(()=>props.controller.loadSession(props.sessionId,true),4000);
         return()=>clearInterval(timer);
       },[props.sessionId,state?.game?.mode]);
@@ -1940,6 +1989,7 @@ window.__ModuleLoader__.load({
         if(coaching?.coach?.status && coaching.coach.status!=="active")return;
         var timer=setInterval(()=>props.controller.readCoachStatus(props.sessionId),2000);return()=>clearInterval(timer);
       },[props.sessionId,state?.game?.mode,coaching?.coach?.status]);
+      if(state?.game?.mode==="challenge")return react.createElement(ChallengeControls,{...props,state});
       if(state?.game?.mode==="coach")return react.createElement("div",{style:{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}},
         react.createElement("span",{title:coaching?.lesson?.goal},coaching?.lesson?.title??"基础教学"),
         react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>setHint(!showHint)},showHint?"收起提示":"查看提示"),

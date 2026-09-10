@@ -1,0 +1,1869 @@
+{
+  "schema": "dsh-mahjong.source-hand.v1",
+  "caseId": "s6-20260902-session5-hand1",
+  "version": 6,
+  "title": "明星联赛 S6 总决赛 第5局第1副",
+  "source": {
+    "url": "https://www.bilibili.com/video/BV1MgtS6oEQH/?p=1",
+    "clip": "../s6-2026-09-02-first-hand/第5局第1副-00分00秒至05分25秒.mp4",
+    "sha256": "3dd4a7054e79227e406e4b4cdee24aa13d419e6c8113442d7ea4d12cdaa024d4",
+    "rangeSeconds": [
+      0,
+      325
+    ],
+    "timestampNote": "动作发生区间按转播画面定位；字幕、HUD和镜头可晚于动作，事件顺序以牌张转移为准。"
+  },
+  "players": [
+    {
+      "seat": 0,
+      "name": "龙公子",
+      "dingque": "m",
+      "openingHand": [
+        "2s",
+        "2s",
+        "2s",
+        "5s",
+        "6s",
+        "9s",
+        "3p",
+        "4p",
+        "6p",
+        "6p",
+        "8p",
+        "8p",
+        "9p",
+        "2m"
+      ],
+      "dealtHand": [
+        "2s",
+        "2s",
+        "4s",
+        "5s",
+        "6s",
+        "8s",
+        "3p",
+        "4p",
+        "6p",
+        "6p",
+        "8p",
+        "8p",
+        "9p",
+        "2m"
+      ],
+      "initialHandPoints": 0
+    },
+    {
+      "seat": 1,
+      "name": "弟弟",
+      "dingque": "s",
+      "openingHand": [
+        "1s",
+        "4s",
+        "5s",
+        "8s",
+        "3p",
+        "5p",
+        "5p",
+        "6p",
+        "2m",
+        "3m",
+        "4m",
+        "4m",
+        "9m"
+      ],
+      "dealtHand": [
+        "2s",
+        "4s",
+        "6s",
+        "9s",
+        "3p",
+        "5p",
+        "5p",
+        "6p",
+        "2m",
+        "3m",
+        "4m",
+        "4m",
+        "9m"
+      ],
+      "initialHandPoints": 0
+    },
+    {
+      "seat": 2,
+      "name": "周猩猩",
+      "dingque": "s",
+      "openingHand": [
+        "6s",
+        "7s",
+        "1p",
+        "2p",
+        "2p",
+        "4p",
+        "9p",
+        "1m",
+        "1m",
+        "2m",
+        "3m",
+        "4m",
+        "6m"
+      ],
+      "dealtHand": [
+        "1s",
+        "5s",
+        "6s",
+        "7s",
+        "8s",
+        "2p",
+        "9p",
+        "1m",
+        "1m",
+        "2m",
+        "3m",
+        "4m",
+        "6m"
+      ],
+      "initialHandPoints": 0
+    },
+    {
+      "seat": 3,
+      "name": "春光",
+      "dingque": "p",
+      "openingHand": [
+        "3s",
+        "3s",
+        "4s",
+        "4s",
+        "6s",
+        "8s",
+        "9s",
+        "2p",
+        "5m",
+        "6m",
+        "7m",
+        "8m",
+        "8m"
+      ],
+      "dealtHand": [
+        "3s",
+        "3s",
+        "4s",
+        "9s",
+        "1p",
+        "2p",
+        "2p",
+        "4p",
+        "5m",
+        "6m",
+        "7m",
+        "8m",
+        "8m"
+      ],
+      "initialHandPoints": 0
+    }
+  ],
+  "dealer": 0,
+  "exchange": {
+    "direction": "previous_in_turn_order",
+    "sourceRange": [
+      26,
+      54
+    ],
+    "transfers": [
+      {
+        "fromSeat": 0,
+        "toSeat": 3,
+        "tiles": [
+          "8s",
+          "4s",
+          "6s"
+        ],
+        "sourceRange": [
+          26,
+          54
+        ]
+      },
+      {
+        "fromSeat": 1,
+        "toSeat": 0,
+        "tiles": [
+          "2s",
+          "6s",
+          "9s"
+        ],
+        "sourceRange": [
+          26,
+          54
+        ]
+      },
+      {
+        "fromSeat": 2,
+        "toSeat": 1,
+        "tiles": [
+          "8s",
+          "1s",
+          "5s"
+        ],
+        "sourceRange": [
+          26,
+          54
+        ]
+      },
+      {
+        "fromSeat": 3,
+        "toSeat": 2,
+        "tiles": [
+          "1p",
+          "2p",
+          "4p"
+        ],
+        "sourceRange": [
+          26,
+          54
+        ]
+      }
+    ]
+  },
+  "dingqueSourceRange": [
+    55,
+    61
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "atSeconds": 61.5,
+      "sourceRangeSeconds": [
+        60.5,
+        63
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "2m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-1"
+    },
+    {
+      "seq": 2,
+      "atSeconds": 65.5,
+      "sourceRangeSeconds": [
+        64.5,
+        67
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "1m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-2"
+    },
+    {
+      "seq": 3,
+      "atSeconds": 67.5,
+      "sourceRangeSeconds": [
+        66.5,
+        69
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "1s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-3"
+    },
+    {
+      "seq": 4,
+      "atSeconds": 70,
+      "sourceRangeSeconds": [
+        69,
+        71.5
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "8m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-4"
+    },
+    {
+      "seq": 5,
+      "atSeconds": 72.5,
+      "sourceRangeSeconds": [
+        71.5,
+        74
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "7s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-5"
+    },
+    {
+      "seq": 6,
+      "atSeconds": 76.5,
+      "sourceRangeSeconds": [
+        75.5,
+        78
+      ],
+      "seat": 3,
+      "action": "draw",
+      "tile": "5s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-6"
+    },
+    {
+      "seq": 7,
+      "atSeconds": 77.5,
+      "sourceRangeSeconds": [
+        76.5,
+        79
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "2p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-7"
+    },
+    {
+      "seq": 8,
+      "atSeconds": 80,
+      "sourceRangeSeconds": [
+        79,
+        81.5
+      ],
+      "seat": 2,
+      "action": "peng",
+      "tile": "2p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "fromSeat": 3,
+      "triggerSeq": 7,
+      "id": "event-8",
+      "triggerEventId": "event-7"
+    },
+    {
+      "seq": 9,
+      "atSeconds": 82,
+      "sourceRangeSeconds": [
+        81,
+        83.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "6s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-9"
+    },
+    {
+      "seq": 10,
+      "atSeconds": 85.5,
+      "sourceRangeSeconds": [
+        84.5,
+        87
+      ],
+      "seat": 3,
+      "action": "draw",
+      "tile": "2p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-10"
+    },
+    {
+      "seq": 11,
+      "atSeconds": 86.5,
+      "sourceRangeSeconds": [
+        85.5,
+        88
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "2p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-11"
+    },
+    {
+      "seq": 12,
+      "atSeconds": 89,
+      "sourceRangeSeconds": [
+        88,
+        90.5
+      ],
+      "seat": 0,
+      "action": "draw",
+      "tile": "2m",
+      "evidence": {
+        "kind": "uniquely_inferred",
+        "explanation": "01:29弃牌及01:30、01:44后续牌河画面确认二万。摸牌面被手遮挡，但此前手里无万子，且摸后手牌未变化，因此推定本次摸入二万。",
+        "reviewedOn": "2026-09-08",
+        "reviewFramesSeconds": [
+          89.9,
+          90,
+          104.5
+        ]
+      },
+      "id": "event-12"
+    },
+    {
+      "seq": 13,
+      "atSeconds": 89.5,
+      "sourceRangeSeconds": [
+        88.5,
+        91
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "2m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "01:29落牌后，01:30侧面及01:44正面镜头均可见龙公子的前两张弃牌为二万。此前误识别为三万，现据牌河画面纠正。",
+        "reviewedOn": "2026-09-08",
+        "reviewFramesSeconds": [
+          89.9,
+          90,
+          104.5
+        ]
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-13"
+    },
+    {
+      "seq": 14,
+      "atSeconds": 91.5,
+      "sourceRangeSeconds": [
+        90.5,
+        93
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "6p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-14"
+    },
+    {
+      "seq": 15,
+      "atSeconds": 92.5,
+      "sourceRangeSeconds": [
+        91.5,
+        94
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "4s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-15"
+    },
+    {
+      "seq": 16,
+      "atSeconds": 96,
+      "sourceRangeSeconds": [
+        95,
+        97.5
+      ],
+      "seat": 3,
+      "action": "peng",
+      "tile": "4s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "fromSeat": 1,
+      "triggerSeq": 15,
+      "id": "event-16",
+      "triggerEventId": "event-15"
+    },
+    {
+      "seq": 17,
+      "atSeconds": 103,
+      "sourceRangeSeconds": [
+        102,
+        104.5
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "9s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-17"
+    },
+    {
+      "seq": 18,
+      "atSeconds": 104.9,
+      "sourceRangeSeconds": [
+        103.9,
+        106.4
+      ],
+      "seat": 0,
+      "action": "draw",
+      "tile": "4p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-18"
+    },
+    {
+      "seq": 19,
+      "atSeconds": 105.7,
+      "sourceRangeSeconds": [
+        104.7,
+        107.2
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "9s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-19"
+    },
+    {
+      "seq": 20,
+      "atSeconds": 108,
+      "sourceRangeSeconds": [
+        107,
+        109.5
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "5s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-20"
+    },
+    {
+      "seq": 21,
+      "atSeconds": 109,
+      "sourceRangeSeconds": [
+        108,
+        110.5
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "8s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-21"
+    },
+    {
+      "seq": 22,
+      "atSeconds": 111,
+      "sourceRangeSeconds": [
+        110,
+        112.5
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "8s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "2026-09-09 用户指出后复看原片：01:51.6，周猩猩将新摸牌竖在四筒右侧，牌面上部可见八条的弯曲条纹；随后直接打出该牌，原十张暗手前后不变。原一条标注错误。",
+        "sourceSeconds": 111.6,
+        "evidenceFile": "../s6-zhou-third-discard/原视频-01分51秒6.png"
+      },
+      "id": "event-22"
+    },
+    {
+      "seq": 23,
+      "atSeconds": 112,
+      "sourceRangeSeconds": [
+        111,
+        113.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "8s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "2026-09-09 用户指出后复看原片：01:51.6，周猩猩将新摸牌竖在四筒右侧，牌面上部可见八条的弯曲条纹；随后直接打出该牌，原十张暗手前后不变。原一条标注错误。",
+        "sourceSeconds": 111.6,
+        "evidenceFile": "../s6-zhou-third-discard/原视频-01分51秒6.png"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-23"
+    },
+    {
+      "seq": 24,
+      "atSeconds": 115.5,
+      "sourceRangeSeconds": [
+        114.5,
+        117
+      ],
+      "seat": 3,
+      "action": "draw",
+      "tile": "5m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-24"
+    },
+    {
+      "seq": 25,
+      "atSeconds": 117,
+      "sourceRangeSeconds": [
+        116,
+        118.5
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "8s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-25"
+    },
+    {
+      "seq": 26,
+      "atSeconds": 120.5,
+      "sourceRangeSeconds": [
+        119.5,
+        122
+      ],
+      "seat": 0,
+      "action": "draw",
+      "tile": "1p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-26"
+    },
+    {
+      "seq": 27,
+      "atSeconds": 121.5,
+      "sourceRangeSeconds": [
+        120.5,
+        123
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "1p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-27"
+    },
+    {
+      "seq": 28,
+      "atSeconds": 124.5,
+      "sourceRangeSeconds": [
+        123.5,
+        126
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "2s",
+      "evidence": {
+        "kind": "uniquely_inferred",
+        "explanation": "此前手牌没有二条；本次弃二条被龙公子直杠，故摸入牌只能为二条。"
+      },
+      "id": "event-28"
+    },
+    {
+      "seq": 29,
+      "atSeconds": 126,
+      "sourceRangeSeconds": [
+        125,
+        127.5
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "2s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-29"
+    },
+    {
+      "seq": 30,
+      "atSeconds": 129,
+      "sourceRangeSeconds": [
+        128,
+        130.5
+      ],
+      "seat": 0,
+      "action": "gang_exposed",
+      "tile": "2s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "fromSeat": 1,
+      "scoreTransfers": [
+        {
+          "fromSeat": 1,
+          "toSeat": 0,
+          "points": 2
+        }
+      ],
+      "triggerSeq": 29,
+      "id": "event-30",
+      "triggerEventId": "event-29"
+    },
+    {
+      "seq": 31,
+      "atSeconds": 132.5,
+      "sourceRangeSeconds": [
+        131.5,
+        134
+      ],
+      "seat": 0,
+      "action": "draw_replacement",
+      "tile": "3m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-31"
+    },
+    {
+      "seq": 32,
+      "atSeconds": 133,
+      "sourceRangeSeconds": [
+        132,
+        134.5
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "3m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-32"
+    },
+    {
+      "seq": 33,
+      "atSeconds": 135.5,
+      "sourceRangeSeconds": [
+        134.5,
+        137
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "7p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-33"
+    },
+    {
+      "seq": 34,
+      "atSeconds": 136,
+      "sourceRangeSeconds": [
+        135,
+        137.5
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "5s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-34"
+    },
+    {
+      "seq": 35,
+      "atSeconds": 140,
+      "sourceRangeSeconds": [
+        139,
+        141.5
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "7m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-35"
+    },
+    {
+      "seq": 36,
+      "atSeconds": 148,
+      "sourceRangeSeconds": [
+        147,
+        149.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "4p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-36"
+    },
+    {
+      "seq": 37,
+      "atSeconds": 150,
+      "sourceRangeSeconds": [
+        149,
+        151.5
+      ],
+      "seat": 0,
+      "action": "peng",
+      "tile": "4p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "fromSeat": 2,
+      "triggerSeq": 36,
+      "id": "event-37",
+      "triggerEventId": "event-36"
+    },
+    {
+      "seq": 38,
+      "atSeconds": 152,
+      "sourceRangeSeconds": [
+        151,
+        153.5
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "3p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-38"
+    },
+    {
+      "seq": 39,
+      "atSeconds": 154.6,
+      "sourceRangeSeconds": [
+        153.6,
+        156.1
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "3s",
+      "evidence": {
+        "kind": "uniquely_inferred",
+        "explanation": "此前手牌没有三条；本次弃三条被春光碰，故摸入牌只能为三条。"
+      },
+      "id": "event-39"
+    },
+    {
+      "seq": 40,
+      "atSeconds": 155.5,
+      "sourceRangeSeconds": [
+        154.5,
+        157
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "3s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-40"
+    },
+    {
+      "seq": 41,
+      "atSeconds": 158,
+      "sourceRangeSeconds": [
+        157,
+        159.5
+      ],
+      "seat": 3,
+      "action": "peng",
+      "tile": "3s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "fromSeat": 1,
+      "triggerSeq": 40,
+      "id": "event-41",
+      "triggerEventId": "event-40"
+    },
+    {
+      "seq": 42,
+      "atSeconds": 162.5,
+      "sourceRangeSeconds": [
+        161.5,
+        164
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "5m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-42"
+    },
+    {
+      "seq": 43,
+      "atSeconds": 166.4,
+      "sourceRangeSeconds": [
+        165.4,
+        167.9
+      ],
+      "seat": 0,
+      "action": "draw",
+      "tile": "7m",
+      "evidence": {
+        "kind": "uniquely_inferred",
+        "explanation": "用户更正本次摸牌及随后弃牌为七万；沿用原牌谱的推定标记，本轮同步未重新核实视频。"
+      },
+      "id": "event-43"
+    },
+    {
+      "seq": 44,
+      "atSeconds": 167.5,
+      "sourceRangeSeconds": [
+        166.5,
+        169
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "7m",
+      "evidence": {
+        "kind": "user-corrected",
+        "explanation": "根据用户更正，此步为龙公子弃七万；仍待逐帧视频复核。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-44"
+    },
+    {
+      "seq": 45,
+      "atSeconds": 169.3,
+      "sourceRangeSeconds": [
+        168.3,
+        170.8
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "9s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-45"
+    },
+    {
+      "seq": 46,
+      "atSeconds": 170.7,
+      "sourceRangeSeconds": [
+        169.7,
+        172.2
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "5s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-46"
+    },
+    {
+      "seq": 47,
+      "atSeconds": 174,
+      "sourceRangeSeconds": [
+        173,
+        175.5
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "5p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-47"
+    },
+    {
+      "seq": 48,
+      "atSeconds": 176,
+      "sourceRangeSeconds": [
+        175,
+        177.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "9p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-48"
+    },
+    {
+      "seq": 49,
+      "atSeconds": 179,
+      "sourceRangeSeconds": [
+        178,
+        180.5
+      ],
+      "seat": 3,
+      "action": "draw",
+      "tile": "5m",
+      "evidence": {
+        "kind": "direct-observation",
+        "explanation": "用户指出原谱误记七万；2026-09-10复核02:59画面，春光右侧新摸入牌清楚为伍万。与下一事件弃五万成对更正，保留手中的七万。",
+        "reference": "第1分P约02:59；视频-02分59秒-摸五万.jpg"
+      },
+      "id": "event-49"
+    },
+    {
+      "seq": 50,
+      "atSeconds": 180,
+      "sourceRangeSeconds": [
+        179,
+        181.5
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "5m",
+      "evidence": {
+        "kind": "direct-observation",
+        "explanation": "2026-09-10复核摸打连续画面：春光打出刚摸的伍万，原七万仍在手中；此时已弃两张五万，手中留一张五万。原谱七万为误记。",
+        "reference": "第1分P约02:59–03:00.5；视频-03分00点5秒-弃五万后.jpg"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-50"
+    },
+    {
+      "seq": 51,
+      "atSeconds": 182.5,
+      "sourceRangeSeconds": [
+        181.5,
+        184
+      ],
+      "seat": 0,
+      "action": "draw",
+      "tile": "9p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-51"
+    },
+    {
+      "seq": 52,
+      "atSeconds": 185,
+      "sourceRangeSeconds": [
+        184,
+        186.5
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "9p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-52"
+    },
+    {
+      "seq": 53,
+      "atSeconds": 185.5,
+      "sourceRangeSeconds": [
+        185,
+        186.5
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "9m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "03:05.5九万在弟弟手上，03:06摆到手牌右侧；03:07九条落入牌河。根据连续画面校正时间。",
+        "reviewedOn": "2026-09-08"
+      },
+      "id": "event-53"
+    },
+    {
+      "seq": 54,
+      "atSeconds": 187,
+      "sourceRangeSeconds": [
+        186.5,
+        188
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "9s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "03:05.5九万在弟弟手上，03:06摆到手牌右侧；03:07九条落入牌河。根据连续画面校正时间。",
+        "reviewedOn": "2026-09-08"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-54"
+    },
+    {
+      "seq": 55,
+      "atSeconds": 192.5,
+      "sourceRangeSeconds": [
+        191.5,
+        194
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "6m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-55"
+    },
+    {
+      "seq": 56,
+      "atSeconds": 210,
+      "sourceRangeSeconds": [
+        209,
+        211.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "1p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-56"
+    },
+    {
+      "seq": 57,
+      "atSeconds": 213,
+      "sourceRangeSeconds": [
+        212,
+        214.5
+      ],
+      "seat": 3,
+      "action": "draw",
+      "tile": "8m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-57"
+    },
+    {
+      "seq": 58,
+      "atSeconds": 217,
+      "sourceRangeSeconds": [
+        216,
+        218.5
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "5m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-58"
+    },
+    {
+      "seq": 59,
+      "atSeconds": 220,
+      "sourceRangeSeconds": [
+        219,
+        221.5
+      ],
+      "seat": 0,
+      "action": "draw",
+      "tile": "4s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-59"
+    },
+    {
+      "seq": 60,
+      "atSeconds": 241,
+      "sourceRangeSeconds": [
+        240,
+        242.5
+      ],
+      "seat": 0,
+      "action": "discard",
+      "tile": "9p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-60"
+    },
+    {
+      "seq": 61,
+      "atSeconds": 243.3,
+      "sourceRangeSeconds": [
+        242.3,
+        244.8
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "9m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-61"
+    },
+    {
+      "seq": 62,
+      "atSeconds": 244.5,
+      "sourceRangeSeconds": [
+        243.5,
+        246
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "3p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-62"
+    },
+    {
+      "seq": 63,
+      "atSeconds": 247.5,
+      "sourceRangeSeconds": [
+        246.5,
+        249
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "9s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-63"
+    },
+    {
+      "seq": 64,
+      "atSeconds": 248,
+      "sourceRangeSeconds": [
+        247,
+        249.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "9s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-64"
+    },
+    {
+      "seq": 65,
+      "atSeconds": 250.5,
+      "sourceRangeSeconds": [
+        249.5,
+        252
+      ],
+      "seat": 3,
+      "action": "draw",
+      "tile": "8p",
+      "evidence": {
+        "kind": "uniquely_inferred",
+        "explanation": "此前手牌无筒；本次打八筒并被龙公子胡，故摸入八筒。"
+      },
+      "id": "event-65"
+    },
+    {
+      "seq": 66,
+      "atSeconds": 251,
+      "sourceRangeSeconds": [
+        250,
+        252.5
+      ],
+      "seat": 3,
+      "action": "discard",
+      "tile": "8p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-66"
+    },
+    {
+      "seq": 67,
+      "atSeconds": 252.5,
+      "sourceRangeSeconds": [
+        251.5,
+        254
+      ],
+      "seat": 0,
+      "action": "hu_ron",
+      "tile": "8p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "fromSeat": 3,
+      "scoreTransfers": [
+        {
+          "fromSeat": 3,
+          "toSeat": 0,
+          "points": 2
+        }
+      ],
+      "triggerSeq": 66,
+      "id": "event-67",
+      "triggerEventId": "event-66"
+    },
+    {
+      "seq": 68,
+      "atSeconds": 259,
+      "sourceRangeSeconds": [
+        258,
+        260.5
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "7s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-68"
+    },
+    {
+      "seq": 69,
+      "atSeconds": 260,
+      "sourceRangeSeconds": [
+        259,
+        261.5
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "7s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-69"
+    },
+    {
+      "seq": 70,
+      "atSeconds": 261.8,
+      "sourceRangeSeconds": [
+        260.8,
+        263.3
+      ],
+      "seat": 3,
+      "action": "hu_ron",
+      "tile": "7s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "fromSeat": 1,
+      "scoreTransfers": [
+        {
+          "fromSeat": 1,
+          "toSeat": 3,
+          "points": 1
+        }
+      ],
+      "triggerSeq": 69,
+      "id": "event-70",
+      "triggerEventId": "event-69"
+    },
+    {
+      "seq": 71,
+      "atSeconds": 267,
+      "sourceRangeSeconds": [
+        266,
+        268.5
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "9m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-71"
+    },
+    {
+      "seq": 72,
+      "atSeconds": 269,
+      "sourceRangeSeconds": [
+        268,
+        270.5
+      ],
+      "seat": 1,
+      "action": "gang_concealed",
+      "tile": "9m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "scoreTransfers": [
+        {
+          "fromSeat": 2,
+          "toSeat": 1,
+          "points": 2
+        }
+      ],
+      "id": "event-72"
+    },
+    {
+      "seq": 73,
+      "atSeconds": 272,
+      "sourceRangeSeconds": [
+        271,
+        273.5
+      ],
+      "seat": 1,
+      "action": "draw_replacement",
+      "tile": "8p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-73"
+    },
+    {
+      "seq": 74,
+      "atSeconds": 274,
+      "sourceRangeSeconds": [
+        273,
+        275.5
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "8p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-74"
+    },
+    {
+      "seq": 75,
+      "atSeconds": 277.5,
+      "sourceRangeSeconds": [
+        276.5,
+        279
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "3p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-75"
+    },
+    {
+      "seq": 76,
+      "atSeconds": 291,
+      "sourceRangeSeconds": [
+        290,
+        292.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "6m",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": false,
+      "id": "event-76"
+    },
+    {
+      "seq": 77,
+      "atSeconds": 296.1,
+      "sourceRangeSeconds": [
+        295.1,
+        297.6
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "6s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-77"
+    },
+    {
+      "seq": 78,
+      "atSeconds": 296.6,
+      "sourceRangeSeconds": [
+        295.6,
+        298.1
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "6s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-78"
+    },
+    {
+      "seq": 79,
+      "atSeconds": 299,
+      "sourceRangeSeconds": [
+        298,
+        300.5
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "1s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-79"
+    },
+    {
+      "seq": 80,
+      "atSeconds": 300,
+      "sourceRangeSeconds": [
+        299,
+        301.5
+      ],
+      "seat": 2,
+      "action": "discard",
+      "tile": "1s",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-80"
+    },
+    {
+      "seq": 81,
+      "atSeconds": 302.1,
+      "sourceRangeSeconds": [
+        301.1,
+        303.6
+      ],
+      "seat": 1,
+      "action": "draw",
+      "tile": "9p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-81"
+    },
+    {
+      "seq": 82,
+      "atSeconds": 302.6,
+      "sourceRangeSeconds": [
+        301.6,
+        304.1
+      ],
+      "seat": 1,
+      "action": "discard",
+      "tile": "9p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "discardMatchesDrawnValue": true,
+      "id": "event-82"
+    },
+    {
+      "seq": 83,
+      "atSeconds": 305.9,
+      "sourceRangeSeconds": [
+        304.9,
+        307.4
+      ],
+      "seat": 2,
+      "action": "draw",
+      "tile": "4p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "id": "event-83"
+    },
+    {
+      "seq": 84,
+      "atSeconds": 306.5,
+      "sourceRangeSeconds": [
+        305.5,
+        308
+      ],
+      "seat": 2,
+      "action": "hu_tsumo",
+      "tile": "4p",
+      "evidence": {
+        "kind": "video_observed",
+        "explanation": "结合该动作前后连续画面、手牌变化及公共牌核对。"
+      },
+      "scoreTransfers": [
+        {
+          "fromSeat": 1,
+          "toSeat": 2,
+          "points": 2
+        }
+      ],
+      "id": "event-84"
+    }
+  ],
+  "settlement": {
+    "龙公子": 4,
+    "弟弟": -3,
+    "周猩猩": 0,
+    "春光": -1
+  },
+  "unplayedWall": {
+    "count": 19,
+    "tileMultiset": [
+      "1s",
+      "1s",
+      "3s",
+      "7s",
+      "7s",
+      "8s",
+      "1p",
+      "1p",
+      "3p",
+      "5p",
+      "7p",
+      "7p",
+      "7p",
+      "1m",
+      "3m",
+      "4m",
+      "5m",
+      "6m",
+      "7m"
+    ],
+    "orderKnown": false,
+    "note": "余牌构成由已记录的起手与摸牌计算；尾墙真实顺序未核实。"
+  },
+  "verification": {
+    "historicalActionsComplete": true,
+    "actionCount": 84,
+    "drawCount": 36,
+    "discardCount": 39,
+    "pengCount": 4,
+    "gangCount": 2,
+    "winCount": 3,
+    "tileMultiplicityPassed": true,
+    "handSizePassed": true,
+    "turnOrderPassed": true,
+    "dingquePassed": true,
+    "winningShapesPassed": true,
+    "settlementTransfersPassed": true,
+    "historicalWallTailKnown": false,
+    "officialTournamentRulebookBound": false,
+    "championIdentityVerified": true,
+    "productReplayVerified": true,
+    "latestReaudit": {
+      "date": "2026-09-08",
+      "source": "用户下载的P1本副00:00–05:25录像",
+      "method": "依次复看84条事件前后画面，疑似二/三万追加放大及后续镜头复核；程序检查仅验证数据一致性，不证明录像转录准确",
+      "tileCorrectionEventSeqs": [
+        12,
+        13
+      ],
+      "timingCorrectionEventSeqs": [
+        53,
+        54
+      ],
+      "inferredEvidenceRetained": true,
+      "officialRecord": false,
+      "dshRenderedViewsChecked": 352,
+      "dshRenderedViewsPassed": true
+    },
+    "videoAuditStatus": "未完成逐项视频核对",
+    "dataValidation": "passed"
+  },
+  "scoring": {
+    "mode": "observed_transfers",
+    "baseUnit": 1,
+    "broadcastCapLabel": "5番封顶",
+    "observed": {
+      "exposedGangPayment": 2,
+      "concealedGangPerActiveOpponent": 2,
+      "dragonRonOneRoot": 2,
+      "chunRonPlain": 1,
+      "zhouSelfDrawPlain": 2
+    },
+    "limitation": "本副五笔转账均与转播结算一致。未取得主办方完整规则，不能据本副推定所有番种、过水或其他未触发规则。现有 blood-v1 对龙公子另计断幺九，会算成4分，不能直接套用。"
+  },
+  "championIdentity": {
+    "verified": true,
+    "event": "四川麻将明星联赛S6",
+    "championType": "team",
+    "championTeam": "技术处理组战队",
+    "featuredPlayer": "周猩猩",
+    "featuredPlayerRole": "冠军队成员",
+    "sourceUrl": "https://www.bilibili.com/video/BV1MgtS6oEQH/?p=3",
+    "evidence": [
+      {
+        "part": 3,
+        "seconds": 600,
+        "file": "evidence/award-600.png",
+        "observation": "舞台标注明星联赛S6"
+      },
+      {
+        "part": 3,
+        "seconds": 1350,
+        "file": "evidence/award-1350.png",
+        "observation": "冠军背景及技术处理组战队名称"
+      },
+      {
+        "part": 3,
+        "seconds": 660,
+        "file": "evidence/p3-clear-660.png",
+        "observation": "MVP颁奖背景标注周猩猩"
+      },
+      {
+        "part": 1,
+        "seconds": 140,
+        "file": "evidence/score-140.jpg",
+        "observation": "转播选手栏将周猩猩与技术处理组队徽对应"
+      }
+    ],
+    "note": "依据赛事颁奖与比赛转播文字，未以本副净赢或人物面貌识别判定冠军。周猩猩为团队冠军成员，不表述为个人赛冠军。"
+  },
+  "revisionHistory": [
+    {
+      "version": 2,
+      "date": "2026-09-08",
+      "changes": [
+        {
+          "seq": 12,
+          "field": "tile",
+          "before": "3m",
+          "after": "2m",
+          "reason": "01:29弃牌及01:30、01:44后续牌河画面确认二万。摸牌面被手遮挡，但此前手里无万子，且摸后手牌未变化，因此推定本次摸入二万。"
+        },
+        {
+          "seq": 13,
+          "field": "tile",
+          "before": "3m",
+          "after": "2m",
+          "reason": "01:29落牌后，01:30侧面及01:44正面镜头均可见龙公子的前两张弃牌为二万。此前误识别为三万，现据牌河画面纠正。"
+        },
+        {
+          "seq": 53,
+          "field": "atSeconds",
+          "before": 187.5,
+          "after": 185.5,
+          "reason": "03:05.5已见弟弟摸入九万，03:07已打出九条；原标记偏晚，原摸牌时点已在弃牌之后。"
+        },
+        {
+          "seq": 54,
+          "field": "atSeconds",
+          "before": 189,
+          "after": 187,
+          "reason": "03:05.5已见弟弟摸入九万，03:07已打出九条；原标记偏晚，原摸牌时点已在弃牌之后。"
+        }
+      ]
+    },
+    {
+      "version": 3,
+      "date": "2026-09-09",
+      "reason": "用户纠正周猩猩第三次弃牌。复看01:51.6原片确认八条；事件22摸牌、23弃牌由1s修正为8s。原v2全量核对结论不能视为视频逐动作正确性的保证。",
+      "changedEvents": [
+        22,
+        23
+      ],
+      "issueCount": 1
+    }
+  ],
+  "observations": [],
+  "timing": {
+    "dealt": 34,
+    "exchanged": 54,
+    "dingque": 61,
+    "settlement": 320
+  },
+  "settlementBySeat": {
+    "0": 4,
+    "1": -3,
+    "2": 0,
+    "3": -1
+  }
+}

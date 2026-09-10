@@ -25,6 +25,8 @@ export function practiceCheckpoint(saved: Checkpoint, metadata: TableMetadata, e
   if (!['swap3','dingque','playing'].includes(source.state?.phase) || metadata.ruleset !== source.metadata.ruleset ||
       metadata.ruleVersion !== source.metadata.ruleVersion || JSON.stringify(metadata.ruleOptions) !== JSON.stringify(source.metadata.ruleOptions)) throw new ServiceError('PRACTICE_STATE_UNAVAILABLE',422);
   const branch = structuredClone(saved);
+  // A normal practice fork must not inherit a challenge's private draw guide or scoring baseline.
+  delete branch.challenge;
   branch.metadata = {...metadata,mode:'practice',source:{gameId:source.metadata.gameId,eventIndex},joined:[]};
   branch.windows = {}; branch.receipts = [];
   const initialPointsBySeat = Object.fromEntries(metadata.seats.map(seat => [seat.seat, seat.initialPoints ?? 0]));

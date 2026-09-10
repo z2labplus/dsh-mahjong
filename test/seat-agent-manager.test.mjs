@@ -107,6 +107,7 @@ function createHarness({ persistedHeaders = [], listError, resumeError } = {}) {
           whenIdleCount: 0,
         };
         const agent = {
+          session: { append(...args) { (calls.appended??=[]).push(args); } },
           cancel(cause) {
             calls.cancels.push(cause);
           },
@@ -760,4 +761,15 @@ test("model quota errors close the local gate and report a safe status without p
   assert.deepEqual(events.find(e=>e.type==="model-error"),{type:"model-error",seatId:"game-1:east",code:"MODEL_QUOTA"});
   assert.equal(JSON.stringify(events).includes("private provider message"),false);
   await manager.dispose();
+});
+
+
+test("record-priority opponent uses its own Harness session and validated submission without an LLM turn",async()=>{
+  const clock=createClock(),{ctx,records,runtime}=createHarness(),submitted=[];
+  const manager=await createSeatAgentManager({ctx,runtime,clock,seats:[seat({provider:"script",model:"source-priority-v1"})],submitAction:async a=>submitted.push(a)});
+  try{
+    await manager.openDecision(decision({stateBlock:JSON.stringify({sourcePriority:{policy:"source-priority-v1",legalActionId:"action-b"}})}));
+    assert.equal(submitted.length,1);assert.equal(submitted[0].actionId,"action-b");
+    const {calls}=getAgent(records);assert.equal(calls.followups.length,0);assert.equal(calls.appended[0][0],"user/message");
+  }finally{await manager.dispose();}
 });

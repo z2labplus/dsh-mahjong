@@ -2,6 +2,8 @@ import { checkSessionAccess, readSession, sessionCookie } from './browser-sessio
 import { DurableObject } from 'cloudflare:workers';
 import { bearer, errorResponse, issueAccess, json, readJson, ServiceError, validGameId, verifyAccess, type Access } from './auth';
 import { normalizeTable, TableCore, type Checkpoint } from './table-core';
+import {createChallengeCheckpoint} from './challenge';
+import {challengeSummary} from './challenge-policy';
 import {createCoachCheckpoint} from './coach';
 import {coachLesson} from './coach-lessons';
 import { MAX_HISTORY_FRAMES, practiceCheckpoint, projectFrame, validateArchive, type HistoryFrame } from './history';
@@ -20,7 +22,7 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     try {
       const path = new URL(request.url).pathname;
-      if (path === '/health' && request.method === 'GET') return json({ service: 'dsh-mahjong', version: 1, engine: ['blood','guobiao'], frontendReady: Boolean(env.ASSETS) });
+      if (path === '/health' && request.method === 'GET') return json({ service: 'dsh-mahjong', version: 1, engine: ['blood','guobiao'], frontendReady: Boolean(env.ASSETS), features:['takeover-challenge-v1'] });
       if (path === '/manifest.webmanifest') return json({ name: 'dsh-mahjong', short_name: '麻将', start_url: '/hand/', display: 'standalone', background_color: '#0b0f14', theme_color: '#0b0f14' });
       if (!path.startsWith('/v1/') && env.ASSETS) return env.ASSETS.fetch(request);
       if(['/v1/library','/v1/admin/users','/v1/invitations/redeem','/v1/coach/lessons'].includes(path)) {
@@ -29,7 +31,7 @@ export default {
       }
       const share=/^\/v1\/shares\/([a-f0-9-]{36})\/([a-f0-9-]{36})$/.exec(path);
       if(share && validGameId(share[1]) && validGameId(share[2]))return env.TABLES.get(env.TABLES.idFromName(share[1])).fetch(request);
-      const match = /^\/v1\/tables\/([a-f0-9-]{36})(\/(?:coach|ws|session|history(?:\/\d+)?|replay|shares(?:\/[a-f0-9-]{36})?|practice|seats\/[0-3]\/revoke))?$/.exec(path);
+      const match = /^\/v1\/tables\/([a-f0-9-]{36})(\/(?:challenge|coach|ws|session|history(?:\/\d+)?|replay|shares(?:\/[a-f0-9-]{36})?|practice|seats\/[0-3]\/revoke))?$/.exec(path);
       if (!match || !validGameId(match[1])) throw new ServiceError('NOT_FOUND', 404);
       if (!['/ws','/session'].includes(match[2]??'')) {
         const access = await verifyAccess(env.SERVICE_SECRET, bearer(request));
@@ -146,7 +148,7 @@ export class MahjongTable extends DurableObject<Env> {
         ...(seat.kind==='human'?{purpose:'invite' as const,jti:crypto.randomUUID()}:{}) });
       return { ...seat, ...(seat.kind === 'ai' ? { seatCredential: credential } : { humanInviteTicket: credential }), credentialExpiresAtMs: exp };
     }));
-    return { ok: true, gameId: metadata.gameId, tableName:metadata.tableName, roomType: 'friend', ruleset: metadata.ruleset, ruleVersion: metadata.ruleVersion, ruleOptions: metadata.ruleOptions,mode:metadata.mode??'live',source:metadata.source,coach:metadata.coach, aiDecisionTimeoutMs: metadata.timeoutMs,
+    return { ok: true, gameId: metadata.gameId, tableName:metadata.tableName, roomType: 'friend', ruleset: metadata.ruleset, ruleVersion: metadata.ruleVersion, ruleOptions: metadata.ruleOptions,mode:metadata.mode??'live',source:metadata.source,coach:metadata.coach,...(core.challenge?{challenge:challengeSummary(core)}:{}), aiDecisionTimeoutMs: metadata.timeoutMs,
       ownerMode: core.ownerSeat === null ? 'spectator' : 'player', seats,
       ownerSeat: core.ownerSeat,
       // The viewer token is scoped to this table and never authorizes actions.
@@ -190,13 +192,20 @@ export class MahjongTable extends DurableObject<Env> {
     });
   }
   private async historyRequest(request:Request,access:Access,gameId:string,suffix:string):Promise<Response> {
-    const body=['POST','PUT'].includes(request.method)?await readJson(request,suffix==='/replay'?24*1024*1024:16384):undefined;
+    const body=['POST','PUT'].includes(request.method)?await readJson(request,suffix==='/replay'?24*1024*1024:suffix==='/challenge'?2*1024*1024:16384):undefined;
     return this.serialized(async()=>{
       const saved=await this.ctx.storage.get<Checkpoint>('checkpoint');
       const core=saved?new TableCore(saved):null;
       const imported=await this.ctx.storage.get<{tenant:string;owner:string}>('import-owner');
       if(core)core.authorize(access);
       else if(imported && (imported.owner!==access.owner||imported.tenant!==access.tenant))throw new ServiceError('FORBIDDEN',403);
+      if(suffix==='/challenge' && request.method==='PUT'){
+        if(core||imported)throw new ServiceError('TABLE_ALREADY_EXISTS',409);
+        const challenge=new TableCore(createChallengeCheckpoint(body,access,gameId,Date.now()));
+        await directory(this.env,access,'/reserve',{access,row:this.libraryRow(challenge)});
+        await this.persist(challenge);return json(await this.describe(challenge,access),201);
+      }
+      if(suffix==='/challenge' && request.method==='GET' && core?.challenge)return json({ok:true,gameId,challenge:challengeSummary(core)});
       if(suffix==='/coach' && request.method==='PUT'){
         if(core||imported)throw new ServiceError('TABLE_ALREADY_EXISTS',409);
         const checkpoint=createCoachCheckpoint(body.lessonId,access,gameId,Date.now());
