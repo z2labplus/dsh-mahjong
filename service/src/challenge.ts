@@ -29,8 +29,8 @@ export function createChallengeCheckpoint(input:any,owner:Access,gameId:string,n
  }
  if(!['settling','done'].includes(reference.state.phase))throw new ServiceError('CHALLENGE_REFERENCE_UNFINISHED',422);
  saved.challenge!.referenceNet=challengeSummary(reference).net;
- // Joining the owning human starts clocks. The other seats already have their
- // original hand positions; reconnecting must never reset them or their names.
+ // Loading or joining is only preparation. The owner explicitly begins play.
+ saved.challenge!.status='ready';
  saved.metadata.joined=[0,1,2,3].filter(seat=>seat!==input.seat);
  return saved;
 }

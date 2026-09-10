@@ -18,7 +18,7 @@ export type TableMetadata = {
   gameId: string; tenant: string; owner: string; tableName: string; ruleset: 'blood' | 'guobiao'; ruleVersion?: string; ruleOptions?: { autoBuhua?: boolean };
   timeoutMs: number; createdAtMs: number; seats: Seat[]; joined: number[]; mode?: 'practice' | 'live' | 'coach' | 'challenge'; coach?:CoachState; source?: {gameId:string;eventIndex:number}; seatEpochs?: Record<number,number>;
 };
-type Window = { decisionId: string; snapshotKey: string; openedAtMs: number; deadlineAtMs: number };
+type Window = { decisionId: string; snapshotKey: string; openedAtMs: number; deadlineAtMs: number | null };
 type Receipt = { seat: number; actionId: string; fingerprint: string; humanFingerprint?: string; ack: any };
 export type Checkpoint = {
   version: 1; metadata: TableMetadata; entries: Entry[];
@@ -79,6 +79,8 @@ export class TableCore {
       if (saved.version !== 1) throw new ServiceError('SNAPSHOT_VERSION_UNSUPPORTED', 503);
       this.engine.restoreCheckpoint(saved.engine as any);
       this.windows = structuredClone(saved.windows);
+      // Existing training sessions also become untimed; never reset their moves.
+      if (this.challenge && this.windows[this.challenge.seat]) this.windows[this.challenge.seat]!.deadlineAtMs = null;
       this.receipts = structuredClone(saved.receipts);
     } else {
       this.game.systemUpdate([
@@ -109,6 +111,13 @@ export class TableCore {
     ]);
     this.progress(now);
   }
+  beginChallenge(now: number): void {
+    if (!this.challenge) throw new ServiceError('CHALLENGE_NOT_FOUND', 404);
+    if (['settling', 'done'].includes(this.state.phase)) throw new ServiceError('CHALLENGE_FINISHED', 409);
+    if (this.challenge.status !== 'ready') return;
+    this.challenge.status = 'active';
+    this.progress(now);
+  }
   catalog(seat: number): any {
     if (!this.catalogCache.has(seat)) this.catalogCache.set(seat, this.engine instanceof GuobiaoEngine
       ? guobiaoCatalog(this.game, this.engine, seat)
@@ -124,7 +133,7 @@ export class TableCore {
   }
   progress(now: number): void {
     this.catalogCache.clear();
-    if (this.metadata.joined.length < 4 || (this.metadata.coach && this.metadata.coach.status !== 'active')) {this.windows = {}; return;}
+    if (this.challenge?.status === 'ready' || this.metadata.joined.length < 4 || (this.metadata.coach && this.metadata.coach.status !== 'active')) {this.windows = {}; return;}
     for (let i = 0; i < 12; i++) {
       const revision = this.game.revision;
       if(this.challenge)prepareChallengeDraw(this);
@@ -137,7 +146,7 @@ export class TableCore {
       const catalog = this.catalog(seat);
       if (!catalog || !catalog.publicActions.length) { delete this.windows[seat]; continue; }
       if (this.windows[seat]?.snapshotKey === catalog.snapshotKey) continue;
-      this.windows[seat] = { decisionId: crypto.randomUUID(), snapshotKey: catalog.snapshotKey, openedAtMs: now, deadlineAtMs: now + (this.challenge&&seat===this.challenge.seat?120000:this.metadata.timeoutMs) };
+      this.windows[seat] = { decisionId: crypto.randomUUID(), snapshotKey: catalog.snapshotKey, openedAtMs: now, deadlineAtMs: this.challenge&&seat===this.challenge.seat ? null : now + this.metadata.timeoutMs };
     }
   }
   decision(seat: number) {
@@ -145,7 +154,10 @@ export class TableCore {
     const catalog = this.catalog(seat);
     if (!window || !catalog || window.snapshotKey !== catalog.snapshotKey) return null;
     const config = this.metadata.seats[seat]!;
-    const envelope = (this.metadata.ruleset === 'guobiao' ? guobiaoEnvelope : buildBloodAiDecisionEnvelope)(catalog, { gameId: this.metadata.gameId, seat, ...window, modelId: config.modelId, modelLabel: config.modelLabel });
+    // The imported AI envelope builder requires a bounded time. Human training
+    // transports explicitly receive null; AI envelopes retain their real deadline.
+    const bounded = (this.metadata.ruleset === 'guobiao' ? guobiaoEnvelope : buildBloodAiDecisionEnvelope)(catalog, { gameId: this.metadata.gameId, seat, ...window, deadlineAtMs: window.deadlineAtMs ?? window.openedAtMs + this.metadata.timeoutMs, modelId: config.modelId, modelLabel: config.modelLabel });
+    const envelope = {...bounded, deadlineAtMs: window.deadlineAtMs};
     return this.challenge && config.kind==='ai' ? {...envelope,sourcePriority:{policy:'source-priority-v1',legalActionId:challengeAction(this,seat).action.legalActionId}} : envelope;
   }
   submit(seat: number, message: any, now: number): any {
@@ -161,7 +173,7 @@ export class TableCore {
     }
     const window = this.windows[seat];
     if (!window || window.decisionId !== action.decisionId) throw new ServiceError('AI_DECISION_STALE', 409);
-    if (now >= window.deadlineAtMs) throw new ServiceError('AI_DECISION_EXPIRED', 409);
+    if (window.deadlineAtMs !== null && now >= window.deadlineAtMs) throw new ServiceError('AI_DECISION_EXPIRED', 409);
     const catalog = this.catalog(seat);
     if (!catalog || catalog.snapshotKey !== window.snapshotKey) throw new ServiceError('AI_DECISION_STALE', 409);
     const raw = catalog.rawByActionId.get(action.legalActionId);
@@ -204,7 +216,7 @@ export class TableCore {
     }
     const window = this.windows[seat];
     if (!window || message.decisionId !== window.decisionId) throw new ServiceError('AI_DECISION_STALE', 409);
-    if (now >= window.deadlineAtMs) throw new ServiceError('AI_DECISION_EXPIRED', 409);
+    if (window.deadlineAtMs !== null && now >= window.deadlineAtMs) throw new ServiceError('AI_DECISION_EXPIRED', 409);
     const catalog = this.catalog(seat);
     const action = message.action;
     const legal = catalog && [...catalog.rawByActionId].find(([, raw]) =>
@@ -217,12 +229,12 @@ export class TableCore {
   }
 
   alarm(now: number): void {
-    if(this.metadata.coach && this.windows[0]?.deadlineAtMs<=now){
+    if(this.metadata.coach && this.windows[0]?.deadlineAtMs != null && this.windows[0]!.deadlineAtMs!<=now){
       this.metadata.coach={...this.metadata.coach,status:'retry',score:0,feedback:'本次练习超时，请查看提示后重新开始。'};this.windows={};return;
     }
     // Resolve at most one expensive Top1 calculation per invocation. Other expired
     // windows retain their original deadlines and are handled by the next alarm.
-    const entry = Object.entries(this.windows).find(([, w]) => w.deadlineAtMs <= now);
+    const entry = Object.entries(this.windows).find(([, w]) => w.deadlineAtMs !== null && w.deadlineAtMs <= now);
     if (entry) {
       const seat = Number(entry[0]);
       const window = entry[1];
@@ -252,7 +264,8 @@ export class TableCore {
       actionKind: action.kind, actionLabel: action.kind, privateActionLabel: JSON.stringify(action) });
   }
   nextAlarm(): number | null {
-    const deadlines = Object.values(this.windows).map(w => w.deadlineAtMs);
+    if (this.challenge?.status === 'ready') return null;
+    const deadlines = Object.values(this.windows).map(w => w.deadlineAtMs).filter((n): n is number => n !== null);
     if (this.state?.swap3?.animatingSince != null) deadlines.push(this.state.swap3.animatingSince + 1200);
     if (this.state?.phase === 'settling' && this.state.settlingSince != null) deadlines.push(this.state.settlingSince + (this.metadata.ruleset === 'guobiao' ? 5000 : 16000));
     return deadlines.length ? Math.min(...deadlines) : null;
@@ -267,7 +280,9 @@ export class TableCore {
       if (kind === 'match' && value) {
         // Present the service deadline through the original HUD configuration;
         // the extracted engine still delegates timeouts to TableCore.
-        value.friendConfig = { waitMode: 'timeoutAuto', timeoutMs: this.challenge&&seat===this.challenge.seat?120000:this.metadata.timeoutMs };
+        value.friendConfig = this.challenge && (this.challenge.status === 'ready' || seat === this.challenge.seat)
+          ? {waitMode: 'noTimeout', timeoutMs: null}
+          : { waitMode: 'timeoutAuto', timeoutMs: this.metadata.timeoutMs };
         if(this.metadata.coach)value.coach={...this.metadata.coach,title:coachLesson(this.metadata.coach.lessonId)!.title,goal:coachLesson(this.metadata.coach.lessonId)!.goal};
         if(this.challenge)value.challenge=challengeSummary(this);
       }

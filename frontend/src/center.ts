@@ -251,12 +251,13 @@ export class Center {
     const bloodState = this.client.blood.get(0) as BloodState | null;
     const state = gbState ?? bloodState;
     const phase = state?.phase ?? null;
-    const sourceReplay = !!this.client.match.get(0)?.sourceReplay;
+    const match = this.client.match.get(0);
+    const untimed = !!match?.sourceReplay || match?.friendConfig?.waitMode === 'noTimeout';
     const shouldRunCountdown =
       phase === 'swap3' || phase === 'dingque' || phase === 'playing';
-    // A recorded hand has no live decision timer. Keep its turn indication and
-    // remaining-tile count, but do not invent a cycling clock over paused video.
-    if (sourceReplay) {
+    // Recorded and untimed hands have no decision countdown. Keep the turn
+    // indication and remaining-tile count without inventing a cycling clock.
+    if (untimed) {
       this.countdownLoopEnabled = false;
       if (this.countdownSeconds !== null) {
         this.countdownSeconds = null;
@@ -282,7 +283,7 @@ export class Center {
   }
 
   private resetCountdownLoop(nowMs: number = Date.now()): void {
-    if (this.client.match.get(0)?.sourceReplay) {
+    if (this.client.match.get(0)?.sourceReplay || this.client.match.get(0)?.friendConfig?.waitMode === 'noTimeout') {
       this.countdownLoopEnabled = false;
       this.countdownSeconds = null;
       this.dirty = true;

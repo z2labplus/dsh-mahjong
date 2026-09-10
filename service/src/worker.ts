@@ -22,7 +22,7 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     try {
       const path = new URL(request.url).pathname;
-      if (path === '/health' && request.method === 'GET') return json({ service: 'dsh-mahjong', version: 1, engine: ['blood','guobiao'], frontendReady: Boolean(env.ASSETS), features:['takeover-challenge-v1'] });
+      if (path === '/health' && request.method === 'GET') return json({ service: 'dsh-mahjong', version: 1, engine: ['blood','guobiao'], frontendReady: Boolean(env.ASSETS), features:['takeover-challenge-v1','takeover-ready-v1'] });
       if (path === '/manifest.webmanifest') return json({ name: 'dsh-mahjong', short_name: '麻将', start_url: '/hand/', display: 'standalone', background_color: '#0b0f14', theme_color: '#0b0f14' });
       if (!path.startsWith('/v1/') && env.ASSETS) return env.ASSETS.fetch(request);
       if(['/v1/library','/v1/admin/users','/v1/invitations/redeem','/v1/coach/lessons'].includes(path)) {
@@ -206,6 +206,11 @@ export class MahjongTable extends DurableObject<Env> {
         await this.persist(challenge);return json(await this.describe(challenge,access),201);
       }
       if(suffix==='/challenge' && request.method==='GET' && core?.challenge)return json({ok:true,gameId,challenge:challengeSummary(core)});
+      if(suffix==='/challenge' && request.method==='POST' && core?.challenge){
+        if(!body || Object.keys(body).length!==1 || body.action!=='begin')throw new ServiceError('INVALID_CHALLENGE');
+        core.beginChallenge(Date.now());await this.persist(core);await this.broadcast(core);
+        return json({ok:true,gameId,challenge:challengeSummary(core)});
+      }
       if(suffix==='/coach' && request.method==='PUT'){
         if(core||imported)throw new ServiceError('TABLE_ALREADY_EXISTS',409);
         const checkpoint=createCoachCheckpoint(body.lessonId,access,gameId,Date.now());

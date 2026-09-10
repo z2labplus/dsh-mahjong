@@ -71,9 +71,9 @@ window.__ModuleLoader__.load({
       .dsh-mj-brand-logo{display:inline-flex;width:22px;height:22px;flex:none;align-items:center;justify-content:center}
       .dsh-mj-brand-logo img{display:block;width:34px;height:34px;max-width:none;flex:none;object-fit:contain}
       .dsh-mj-sidebar-label{min-width:0;flex:1;overflow:hidden;text-align:left;text-overflow:ellipsis;white-space:nowrap}
-      header:has([data-dsh-source-controls]) [class*="_titleRow"]{flex-wrap:wrap;gap:8px;min-width:0}
-      header:has([data-dsh-source-controls]) [class*="_headerUtilities"]{width:100%;max-width:100%;min-width:0;flex-wrap:wrap;align-items:flex-start}
-      [data-dsh-source-controls]{flex:1 1 520px;min-width:0}
+      header:has([data-dsh-source-controls],[data-dsh-challenge-controls]) [class*="_titleRow"]{flex-wrap:wrap;gap:8px;min-width:0}
+      header:has([data-dsh-source-controls],[data-dsh-challenge-controls]) [class*="_headerUtilities"]{width:100%;max-width:100%;min-width:0;flex-wrap:wrap;align-items:flex-start}
+      [data-dsh-source-controls],[data-dsh-challenge-controls]{flex:1 1 520px;min-width:0}
       .dsh-mj-sidebar-dot{width:6px;height:6px;flex:none;border-radius:50%;background:var(--dsw-alias-state-success-primary,#32a866)}
       .dsh-mj-dialog-layer{position:fixed;inset:0;z-index:2;display:flex;box-sizing:border-box;align-items:center;justify-content:center;padding:24px;pointer-events:auto;background:rgba(8,10,14,.48)}
       .dsh-mj-dialog{box-sizing:border-box;width:min(860px,calc(100vw - 48px));max-height:min(820px,calc(100vh - 48px));overflow:auto;border:1px solid var(--dsw-alias-border-l2,#d9dce1);border-radius:6px;color:var(--dsw-alias-label-primary,#17191c);background:var(--dsw-alias-bg-layer-1,#fff);box-shadow:0 18px 60px rgba(0,0,0,.24)}
@@ -433,8 +433,8 @@ window.__ModuleLoader__.load({
         }
       }
 
-      async function openSources(){
-        publish({sourcesOpen:true,panelOpen:false,libraryOpen:false,formError:null});
+      async function openSources(challengeCaseId=null){
+        publish({sourcesOpen:true,challengeCaseId,panelOpen:false,libraryOpen:false,formError:null});
         try{var result=await requestJson("/sources");publish({sources:result.items});}catch(error){publish({formError:error.message});}
       }
       async function startChallenge(caseId,workspaceId){
@@ -445,7 +445,20 @@ window.__ModuleLoader__.load({
           var state=normalizeGameState(result,sessionId);publishSession(sessionId,state);
           await connection.api.sessions.rename({sessionId,title:"麻将实验室 · "+state.game.tableName});
           ctx.sessions.open(sessionId);setOverlayMode("large");publish({sourcesOpen:false,panelOpen:false,formStatus:"idle",pendingSessionId:null});
+          var address=new URL(window.location.href);address.searchParams.delete("mahjongChallenge");window.history.replaceState(window.history.state,"",address.toString());
         }catch(error){publish({formStatus:"error",formError:error.message});}
+      }
+      async function beginChallenge(sessionId){
+        if(snapshot.formStatus==="starting")return;publish({formStatus:"starting",formError:null});
+        try{
+          var result=await requestJson("/challenge/begin",{method:"POST",body:JSON.stringify({sessionId})});
+          publishSession(sessionId,normalizeGameState(result,sessionId));publish({formStatus:"idle"});
+        }catch(error){publish({formStatus:"error",formError:error.message});}
+      }
+      var challengeEntryOpened=false;
+      function openChallengeEntry(){
+        var caseId=new URL(window.location.href).searchParams.get("mahjongChallenge");
+        if(!challengeEntryOpened&&caseId){challengeEntryOpened=true;openSources(caseId);}
       }
       async function openSource(caseId,eventIndex=0,seat=0,workspaceId,lesson=null,viewMode="fixed"){
         if(snapshot.formStatus==="starting")return;publish({formStatus:"starting",formError:null});
@@ -590,7 +603,7 @@ window.__ModuleLoader__.load({
         loadSession,
         startGame,
         openCase,
-        openSources,openSource,startChallenge,stepSource,askSource,
+        openSources,openSource,startChallenge,beginChallenge,openChallengeEntry,stepSource,askSource,
         async sourceEditorRequest(op,input){var payload=await requestJson('/source-editor/'+op,{method:'POST',body:JSON.stringify(input)});if(payload.result.state){publishSession(input.sessionId,payload.result.state);sourceSessions.clear();}return payload.result;},
         async sourceEditorVideo(sessionId){var response=await fetch(API_BASE+'/source-editor/video',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','x-dsh-mahjong-request-token':API_REQUEST_TOKEN},body:JSON.stringify({sessionId})});if(!response.ok){var p=await response.json();throw new Error(p.error?.message??'视频打开失败');}return response.blob();},
         closeSources(){publish({sourcesOpen:false,formError:null});},
@@ -1095,6 +1108,9 @@ window.__ModuleLoader__.load({
           frameUrl
             ? react.createElement("iframe", {
               ref: frameRef,
+              inert: game?.challenge?.status==="ready" ? "" : undefined,
+              tabIndex: game?.challenge?.status==="ready" ? -1 : undefined,
+              style: game?.challenge?.status==="ready" ? {pointerEvents:"none"} : undefined,
               className: "dsh-mj-frame",
               "data-dsh-mahjong-frame": "true",
               src: frameUrl,
@@ -1484,15 +1500,17 @@ window.__ModuleLoader__.load({
       if(!client.sourcesOpen)return null;
       return react.createElement("div",{className:"dsh-mj-dialog-layer",onMouseDown:e=>{if(e.target===e.currentTarget)props.controller.closeSources();}},
         react.createElement("div",{className:"dsh-mj-dialog",role:"dialog","aria-modal":"true","aria-label":"赛事案例",ref,onKeyDown:e=>{if(e.key==="Escape")props.controller.closeSources();else trapDialogFocus(e,ref.current);}},
-          react.createElement("header",{className:"dsh-mj-dialog-header"},react.createElement("h2",{className:"dsh-mj-dialog-title"},"赛事案例"),react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>props.controller.closeSources()},"关闭")),
+          react.createElement("header",{className:"dsh-mj-dialog-header"},react.createElement("h2",{className:"dsh-mj-dialog-title"},client.challengeCaseId?"开始新挑战":"赛事案例"),react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>props.controller.closeSources()},"关闭")),
           react.createElement("div",{className:"dsh-mj-form"},
-            (client.sources??[]).map(c=>react.createElement("section",{key:c.caseId,style:{marginBottom:20}},
+            client.challengeCaseId?react.createElement("p",null,"创建一局新的接续挑战。进入后先查看接手局面，点击「开始挑战」才可出牌；轮到你时不限时。此前的挑战结果保留在原会话。"):null,
+            (client.sources??[]).filter(c=>!client.challengeCaseId||c.caseId===client.challengeCaseId).map(c=>react.createElement("section",{key:c.caseId,style:{marginBottom:20}},
               react.createElement("h3",null,c.title),react.createElement("p",null,c.players.map(p=>p.name).join(" · ")+" · "+c.count+" 个回放时点"),
               react.createElement("p",{style:{fontSize:12}},c.notice),
               react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting",onClick:()=>props.controller.openSource(c.caseId,0,0,resolveWorkspaceId(workspaces,sessions.current))},"整副回放")," ",
               react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting"||!c.hasLessons,onClick:()=>props.controller.openSource(c.caseId,c.keyIndex,c.keySeat,resolveWorkspaceId(workspaces,sessions.current),0)},c.hasLessons?"关键步讲解":"讲解待复核")," ",
-              c.challengeAvailable?react.createElement("button",{className:"dsh-mj-secondary",disabled:client.formStatus==="starting"||!c.challengeServiceReady,onClick:()=>props.controller.startChallenge(c.caseId,resolveWorkspaceId(workspaces,sessions.current))},c.challengeServiceReady?"接手续打 · 训练规则":"接续挑战 · 牌局服务待更新"):null,
-              c.challengeAvailable?react.createElement("p",{style:{fontSize:12}},"接替 "+c.players[c.keySeat].name+"，从关键步自由出牌。其他座位优先沿用原谱；接手后使用血战训练规则、底分 1，未知尾墙固定种子重建。结算分别查看本次净得分与关键步模拟评估；不代表完整赛事规则或选手水平。AI 超时 38 秒按相同规则继续，玩家超时会记录托管动作。"):null)),
+              c.challengeAvailable?react.createElement("button",{className:"dsh-mj-primary",disabled:client.formStatus==="starting"||!c.challengeServiceReady,onClick:()=>props.controller.startChallenge(c.caseId,resolveWorkspaceId(workspaces,sessions.current))},c.challengeServiceReady?(client.formStatus==="starting"?"正在准备…":"准备新挑战"):"接续挑战 · 牌局服务待更新"):null,
+              c.challengeAvailable?react.createElement("p",{style:{fontSize:12}},"接替 "+c.players[c.keySeat].name+"，从关键步自由出牌。其他座位优先沿用原谱；接手后使用血战训练规则、底分 1，未知尾墙固定种子重建。结算分别查看本次净得分与关键步模拟评估；不代表完整赛事规则或选手水平。AI 超时 38 秒按相同规则继续；你的回合不限时，不会自动替你出牌。"):null)),
+            client.challengeCaseId&&client.sources&&!client.sources.some(c=>c.caseId===client.challengeCaseId)?react.createElement("p",{role:"alert"},"本机未找到链接对应的挑战案例。请关闭后从赛事案例选择已安装的牌谱。"):null,
             client.sources?.length===0?react.createElement("p",null,"本机尚未安装赛事案例。"):null,
             react.createElement("details",null,react.createElement("summary",null,"较早的局部案例"),react.createElement("button",{className:"dsh-mj-secondary",onClick:()=>{props.controller.closeSources();props.controller.openCase(0,resolveWorkspaceId(workspaces,sessions.current));}},"天府夺魁 · LC 自摸三条（局部）")),
             client.formError?react.createElement("p",{role:"alert"},client.formError):null)));
@@ -1848,6 +1866,7 @@ window.__ModuleLoader__.load({
     }
     function FloatingMahjongSurface(props) {
       react.useLayoutEffect(() => installStyles(), []);
+      react.useEffect(()=>{props.controller.openChallengeEntry();},[]);
       return react.createElement(
         "div",
         { className: "dsh-mj-overlay", "data-dsh-mahjong-overlay": "m0", "data-mode": useOverlayMode() },
@@ -1944,17 +1963,22 @@ window.__ModuleLoader__.load({
             react.createElement("tbody",null,q.rows.map(r=>react.createElement("tr",{key:r.tile},[tile(r.tile),number(r.meanNet),number(r.difference),"["+number(r.interval95[0])+", "+number(r.interval95[1])+"]"].map((text,i)=>react.createElement("td",{key:i,style:{padding:4,borderTop:"1px solid var(--color-border-default, #ddd)"}},text))))))));
     }
 
-    function ChallengeControls({state,controller}){
-      var c=state.game.challenge,expanded=react.useState(false),show=expanded[0],setShow=expanded[1],dialog=react.useRef(null),opener=react.useRef(null);
+    function ChallengeControls({state,controller,workspaceId}){
+      var client=useController(controller),c=state.game.challenge,expanded=react.useState(false),show=expanded[0],setShow=expanded[1],dialog=react.useRef(null),opener=react.useRef(null);
       react.useEffect(()=>{if(show){dialog.current?.querySelector("button")?.focus();return()=>opener.current?.focus();}},[show]);
       if(!c)return react.createElement("span",{role:"status"},"正在恢复挑战状态…");
       var signed=n=>n>0?"+"+n:String(n),tile=t=>t?"一二三四五六七八九"[+t[0]-1]+({m:"万",p:"筒",s:"条"}[t[1]]):"";
-      return react.createElement("div",{style:{minWidth:0,fontSize:12,whiteSpace:"normal"}},
+      return react.createElement("div",{"data-dsh-challenge-controls":true,style:{minWidth:0,fontSize:12,whiteSpace:"normal"}},
         react.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},
           react.createElement("strong",null,"接手续打 · "+c.name),react.createElement("span",null,"训练规则 · 原谱优先"),
-          react.createElement("span",{style:{fontVariantNumeric:"tabular-nums"}},"接手后净得分 "+signed(c.net)),
+          react.createElement("strong",{role:"status"},c.finished?"本次挑战已结束":c.status==="ready"?"等待你开始":"你的回合不限时"),
+          c.status!=="ready"?react.createElement("span",{style:{fontVariantNumeric:"tabular-nums"}},"接手后净得分 "+signed(c.net)):null,
+          c.status==="ready"?react.createElement("button",{className:"dsh-mj-primary",disabled:client.formStatus==="starting",onClick:()=>controller.beginChallenge(state.sessionId)},client.formStatus==="starting"?"正在开始…":"开始挑战"):null,
           react.createElement("button",{className:"dsh-mj-mode-button",ref:opener,onClick:()=>setShow(true)},c.finished?"查看结果与调整":"规则说明"),
-          react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>controller.openSources()},"赛事案例 / 重新挑战")),
+          c.finished?react.createElement("button",{className:"dsh-mj-primary",disabled:client.formStatus==="starting",onClick:()=>state.game.challengeCaseId?controller.startChallenge(state.game.challengeCaseId,workspaceId):controller.openSources()},client.formStatus==="starting"?"正在准备…":"开始新挑战"):null,
+          react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>controller.openSources()},"赛事案例")),
+        c.status==="ready"?react.createElement("p",{style:{margin:"4px 0"}},"你接手 "+c.name+"，停在原谱事件 "+c.keySeq+" 之后，尚未出牌。"+(c.wonNames?.length?c.wonNames.join("、")+" 在此前已经胡牌；接下来由仍在局中的玩家继续。":"")+"点击「开始挑战」后操作，离开或刷新不会替你出牌。"):null,
+        client.formError?react.createElement("p",{role:"alert"},client.formError):null,
         c.finished?react.createElement("p",{role:"status",style:{margin:"4px 0"}},"本次 "+signed(c.net)+" · 原谱打法在相同训练条件下 "+signed(c.referenceNet)+" · 差额 "+signed(c.difference)+"。录像原段净得分 "+signed(c.historicalNet)+"（历史记录）。"):null,
         show?react.createElement("div",{className:"dsh-mj-dialog-layer",style:{zIndex:60},onMouseDown:e=>{if(e.target===e.currentTarget)setShow(false);}},
           react.createElement("section",{className:"dsh-mj-dialog",ref:dialog,role:"dialog","aria-modal":"true","aria-label":"接续挑战结果与说明",style:{maxHeight:"80vh",overflowY:"auto",whiteSpace:"normal"},onKeyDown:e=>{if(e.key==="Escape")setShow(false);else trapDialogFocus(e,dialog.current);}},
@@ -1965,7 +1989,7 @@ window.__ModuleLoader__.load({
               c.finished?react.createElement("div",null,react.createElement(ChallengeQuality,{evaluation:c.decisionQuality}),react.createElement("p",null,c.qualityNotice),
                 react.createElement("ol",null,c.quality.map((q,i)=>react.createElement("li",{key:i},"打"+tile(q.tile)+"："+(q.shanten===0?"听牌":q.shanten+"向听")+"，可见进张 "+q.effective+" 张；同一步效率优先方案 "+q.bestShanten+" 向听、"+q.bestEffective+" 张。"+(q.timeout?"（超时托管，不计作本人决策）":"")))),
                 react.createElement("details",null,react.createElement("summary",null,"逐步动作与调整原因"),react.createElement("ol",null,c.log.map((row,i)=>react.createElement("li",{key:i},c.names[row.seat]+" · "+({draw:"摸",discard:"打",hu:"胡",peng:"碰",gang:"杠",kong:"杠",pass:"过"}[row.kind]??row.kind)+tile(row.tile)+"："+row.reason+(row.sourceSeq?"（原谱事件 "+row.sourceSeq+"）":"")+(row.timeout?"（超时托管）":""))))))
-              :react.createElement("p",null,"结算后展示原谱对照、关键步模拟评估、出牌效率与逐步调整记录，避免提前泄露后续牌。玩家可思考 120 秒；超时会标明托管动作。")))):null);
+              :react.createElement("p",null,"结算后展示原谱对照、关键步模拟评估、出牌效率与逐步调整记录，避免提前泄露后续牌。轮到你时不限时；刷新或离开页面不会自动替你出牌。AI 仍有 38 秒超时接管。")))):null);
     }
 
     function MahjongCaseUtility(props) {
@@ -1989,7 +2013,7 @@ window.__ModuleLoader__.load({
         if(coaching?.coach?.status && coaching.coach.status!=="active")return;
         var timer=setInterval(()=>props.controller.readCoachStatus(props.sessionId),2000);return()=>clearInterval(timer);
       },[props.sessionId,state?.game?.mode,coaching?.coach?.status]);
-      if(state?.game?.mode==="challenge")return react.createElement(ChallengeControls,{...props,state});
+      if(state?.game?.mode==="challenge")return react.createElement(ChallengeControls,{...props,state,workspaceId:resolveWorkspaceId(workspaces,props.sessionId)});
       if(state?.game?.mode==="coach")return react.createElement("div",{style:{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}},
         react.createElement("span",{title:coaching?.lesson?.goal},coaching?.lesson?.title??"基础教学"),
         react.createElement("button",{className:"dsh-mj-mode-button",onClick:()=>setHint(!showHint)},showHint?"收起提示":"查看提示"),

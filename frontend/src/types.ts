@@ -27,6 +27,8 @@ export interface ThingInfo {
 }
 
 export interface MatchInfo {
+  // Service-owned training lifecycle; opening the table does not start play.
+  challenge?: { status: 'ready' | 'active' | 'finished' };
   // Curated source replay presentation only; never changes live-game visibility.
   sourceReplay?: { revealedSeats: number[]; wallLayout: 'schematic' };
   // Display-only marker for curated, incomplete historical cases; never a live game rule.

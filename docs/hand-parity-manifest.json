@@ -4076,7 +4076,7 @@
       "sha256": "f706eb827ee5cabc44e3c9c46df938f7b817ed57e062bb2e172f7e4d4146f08b",
       "bytes": 33426,
       "category": "code",
-      "vendoredSha256": "12099da7df420fd43ea05989eeff12fdae2191077b02f1257dfcbc531f921563"
+      "vendoredSha256": "bb213f54e74835ae09335b7301c87b89808c8fb855ab066888554d85c64da1e7"
     },
     {
       "source": "src/client.ts",
@@ -4154,7 +4154,7 @@
       "sha256": "33f6fd15e44a5c83dcd0057b317aaaecf1cf53c5df7f26a749f0a6a7c70bdb50",
       "bytes": 171623,
       "category": "code",
-      "vendoredSha256": "d5bd2359b00a698964d7fcc69c0a7615cc87ab9739d0b49065b592fb279f8310"
+      "vendoredSha256": "4da534b419748421a131d45c9ded6588475124aa415ef0f03df11e80b79b6f2f"
     },
     {
       "source": "src/hand-paipu-runtime.ts",
@@ -4359,7 +4359,7 @@
       "sha256": "3150edefc8678c3fa29ca9e1329bdadb040c211d0c6d7a92bbd486fb2d41128d",
       "bytes": 3594,
       "category": "code",
-      "vendoredSha256": "612ebb1863aa0c02df17a0033408bd8ff4bac36891a378e173d88050c0d207e5"
+      "vendoredSha256": "958b64f2cdfbe22bd160086ce23b23b9ca04ae29aab9bbfb35b68351b985580c"
     },
     {
       "source": "src/user-sync.ts",
@@ -4472,5 +4472,6 @@
   "sourceReplayRepairApproval": "2026-09-08 用户要求逐项修复赛事回放中手牌、弃牌、副露、牌墙的矛盾：仅赛事回放遵循已公开手牌，结算自摸牌仅展示一次，显示余墙数量示意；不改变实时对局或素材。",
   "sourceReplayAlignmentApproval": "2026-09-09 用户要求整理至视频与牌谱回放一致：仅赛事历史回放在第三家胡牌时结束、亮出最后一家的手牌；暂停回放停用无视频依据的循环倒计时，显示--，保留余牌数量与行牌位置；实时对局保持原逻辑。",
   "sourceReplayWallVisibilityRepair": "已撤回其牌墙绘制和提示位置调整，见 sourceReplayCountOnlyRestoration。保留同轮修复：赛事回放定缺角标只读当前帧，不继承后续时点或其他视角的本地缓存。",
-  "sourceReplayCountOnlyRestoration": "2026-09-09 用户明确原 MJLab 牌桌只显示余牌数，不显示实体牌墙。撤回误加的赛事回放牌墙模型、缩放、位置例外和定缺提示上移，恢复与实时对局相同的隐藏墙牌行为及原提示位置。牌墙数据继续用于摸牌顺序、剩余数量和守恒核对；不改变牌谱、其他牌张或牌桌相机。"
+  "sourceReplayCountOnlyRestoration": "2026-09-09 用户明确原 MJLab 牌桌只显示余牌数，不显示实体牌墙。撤回误加的赛事回放牌墙模型、缩放、位置例外和定缺提示上移，恢复与实时对局相同的隐藏墙牌行为及原提示位置。牌墙数据继续用于摸牌顺序、剩余数量和守恒核对；不改变牌谱、其他牌张或牌桌相机。",
+  "challengeReadinessRepair": "2026-09-10 用户反馈打开挑战已是三家胡牌的终局：修复独立新挑战入口和明确开始动作，人类回合不限时；中央倒计时遵循服务 noTimeout，显示 --，保留回合指示、余牌数、原牌桌布局及素材。 接续挑战默认不自动展开拆牌建议遮住准备局面，开始后仍可用原拆牌按钮手动查看。"
 }

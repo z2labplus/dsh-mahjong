@@ -35,7 +35,7 @@ async function loadClient(options = {}) {
   const source = await readFile(clientUrl, "utf8");
   let definition;
   const origin = "http://127.0.0.1:3081";
-  const search = "";
+  const search = options.search ?? "";
   const listSnapshot = {
     current: undefined,
     ids: [],
@@ -88,6 +88,7 @@ async function loadClient(options = {}) {
         origin,
         search,
       },
+      history: {state:null,replaceState(_state,_title,url){this.lastUrl=url;}},
     },
   });
   vm.runInContext(source, context);
@@ -941,6 +942,28 @@ test("starting a table uses the Workspace runtime and the per-process request to
   const stored = [...loaded.storage.values()].join("\n");
   assert.match(stored, /mahjong-session/);
   assert.doesNotMatch(stored, /game-1|memory-only|deepseek|qwen|openai/);
+});
+
+test('the direct challenge entry is read-only, preparation creates a separate session, and begin is explicit',async()=>{
+  const calls=[];let listed,created=0;
+  const loaded=await loadClient({search:'?mahjongChallenge=s6-example',clientBoot:{apiBase:'/dsh-mahjong/api',requestToken:'challenge-token'},
+    sessionApi:{async rename(){return {result:{ok:true,value:{}}};}},workspacesService:{async connectWorkspace(){const id='challenge-'+(++created);listed.byId[id]={id};listed.ids.push(id);return id;}},
+    fetchImpl:async(url,init)=>{calls.push({url,init});const body=init.body?JSON.parse(init.body):null;
+      return {ok:true,json:async()=>url.endsWith('/sources')?{ok:true,items:[{caseId:'s6-example'}]}:{ok:true,state:{phase:'active',sessionId:body.sessionId,locked:true,game:{mode:'challenge',tableName:'接手续打',challenge:{status:url.endsWith('/begin')?'active':'ready'}}}}};}
+  });listed=loaded.listSnapshot;
+  const controller=loaded.registrations.find(r=>r.options.name==='shell.overlay').options.inject().controller;
+  controller.openChallengeEntry();controller.openChallengeEntry();await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(calls.length,1);assert.equal(calls[0].url,'/dsh-mahjong/api/sources');assert.equal(created,0);
+  assert.equal(controller.getSnapshot().challengeCaseId,'s6-example');
+  await controller.startChallenge('s6-example','workspace');assert.equal(controller.getSnapshot().formStatus,'idle',controller.getSnapshot().formError);
+  assert.equal(controller.getSnapshot().statesBySession['challenge-1'].game.challenge.status,'ready');
+  assert.equal(calls.filter(c=>c.url.endsWith('/begin')).length,0);
+  await controller.beginChallenge('challenge-1');assert.equal(controller.getSnapshot().statesBySession['challenge-1'].game.challenge.status,'active');
+  assert.deepEqual(JSON.parse(calls.at(-1).init.body),{sessionId:'challenge-1'});assert.equal(calls.at(-1).init.headers['X-DSH-Mahjong-Request-Token'],'challenge-token');
+  await controller.startChallenge('s6-example','workspace');assert.equal(created,2);
+  assert.equal(controller.getSnapshot().statesBySession['challenge-1'].game.challenge.status,'active');
+  assert.equal(controller.getSnapshot().statesBySession['challenge-2'].game.challenge.status,'ready');
+  assert.deepEqual(loaded.openedSessions,['challenge-1','challenge-2']);
 });
 
 test("each dynamic plugin process wires one fresh request token into boot and HTTP", async () => {

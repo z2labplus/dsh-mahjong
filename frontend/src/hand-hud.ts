@@ -4013,7 +4013,9 @@ export class HandHudOverlay {
       }
     }
 
-    if (!replayMode && enteredDiscard) {
+    // The challenge first presents the hand itself. Its existing 拆牌 button
+    // remains available after beginning, without opening hints over preparation.
+    if (!replayMode && enteredDiscard && !this.client.match.get(0)?.challenge) {
       if (this.splitOverlay.isOpen()) {
         this.splitOverlay.syncAndOpenBestDetail();
       } else if (!this.splitAutoDismissed) {

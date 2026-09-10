@@ -3,7 +3,7 @@ import type { TableCore } from './table-core';
 import { BloodEngine } from './engine/blood-engine';
 import { shantenPinghu } from './engine/core/ev-engine';
 export type Cue={id:string;seq:number;seat:number;action:string;tile?:string;triggerEventId?:string;triggerSeq?:number;fromSeat?:number};
-export type ChallengeState={version:1;sourceHash:string;sourceVersion:number;sourceTitle:string;keySeq:number;seat:number;names:string[];seed:number;startScores:number[];historicalNet:number;referenceNet?:number;events:Cue[];drawCursors:number[];anchors:number[];lastSourceDiscard:string|null;log:Array<{seat:number;kind:string;tile?:string;reason:string;sourceSeq?:number;timeout?:boolean}>;quality:Array<{tile:string;shanten:number;effective:number;bestShanten:number;bestEffective:number;timeout:boolean}>};
+export type ChallengeState={version:1;status?:'ready'|'active';sourceHash:string;sourceVersion:number;sourceTitle:string;keySeq:number;seat:number;names:string[];seed:number;startScores:number[];historicalNet:number;referenceNet?:number;events:Cue[];drawCursors:number[];anchors:number[];lastSourceDiscard:string|null;log:Array<{seat:number;kind:string;tile?:string;reason:string;sourceSeq?:number;timeout?:boolean}>;quality:Array<{tile:string;shanten:number;effective:number;bestShanten:number;bestEffective:number;timeout:boolean}>};
 const key=(tile:string)=>'mps'.indexOf(tile[1]!)*9+Number(tile[0])-1;
 const code=(k:number)=>`${k%9+1}${'mps'[Math.floor(k/9)]}`;
 export function shuffled<T>(input:T[],seed:number):T[]{const a=input.slice();let x=seed>>>0;for(let i=a.length-1;i>0;i--){x=(Math.imul(x,1664525)+1013904223)>>>0;const j=x%(i+1);[a[i],a[j]]=[a[j]!,a[i]!];}return a;}
@@ -64,7 +64,7 @@ export function recordChallengeAction(core:TableCore,seat:number,catalog:any,id:
  if(actual.kind==='discard'||actual.kind==='kong')c.lastSourceDiscard=matched?selected.cue!.id??null:null;
 }
 export function challengeSummary(core:TableCore){const c=core.challenge!,finished=['settling','done'].includes(core.state.phase),net=core.state.players[c.seat].beans-c.startScores[c.seat]!;
- return {version:1,mode:'training',policy:'source-priority-v1',sourceVersion:c.sourceVersion,sourceHash:c.sourceHash,seat:c.seat,name:c.names[c.seat],names:c.names,finished,net,
+ return {version:1,mode:'training',policy:'source-priority-v1',sourceVersion:c.sourceVersion,sourceHash:c.sourceHash,seat:c.seat,name:c.names[c.seat],names:c.names,finished,net,status:finished?'finished':c.status??'active',keySeq:c.keySeq,wonNames:Object.values(core.state.players).filter((p:any)=>p.hu).map((p:any)=>c.names[p.seat]),
   rules:'接手前保留录像积分与杠分关系；接手后按血战训练规则 v1、底分 1 结算，包含胡牌、杠分和流局查叫／退税，非完整赛事规则。未知尾墙使用固定种子，属于训练重建。',
   ...(finished?{seed:c.seed,referenceNet:c.referenceNet,historicalNet:c.historicalNet,difference:c.referenceNet===undefined?null:net-c.referenceNet,quality:c.quality,
    decisionQuality:challengeAnalysis.sourceHash===c.sourceHash&&challengeAnalysis.keySeq===c.keySeq&&challengeAnalysis.seat===c.seat?{...challengeAnalysis,chosenTile:c.quality[0]?.tile,automatic:c.quality[0]?.timeout??false}:null,

@@ -7,7 +7,7 @@ import {BloodEngine} from '../src/engine/blood-engine';
 const record=JSON.parse(readFileSync(process.argv[2]!,'utf8'));
 const now=1800000000000,seat=2,keySeq=75,samples=96;
 const saved=createChallengeCheckpoint({record,keySeq,seat,seed:20260910},{v:1,kind:'owner',owner:'analysis',tenant:'analysis',exp:now+1000000},'11111111-1111-4111-8111-111111111111',now);
-const original=new TableCore(saved);original.join(seat,now);const candidates=[...new Set<string>(original.catalog(seat).publicActions.filter((a:any)=>a.kind==='discard').map((a:any)=>a.tile))];
+const original=new TableCore(saved);original.join(seat,now);original.beginChallenge(now);const candidates=[...new Set<string>(original.catalog(seat).publicActions.filter((a:any)=>a.kind==='discard').map((a:any)=>a.tile))];
 const known=new Set(original.game.entries('tileFacePublic').map(([id])=>Number(id)));
 const unknown=original.game.entries('things').filter(([id,t])=>!known.has(Number(id))&&!(t.slotName.startsWith('hand.')&&t.slotName.endsWith('@'+seat))).map(([id])=>Number(id));
 const pool=unknown.map(id=>(original.engine as BloodEngine).tileKeyForId(id)!);
@@ -26,7 +26,7 @@ for(let sample=0;sample<samples;sample++){
  for(const first of candidates){
   const snapshot=structuredClone(saved),map=new Map(snapshot.engine.secret.tileKeyById);unknown.forEach((id,i)=>map.set(id,keys[i]!));snapshot.engine.secret.tileKeyById=[...map];
   snapshot.challenge!.events=[];snapshot.challenge!.anchors=[-1,-1,-1,-1];snapshot.challenge!.referenceNet=undefined;
-  const core=new TableCore(snapshot);core.join(seat,now);let n=0;
+  const core=new TableCore(snapshot);core.join(seat,now);core.beginChallenge(now);let n=0;
   while(!['settling','done'].includes(core.state.phase)&&n<500){const acting=Number(Object.keys(core.windows)[0]);const action=n===0?core.catalog(acting).publicActions.find((a:any)=>a.tile===first):challengeAction(core,acting).action;if(!action)throw new Error('Missing legal analysis action');
    core.submit(acting,{actionId:'a'+n,action:{kind:'aiDecision',decisionId:core.decision(acting)!.decisionId,legalActionId:action.legalActionId}},now+n++);
   }
